@@ -1526,6 +1526,7 @@
                     </div>
                     <button class="btn btn-primary" onclick="openTxnModal('expense')">＋ 记支出</button>
                     <button class="btn btn-outline" onclick="openTxnModal('income')">＋ 记收入</button>
+                    <button class="btn btn-outline" onclick="openAiImportModal()" title="粘贴 AI 识别的账单清单">🤖 AI导入</button>
                 </div>
                 <div id="quickTxnBar" style="display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;margin-bottom:4px;-webkit-overflow-scrolling:touch;"></div>
                 <div class="money-summary" id="moneySummary"></div>
@@ -3092,6 +3093,131 @@
 
         function editTxn(id) {
             api(`/api/transactions/${id}`).then(t => openTxnModal(t.txn_type, t));
+        }
+
+        // ===== AI 识别账单导入（粘贴 → 解析 → 逐条审核 → 加入） =====
+        let aiImportItems = [];
+
+        function openAiImportModal() {
+            const overlay = document.getElementById('modalOverlay');
+            overlay.innerHTML = `
+            <div class="modal" style="width:360px;">
+                <h3 style="margin-bottom:6px;">🤖 AI 识别账单</h3>
+                <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;">在对话里把截图发给 AI，AI 会把账单整理成清单。复制 AI 回复的清单内容，粘贴到这里：</p>
+                <div class="form-group">
+                    <label>识别结果清单</label>
+                    <textarea id="aiImportText" style="min-height:120px;font-size:0.85rem;" placeholder="每行一条，格式：金额|分类|备注&#10;例如：&#10;23.5|吃喝|美团外卖午餐&#10;8|交通|地铁&#10;168|购物|网购T恤"></textarea>
+                </div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:12px;">格式说明：每行一条，<b>金额 | 分类 | 备注</b>（分类可不写，默认"吃喝"；备注可不写）</p>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                    <button class="btn btn-primary" onclick="parseAiImport()">解析并审核 →</button>
+                </div>
+            </div>`;
+            overlay.classList.add('open');
+        }
+
+        function parseAiImport() {
+            const text = document.getElementById('aiImportText').value.trim();
+            if (!text) return alert('请先粘贴 AI 识别结果');
+            const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+            const items = [];
+            const fallbackCat = '吃喝';
+            for (const line of lines) {
+                // 支持多种分隔：| ｜ , ， ; ； 空格
+                const parts = line.split(/[|｜,，;；]+/).map(s => s.trim()).filter(Boolean);
+                if (parts.length === 0) continue;
+                // 找金额（第一个纯数字/带¥/带元的）
+                let amount = null, cat = fallbackCat, note = '', rest = parts;
+                // 先尝试标准格式：金额在第一个位置
+                const amtMatch = line.match(/(\d+(?:\.\d{1,2})?)/);
+                if (amtMatch) {
+                    amount = parseFloat(amtMatch[1]);
+                }
+                if (amount === null) continue;
+                // 分类：从剩余文本匹配已知分类
+                const allCats = [...EXPENSE_CATS, ...INCOME_CATS];
+                const catHit = allCats.find(c => line.includes(c));
+                if (catHit) cat = catHit;
+                // 备注：去掉金额和分类后的剩余文本
+                note = line.replace(amtMatch[0], '').replace(cat, '').replace(/[¥￥元]|^\s*[:：]?\s*/, '').trim();
+                const isIncome = INCOME_CATS.includes(cat);
+                items.push({
+                    amount: Math.round(amount * 100) / 100,
+                    category: cat,
+                    note,
+                    txn_type: isIncome ? 'income' : 'expense',
+                    date: new Date().toISOString().split('T')[0],
+                });
+            }
+            if (items.length === 0) return alert('没解析出有效账单，请检查格式（每行要有金额数字）');
+            aiImportItems = items;
+            renderAiReview();
+        }
+
+        function renderAiReview() {
+            const overlay = document.getElementById('modalOverlay');
+            const total = aiImportItems.reduce((s, i) => s + (i.txn_type === 'expense' ? i.amount : 0), 0);
+            const totalInc = aiImportItems.reduce((s, i) => s + (i.txn_type === 'income' ? i.amount : 0), 0);
+            overlay.innerHTML = `
+            <div class="modal" style="width:380px;max-height:85vh;display:flex;flex-direction:column;">
+                <h3 style="margin-bottom:4px;">✅ 待确认 ${aiImportItems.length} 条</h3>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;">支出 ¥${total.toFixed(2)} · 收入 ¥${totalInc.toFixed(2)} · 每条都可以改</p>
+                <div style="overflow-y:auto;flex:1;padding-right:4px;" id="aiReviewList">
+                    ${aiImportItems.map((it, idx) => `
+                    <div style="border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                            <span style="color:${it.txn_type === 'expense' ? 'var(--red)' : 'var(--green)'};font-weight:700;font-size:1.05rem;width:70px;">${it.txn_type === 'expense' ? '-' : '+'}¥${it.amount.toFixed(2)}</span>
+                            <select onchange="aiEditItem(${idx},'category',this.value)" style="flex:1;font-size:0.8rem;padding:5px;border-radius:8px;border:1px solid var(--border);background:var(--surface);">
+                                ${[...EXPENSE_CATS, ...INCOME_CATS].map(c => `<option value="${c}" ${it.category === c ? 'selected' : ''}>${CAT_ICONS[c] || '📦'} ${c}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <input type="number" step="0.01" value="${it.amount}" onchange="aiEditItem(${idx},'amount',this.value)" style="width:80px;font-size:0.8rem;padding:5px;border-radius:8px;border:1px solid var(--border);background:var(--surface);">
+                            <input value="${esc(it.note)}" placeholder="备注（可选）" onchange="aiEditItem(${idx},'note',this.value)" style="flex:1;font-size:0.8rem;padding:5px;border-radius:8px;border:1px solid var(--border);background:var(--surface);">
+                            <button onclick="aiRemoveItem(${idx})" style="border:none;background:none;color:var(--red);font-size:1rem;cursor:pointer;padding:4px;">✕</button>
+                        </div>
+                    </div>`).join('')}
+                </div>
+                <div class="modal-actions" style="margin-top:10px;">
+                    <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                    <button class="btn btn-primary" onclick="aiConfirmImport()">✅ 确认加入 ${aiImportItems.length} 条</button>
+                </div>
+            </div>`;
+            overlay.classList.add('open');
+        }
+
+        function aiEditItem(idx, field, value) {
+            if (!aiImportItems[idx]) return;
+            if (field === 'amount') {
+                const v = parseFloat(value);
+                aiImportItems[idx].amount = isNaN(v) ? 0 : Math.round(v * 100) / 100;
+            } else if (field === 'category') {
+                aiImportItems[idx].category = value;
+                aiImportItems[idx].txn_type = INCOME_CATS.includes(value) ? 'income' : 'expense';
+            } else if (field === 'note') {
+                aiImportItems[idx].note = value.trim();
+            }
+        }
+
+        function aiRemoveItem(idx) {
+            aiImportItems.splice(idx, 1);
+            renderAiReview();
+        }
+
+        async function aiConfirmImport() {
+            const valid = aiImportItems.filter(i => i.amount > 0);
+            if (valid.length === 0) return alert('没有有效的账单');
+            for (const it of valid) {
+                await api('/api/transactions', { method: 'POST', body: JSON.stringify(it) });
+            }
+            const count = valid.length;
+            aiImportItems = [];
+            closeModal();
+            await renderMoneyStats();
+            await renderTxnList();
+            loadDashboard();
+            alert(`✅ 已加入 ${count} 条账单`);
         }
 
         async function deleteTxn(id) {
