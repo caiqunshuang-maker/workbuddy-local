@@ -1,0 +1,361 @@
+{
+ "tasks": [
+  {
+   "id": 2,
+   "title": "普拉提",
+   "description": "",
+   "priority": "medium",
+   "category": "life",
+   "completed": 1,
+   "due_date": "2026-08-06",
+   "created_at": "2026-08-03 14:14:30.647022",
+   "due_time": "20:00",
+   "repeat": "none",
+   "last_completed_at": null,
+   "repeat_days": ""
+  },
+  {
+   "id": 3,
+   "title": "普拉提",
+   "description": "",
+   "priority": "medium",
+   "category": "life",
+   "completed": 0,
+   "due_date": "2026-08-09",
+   "created_at": "2026-08-03 14:14:52.318286",
+   "due_time": "15:00",
+   "repeat": "none",
+   "last_completed_at": null,
+   "repeat_days": ""
+  },
+  {
+   "id": 4,
+   "title": "跳舞",
+   "description": "",
+   "priority": "medium",
+   "category": "life",
+   "completed": 0,
+   "due_date": "2026-08-12",
+   "created_at": "2026-08-07 12:15:17.612304",
+   "due_time": "07:30",
+   "repeat": "custom",
+   "last_completed_at": "2026-08-07 12:15:31.322313",
+   "repeat_days": "2"
+  }
+ ],
+ "notes": [
+  {
+   "id": 1,
+   "title": "兴趣爱好",
+   "content": "运动类\n\n跳舞（历史投入5960，剩余16课时）\n网球（没花钱，准备买个球拍）\n羽毛球（没花钱，跟朋友约着打）\n有氧操（帕梅拉/周六野/jo姐）\n\n高尔夫\n\n台球\n\n健身房\n\n游泳\n\n\n\n\n创造类\n\n烹饪\n\n\n\n\n养生类\n\n足疗\n艾灸\n刮痧\n芳香疗法\n\n按摩\n\n冥想\n\n\n\n\n\n\n\n休闲放松类\n\n看电影\n追剧\n看综艺\n朋友聚会\n麻将\n德州\n旅游\n摄影\n脱口秀\n\n\n\n\n\n\n\n技能学习类\n\n塔罗\n中医\n化妆\n咖啡拉花\n烹饪\n\n\n\n\n\n\n\n\n\n\n手账记录",
+   "color": "default",
+   "pinned": 0,
+   "created_at": "2026-08-03 11:56:57.144261",
+   "updated_at": "2026-08-03 11:56:57.144263"
+  },
+  {
+   "id": 2,
+   "title": "改标题",
+   "content": "改内容123",
+   "color": "default",
+   "pinned": 0,
+   "created_at": "2026-08-03 16:04:38.215651",
+   "updated_at": "2026-08-03 16:04:40.305036"
+  }
+ ],
+ "schedules": [
+  {
+   "id": 1,
+   "title": "放假",
+   "date": "2026-08-09",
+   "time": "",
+   "description": "",
+   "color": "#10b981",
+   "created_at": "2026-08-03 14:12:45.857312"
+  },
+  {
+   "id": 2,
+   "title": "放假",
+   "date": "2026-08-15",
+   "time": "",
+   "description": "",
+   "color": "#10b981",
+   "created_at": "2026-08-03 14:13:10.938717"
+  },
+  {
+   "id": 3,
+   "title": "放假",
+   "date": "2026-08-16",
+   "time": "",
+   "description": "",
+   "color": "#10b981",
+   "created_at": "2026-08-03 14:13:15.877001"
+  },
+  {
+   "id": 4,
+   "title": "放假",
+   "date": "2026-08-23",
+   "time": "",
+   "description": "",
+   "color": "#10b981",
+   "created_at": "2026-08-03 14:13:23.835715"
+  },
+  {
+   "id": 5,
+   "title": "放假",
+   "date": "2026-08-29",
+   "time": "",
+   "description": "",
+   "color": "#10b981",
+   "created_at": "2026-08-03 14:13:28.766777"
+  },
+  {
+   "id": 6,
+   "title": "放假",
+   "date": "2026-08-30",
+   "time": "",
+   "description": "",
+   "color": "#10b981",
+   "created_at": "2026-08-03 14:13:33.466580"
+  },
+  {
+   "id": 7,
+   "title": "放假",
+   "date": "2026-09-06",
+   "time": "",
+   "description": "",
+   "color": "#10b981",
+   "created_at": "2026-08-03 16:08:48.643513"
+  }
+ ],
+ "workouts": [
+  {
+   "id": 1,
+   "date": "2026-07-27",
+   "workout_type": "strength",
+   "duration": 60,
+   "notes": "",
+   "mood": 3,
+   "created_at": "2026-08-03 15:57:37.349644"
+  }
+ ],
+ "body_metrics": [
+  {
+   "id": 1,
+   "date": "2026-08-03",
+   "weight": 52.9,
+   "body_fat": 25.9,
+   "bmi": 19.4,
+   "waist": null,
+   "chest": null,
+   "hip": null,
+   "arm": null,
+   "thigh": null,
+   "notes": "",
+   "created_at": "2026-08-03 14:37:14.348276"
+  },
+  {
+   "id": 2,
+   "date": "2026-08-04",
+   "weight": 53.3,
+   "body_fat": null,
+   "bmi": 19.6,
+   "waist": null,
+   "chest": null,
+   "hip": null,
+   "arm": null,
+   "thigh": null,
+   "notes": "",
+   "created_at": "2026-08-04 12:15:37.517799"
+  },
+  {
+   "id": 3,
+   "date": "2026-08-07",
+   "weight": 53.4,
+   "body_fat": null,
+   "bmi": 19.6,
+   "waist": null,
+   "chest": null,
+   "hip": null,
+   "arm": null,
+   "thigh": null,
+   "notes": "",
+   "created_at": "2026-08-07 12:13:20.666642"
+  }
+ ],
+ "fitness_goals": [
+  {
+   "id": 1,
+   "title": "体脂23%",
+   "goal_type": "custom",
+   "target_value": 23.0,
+   "current_value": 25.9,
+   "start_value": 28.0,
+   "unit": "%",
+   "start_date": "2026-02-03",
+   "target_date": "2027-02-03",
+   "achieved": 0,
+   "notes": "",
+   "created_at": "2026-08-03 14:38:36.821273"
+  }
+ ],
+ "workout_exercises": [
+  {
+   "id": 1,
+   "workout_id": 1,
+   "name": "前束",
+   "sets": 3,
+   "reps": 0,
+   "weight": 0.0,
+   "weight_unit": "kg",
+   "duration": 0,
+   "distance": 0.0,
+   "notes": "",
+   "sort_order": 0
+  },
+  {
+   "id": 2,
+   "workout_id": 1,
+   "name": "哑铃锤式交替前平举",
+   "sets": 0,
+   "reps": 20,
+   "weight": 2.5,
+   "weight_unit": "kg",
+   "duration": 0,
+   "distance": 0.0,
+   "notes": "",
+   "sort_order": 1
+  },
+  {
+   "id": 3,
+   "workout_id": 1,
+   "name": "阿诺德推肩",
+   "sets": 0,
+   "reps": 12,
+   "weight": 2.5,
+   "weight_unit": "kg",
+   "duration": 0,
+   "distance": 0.0,
+   "notes": "",
+   "sort_order": 2
+  },
+  {
+   "id": 4,
+   "workout_id": 1,
+   "name": "俯身V字前举",
+   "sets": 0,
+   "reps": 15,
+   "weight": 2.5,
+   "weight_unit": "kg",
+   "duration": 0,
+   "distance": 0.0,
+   "notes": "",
+   "sort_order": 3
+  },
+  {
+   "id": 5,
+   "workout_id": 1,
+   "name": "中束",
+   "sets": 3,
+   "reps": 0,
+   "weight": 0.0,
+   "weight_unit": "kg",
+   "duration": 0,
+   "distance": 0.0,
+   "notes": "",
+   "sort_order": 4
+  },
+  {
+   "id": 6,
+   "workout_id": 1,
+   "name": "飞鸟递增递减组",
+   "sets": 0,
+   "reps": 0,
+   "weight": 1.0,
+   "weight_unit": "kg",
+   "duration": 0,
+   "distance": 0.0,
+   "notes": "1-1.5-2.5-5-2.5-1.5",
+   "sort_order": 5
+  },
+  {
+   "id": 7,
+   "workout_id": 1,
+   "name": "后束",
+   "sets": 3,
+   "reps": 0,
+   "weight": 0.0,
+   "weight_unit": "kg",
+   "duration": 0,
+   "distance": 0.0,
+   "notes": "",
+   "sort_order": 6
+  },
+  {
+   "id": 8,
+   "workout_id": 1,
+   "name": "面拉",
+   "sets": 0,
+   "reps": 20,
+   "weight": 10.0,
+   "weight_unit": "lb",
+   "duration": 0,
+   "distance": 0.0,
+   "notes": "2.5kg",
+   "sort_order": 7
+  },
+  {
+   "id": 9,
+   "workout_id": 1,
+   "name": "反向飞鸟",
+   "sets": 0,
+   "reps": 20,
+   "weight": 10.0,
+   "weight_unit": "lb",
+   "duration": 0,
+   "distance": 0.0,
+   "notes": "2.5kg",
+   "sort_order": 8
+  },
+  {
+   "id": 10,
+   "workout_id": 1,
+   "name": "哑铃俯身锤式提拉",
+   "sets": 0,
+   "reps": 20,
+   "weight": 7.5,
+   "weight_unit": "kg",
+   "duration": 0,
+   "distance": 0.0,
+   "notes": "",
+   "sort_order": 9
+  }
+ ],
+ "diaries": [
+  {
+   "id": 1,
+   "date": "2026-08-03",
+   "title": "喵喵喵",
+   "content": "",
+   "mood": 4,
+   "weather": "",
+   "images": "[\"/uploads/20260803184943_740d597a.jpg\", \"/uploads/20260803184946_4b7c6330.jpg\", \"/uploads/20260804144506_02e027f6.jpg\"]",
+   "created_at": "2026-08-03 14:44:48.043517",
+   "updated_at": "2026-08-04 14:45:10.924669"
+  },
+  {
+   "id": 2,
+   "date": "2026-08-04",
+   "title": "",
+   "content": "",
+   "mood": 4,
+   "weather": "",
+   "images": "[\"/uploads/20260804144536_c29c3b51.jpg\", \"/uploads/20260804144540_aa67171f.jpg\"]",
+   "created_at": "2026-08-04 14:45:43.487767",
+   "updated_at": "2026-08-04 14:45:43.487769"
+  }
+ ],
+ "transactions": [],
+ "storage_items": [],
+ "anniversaries": []
+}
