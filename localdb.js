@@ -10,7 +10,7 @@
   // ---------- 表定义 ----------
   const TABLES = ['tasks', 'notes', 'schedules', 'workouts', 'body_metrics',
     'fitness_goals', 'workout_exercises', 'diaries', 'transactions',
-    'storage_items', 'anniversaries'];
+    'storage_items', 'anniversaries', 'habits', 'habit_logs'];
 
   // ---------- localStorage 读写 ----------
   function loadTable(name) {
@@ -283,8 +283,8 @@
       return txnStats(parseInt(qs.year) || new Date().getFullYear(), parseInt(qs.month) || new Date().getMonth() + 1);
     }
 
-    // 通用 CRUD
-    const table = resource;
+    // 通用 CRUD（URL 用连字符，表名用下划线：habit-logs → habit_logs）
+    const table = resource === 'habit-logs' ? 'habit_logs' : resource;
     if (!TABLES.includes(table)) return null;
     let rows = loadTable(table);
 
@@ -464,6 +464,8 @@
     const goals = loadTable('fitness_goals');
     const txns = loadTable('transactions');
     const schedules = loadTable('schedules');
+    const habits = loadTable('habits');
+    const habitLogs = loadTable('habit_logs');
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const now = new Date();
@@ -495,6 +497,8 @@
       today_schedules: todaySchedules.length,
       today_workout_type: todayWorkout ? todayWorkout.workout_type : null,
       has_today_workout: !!todayWorkout,
+      habit_total: habits.length,
+      habit_done_today: habitLogs.filter(l => l.date === todayStr).length,
     };
   }
 

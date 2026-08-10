@@ -1320,6 +1320,13 @@
             .empty-state { padding: 24px 12px; }
             .empty-state .icon { font-size: 2rem; }
         }
+        .habit-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--border); display: inline-block;
+        }
+        .habit-dot.done { background: var(--green); }
+        .habit-check { transition: transform 0.15s; }
+        .habit-check:active { transform: scale(0.85); }
     </style>
 </head>
 <body>
@@ -1342,6 +1349,12 @@
             </button>
             <button class="nav-item" data-page="notes" data-title="📝 笔记">
                 <span class="icon">📝</span> <span>笔记</span>
+            </button>
+            <button class="nav-item" data-page="habits" data-title="🔥 习惯">
+                <span class="icon">🔥</span> <span>习惯</span>
+            </button>
+            <button class="nav-item" data-page="review" data-title="📈 月度回顾">
+                <span class="icon">📈</span> <span>回顾</span>
             </button>
             <button class="nav-item" data-page="fitness" data-title="💪 健身">
                 <span class="icon">💪</span> <span>健身</span>
@@ -1546,6 +1559,28 @@
                 <div class="storage-summary" id="storageSummary"></div>
                 <div class="storage-grid" id="storageGrid"></div>
             </div>
+
+            <!-- ===== Page: Habits ===== -->
+            <div class="page" id="page-habits">
+                <div class="toolbar">
+                    <div style="flex:1;font-size:0.9rem;color:var(--text-muted);" id="habitsSummary"></div>
+                    <button class="btn btn-primary" onclick="openHabitModal()">＋ 新建习惯</button>
+                </div>
+                <div id="habitsList"></div>
+            </div>
+
+            <!-- ===== Page: Monthly Review ===== -->
+            <div class="page" id="page-review">
+                <div class="toolbar">
+                    <select id="reviewMonthPicker" onchange="renderReview()">
+                        <option value="0">本月</option>
+                        <option value="-1">上月</option>
+                        <option value="-2">前2月</option>
+                        <option value="-3">前3月</option>
+                    </select>
+                </div>
+                <div id="reviewContent"></div>
+            </div>
         </div>
     </div>
 
@@ -1564,6 +1599,9 @@
         <button class="bn-item" data-page="notes">
             <span class="bn-icon">📝</span><span class="bn-text">笔记</span>
         </button>
+        <button class="bn-item" data-page="habits">
+            <span class="bn-icon">🔥</span><span class="bn-text">习惯</span>
+        </button>
         <button class="bn-item" data-page="fitness">
             <span class="bn-icon">💪</span><span class="bn-text">健身</span>
         </button>
@@ -1574,7 +1612,7 @@
             <span class="bn-icon">💰</span><span class="bn-text">记账</span>
         </button>
         <button class="bn-item" data-page="storage">
-            <span class="bn-icon">🗄️</span><span class="bn-text">收纳</span>
+            <span class="bn-icon">🗄️</span><span class="bn-text">更多</span>
         </button>
     </nav>
 
@@ -1617,6 +1655,8 @@
             if (page === 'diary') loadDiary();
             if (page === 'money') loadMoney();
             if (page === 'storage') renderStorage();
+            if (page === 'habits') renderHabits();
+            if (page === 'review') renderReview();
         }
         document.querySelectorAll('.nav-item, .bn-item').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -1667,6 +1707,7 @@
                 { label: '本周训练', value: stats.workouts_this_week, cls: stats.workouts_this_week > 0 ? 'good' : '', page: 'fitness', title: '💪 健身' },
                 { label: '最新体重', value: stats.latest_weight ? stats.latest_weight + 'kg' : '--', cls: '', page: 'fitness', title: '💪 健身' },
                 { label: '活跃目标', value: stats.active_goals, cls: stats.active_goals > 0 ? 'warn' : '', page: 'fitness', title: '💪 健身' },
+                { label: '习惯打卡', value: stats.habit_total ? `${stats.habit_done_today}/${stats.habit_total}` : '--', cls: (stats.habit_total && stats.habit_done_today === stats.habit_total) ? 'good' : (stats.habit_total ? 'warn' : ''), page: 'habits', title: '🔥 习惯' },
                 { label: '本月收入', value: '¥' + (stats.month_income || 0), cls: 'good', page: 'money', title: '💰 记账' },
                 { label: '本月支出', value: '¥' + (stats.month_expense || 0), cls: (stats.month_expense || 0) > 0 ? 'warn' : '', page: 'money', title: '💰 记账' },
                 { label: '本月结余', value: '¥' + (stats.month_balance || 0), cls: (stats.month_balance || 0) >= 0 ? 'good' : 'danger', page: 'money', title: '💰 记账' },
@@ -3825,8 +3866,241 @@
             }
         }
 
+        // ===== 习惯打卡 =====
+        function todayStr() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
 
-        // Custom confirm dialog (works reliably on mobile browsers where native confirm() may fail)
+        async function renderHabits() {
+            const habits = await api('/api/habits');
+            const logs = await api('/api/habit-logs');
+            const container = document.getElementById('habitsList');
+            const summary = document.getElementById('habitsSummary');
+            const today = todayStr();
+
+            // 计算每个习惯的连续打卡天数
+            function streak(habitId) {
+                const dates = new Set(logs.filter(l => l.habit_id === habitId).map(l => l.date));
+                let streak = 0;
+                const d = new Date();
+                // 今天没打卡则从昨天开始算（不打断 streak 展示）
+                if (!dates.has(today)) d.setDate(d.getDate() - 1);
+                while (dates.has(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`)) {
+                    streak++;
+                    d.setDate(d.getDate() - 1);
+                }
+                return streak;
+            }
+
+            // 生成最近 14 天的打卡圆点
+            function dots(habitId) {
+                const dates = new Set(logs.filter(l => l.habit_id === habitId).map(l => l.date));
+                let html = '';
+                for (let i = 13; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                    const done = dates.has(ds);
+                    html += `<span class="habit-dot ${done ? 'done' : ''}" title="${ds}"></span>`;
+                }
+                return html;
+            }
+
+            const doneToday = new Set(logs.filter(l => l.date === today).map(l => l.habit_id));
+            const todayDoneCount = doneToday.size;
+
+            if (habits.length === 0) {
+                summary.textContent = '还没有习惯，点右上角＋新建吧！';
+                container.innerHTML = `<div class="empty-state"><div class="icon">🔥</div><p>建立你的第一个好习惯，<br>每天打卡坚持！</p></div>`;
+                return;
+            }
+
+            summary.textContent = `今天已打卡 ${todayDoneCount}/${habits.length} 项`;
+            container.innerHTML = habits.map(h => {
+                const isDone = doneToday.has(h.id);
+                const st = streak(h.id);
+                return `
+                <div class="habit-card ${isDone ? 'done' : ''}" style="background:var(--surface);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+                    <button class="habit-check ${isDone ? 'checked' : ''}" onclick="toggleHabit(${h.id})" style="width:36px;height:36px;border-radius:50%;border:2px solid ${isDone ? 'var(--green)' : 'var(--border)'};background:${isDone ? 'var(--green)' : 'transparent'};color:#fff;font-size:1.1rem;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;">${isDone ? '✓' : ''}</button>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:600;font-size:0.95rem;">${esc(h.name)}</div>
+                        <div style="display:flex;align-items:center;gap:4px;margin-top:6px;">${dots(h.id)}</div>
+                    </div>
+                    <div style="text-align:center;flex-shrink:0;">
+                        <div style="font-size:1.2rem;font-weight:700;color:${st > 0 ? 'var(--orange)' : 'var(--text-muted)'};">${st}</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted);">天连击</div>
+                    </div>
+                    <button class="btn btn-outline btn-sm" style="flex-shrink:0;padding:4px 8px;" onclick="deleteHabit(${h.id})">✕</button>
+                </div>`;
+            }).join('');
+        }
+
+        async function toggleHabit(id) {
+            const today = todayStr();
+            const logs = await api('/api/habit-logs');
+            const existing = logs.find(l => l.habit_id === id && l.date === today);
+            if (existing) {
+                await api(`/api/habit-logs/${existing.id}`, { method: 'DELETE' });
+            } else {
+                await api('/api/habit-logs', { method: 'POST', body: JSON.stringify({ habit_id: id, date: today }) });
+            }
+            renderHabits();
+            loadDashboard();
+        }
+
+        async function deleteHabit(id) {
+            confirmDialog('确定删除这个习惯吗？', async () => {
+                await api(`/api/habits/${id}`, { method: 'DELETE' });
+                // 级联删除打卡记录
+                const logs = await api('/api/habit-logs');
+                for (const l of logs.filter(x => x.habit_id === id)) {
+                    await api(`/api/habit-logs/${l.id}`, { method: 'DELETE' });
+                }
+                renderHabits();
+            });
+        }
+
+        function openHabitModal() {
+            const overlay = document.getElementById('modalOverlay');
+            overlay.innerHTML = `
+            <div class="modal" style="width:340px;">
+                <h3 style="margin-bottom:16px;">🔥 新建习惯</h3>
+                <div class="form-group">
+                    <label>习惯名称</label>
+                    <input type="text" id="habitName" placeholder="如：喝水8杯、早睡、阅读30分钟" maxlength="30">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                    <button class="btn btn-primary" onclick="saveHabit()">创建</button>
+                </div>
+            </div>`;
+            overlay.classList.add('open');
+            setTimeout(() => document.getElementById('habitName').focus(), 100);
+        }
+
+        async function saveHabit() {
+            const name = document.getElementById('habitName').value.trim();
+            if (!name) return alert('请输入习惯名称');
+            await api('/api/habits', { method: 'POST', body: JSON.stringify({ name }) });
+            closeModal();
+            renderHabits();
+        }
+
+        // ===== 月度回顾 =====
+        async function renderReview() {
+            const sel = document.getElementById('reviewMonthPicker');
+            const offset = sel ? parseInt(sel.value) : 0;
+            const now = new Date();
+            const year = now.getFullYear(), month = now.getMonth() + 1 + offset;
+            const y2 = month <= 0 ? year - 1 : year;
+            const m2 = month <= 0 ? month + 12 : month;
+            const ms = `${y2}-${String(m2).padStart(2,'0')}`;
+            const container = document.getElementById('reviewContent');
+
+            const [tasks, txns, workouts, habits, logs, schedules] = await Promise.all([
+                api('/api/tasks'),
+                api(`/api/transactions?year=${y2}&month=${m2}`),
+                api(`/api/workouts?year=${y2}&month=${m2}`),
+                api('/api/habits'),
+                api('/api/habit-logs'),
+                api(`/api/schedules?year=${y2}&month=${m2}`),
+            ]);
+
+            // 待办完成率
+            const monthTasks = tasks.filter(t => t.due_date && t.due_date.startsWith(ms));
+            const totalTasks = monthTasks.length;
+            const doneTasks = monthTasks.filter(t => t.completed).length;
+            const doneRate = totalTasks > 0 ? Math.round(doneTasks / totalTasks * 100) : 0;
+
+            // 收支
+            const income = txns.filter(t => t.txn_type === 'income').reduce((s, t) => s + t.amount, 0);
+            const expense = txns.filter(t => t.txn_type !== 'income').reduce((s, t) => s + t.amount, 0);
+            const expByCat = {};
+            txns.filter(t => t.txn_type !== 'income').forEach(t => {
+                expByCat[t.category] = (expByCat[t.category] || 0) + t.amount;
+            });
+
+            // 训练
+            const workoutCount = workouts.length;
+            const workoutMinutes = workouts.reduce((s, w) => s + (w.duration || 0), 0);
+            const workoutTypes = {};
+            workouts.forEach(w => { workoutTypes[w.workout_type] = (workoutTypes[w.workout_type] || 0) + 1; });
+
+            // 习惯
+            const habitLogs = logs.filter(l => l.date && l.date.startsWith(ms));
+            const habitDays = new Set(habitLogs.map(l => l.date)).size;
+
+            // 日程
+            const scheduleCount = schedules.length;
+
+            // 支出分类 top3
+            const topCats = Object.entries(expByCat).sort((a, b) => b[1] - a[1]).slice(0, 3);
+
+            let html = `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;">
+                <div class="review-card" style="background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);text-align:center;">
+                    <div style="font-size:0.8rem;color:var(--text-muted);">📋 待办完成率</div>
+                    <div style="font-size:1.6rem;font-weight:700;margin-top:4px;color:${doneRate >= 60 ? 'var(--green)' : doneRate >= 30 ? 'var(--orange)' : 'var(--red)'};">${doneRate}%</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);">${doneTasks}/${totalTasks} 完成</div>
+                </div>
+                <div class="review-card" style="background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);text-align:center;">
+                    <div style="font-size:0.8rem;color:var(--text-muted);">💰 本月结余</div>
+                    <div style="font-size:1.6rem;font-weight:700;margin-top:4px;color:${income - expense >= 0 ? 'var(--green)' : 'var(--red)'};">¥${(income - expense).toFixed(0)}</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);">收 ¥${income.toFixed(0)} / 支 ¥${expense.toFixed(0)}</div>
+                </div>
+                <div class="review-card" style="background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);text-align:center;">
+                    <div style="font-size:0.8rem;color:var(--text-muted);">💪 本月训练</div>
+                    <div style="font-size:1.6rem;font-weight:700;margin-top:4px;color:${workoutCount > 0 ? 'var(--green)' : 'var(--text-muted)'};">${workoutCount} 次</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);">共 ${workoutMinutes} 分钟</div>
+                </div>
+                <div class="review-card" style="background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);text-align:center;">
+                    <div style="font-size:0.8rem;color:var(--text-muted);">🔥 习惯打卡</div>
+                    <div style="font-size:1.6rem;font-weight:700;margin-top:4px;color:${habitDays > 0 ? 'var(--orange)' : 'var(--text-muted)'};">${habitDays} 天</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);">${habits.length} 个习惯</div>
+                </div>
+            </div>`;
+
+            // 支出分类占比条
+            if (topCats.length > 0) {
+                const max = topCats[0][1];
+                html += `<div style="background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:16px;">
+                    <h4 style="font-size:0.95rem;margin-bottom:12px;">🍔 支出 TOP3</h4>
+                    ${topCats.map(([cat, amt]) => `
+                        <div style="margin-bottom:10px;">
+                            <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px;">
+                                <span>${esc(cat)}</span><span>¥${amt.toFixed(0)}</span>
+                            </div>
+                            <div style="height:8px;background:var(--bg);border-radius:4px;overflow:hidden;">
+                                <div style="height:100%;width:${Math.round(amt / max * 100)}%;background:var(--primary);border-radius:4px;"></div>
+                            </div>
+                        </div>`).join('')}
+                </div>`;
+            }
+
+            // 训练类型分布
+            const typeNames = { strength: '力量', cardio: '有氧', mixed: '混合', other: '其他' };
+            const typeKeys = Object.keys(workoutTypes);
+            if (typeKeys.length > 0) {
+                html += `<div style="background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:16px;">
+                    <h4 style="font-size:0.95rem;margin-bottom:12px;">💪 训练类型</h4>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                        ${typeKeys.map(k => `<span style="background:var(--bg);padding:6px 12px;border-radius:20px;font-size:0.8rem;">${typeNames[k] || k} ×${workoutTypes[k]}</span>`).join('')}
+                    </div>
+                </div>`;
+            }
+
+            html += `<div style="background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);">
+                <h4 style="font-size:0.95rem;margin-bottom:10px;">📅 其他</h4>
+                <div style="font-size:0.85rem;color:var(--text-muted);line-height:1.8;">本月共 ${scheduleCount} 条日程安排</div>
+            </div>`;
+
+            if (totalTasks === 0 && txns.length === 0 && workouts.length === 0 && habitDays === 0) {
+                html = `<div class="empty-state"><div class="icon">📈</div><p>${ms} 暂无数据</p></div>`;
+            }
+            container.innerHTML = html;
+        }
+
+
         function confirmDialog(message, onConfirm) {
             const overlay = document.getElementById('modalOverlay');
             overlay.innerHTML = `
@@ -3858,8 +4132,82 @@
             return d.toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         }
 
+        // ===== 每日提醒（待办/纪念日/习惯） =====
+        async function checkDailyReminders() {
+            try {
+                if (!('Notification' in window) || Notification.permission !== 'granted') return;
+                const today = todayStr();
+                const messages = [];
+
+                // 今日待办
+                const tasks = await api('/api/tasks?status=active');
+                const todayTasks = tasks.filter(t => t.due_date === today);
+                if (todayTasks.length > 0) {
+                    messages.push(`📋 今天有 ${todayTasks.length} 件待办：${todayTasks.slice(0,2).map(t => t.title).join('、')}${todayTasks.length > 2 ? '...' : ''}`);
+                }
+
+                // 逾期待办
+                const overdue = tasks.filter(t => t.due_date && t.due_date < today);
+                if (overdue.length > 0) {
+                    messages.push(`⚠️ 有 ${overdue.length} 件待办已逾期，记得处理`);
+                }
+
+                // 纪念日
+                try {
+                    const annivs = await api('/api/anniversaries');
+                    if (Array.isArray(annivs) && annivs.length) {
+                        annivs.forEach(a => {
+                            const d = a.anniv_date || '';
+                            const md = d.slice(5);
+                            const todayMd = today.slice(5);
+                            if (md === todayMd) {
+                                messages.push(`🎉 今天是${a.name}${a.yearly ? '周年纪念日' : '纪念日'}！`);
+                            }
+                        });
+                    }
+                } catch (e) {}
+
+                // 习惯未打卡
+                try {
+                    const habits = await api('/api/habits');
+                    if (Array.isArray(habits) && habits.length) {
+                        const logs = await api('/api/habit-logs');
+                        const doneIds = new Set((Array.isArray(logs) ? logs : []).filter(l => l.date === today).map(l => l.habit_id));
+                        const undone = habits.filter(h => !doneIds.has(h.id));
+                        if (undone.length > 0) {
+                            messages.push(`🔥 还有 ${undone.length} 个习惯没打卡：${undone.slice(0,2).map(h => h.name).join('、')}${undone.length > 2 ? '...' : ''}`);
+                        }
+                    }
+                } catch (e) {}
+
+                if (messages.length > 0) {
+                    const n = new Notification('御前指挥部 · 今日提醒', {
+                        body: messages.join('\n'),
+                        icon: './icon-192.png',
+                        tag: 'daily-reminder',
+                    });
+                    setTimeout(() => n.close(), 15000);
+                }
+            } catch (e) { /* 静默失败 */ }
+        }
+
         // ===== Init =====
         loadDashboard();
+        // 注册 Service Worker（离线可用）
+        try {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            }
+        } catch (e) {}
+        // 请求通知权限（用户首次打开时提示）
+        try {
+            if ('Notification' in window && Notification.permission === 'default') {
+                // 延迟请求，避免打扰首次加载
+                setTimeout(() => Notification.requestPermission(), 3000);
+            }
+        } catch (e) {}
+        // 打开时检查今日提醒
+        setTimeout(checkDailyReminders, 2500);
     </script>
 </body>
 </html>
