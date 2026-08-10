@@ -3103,18 +3103,79 @@
             overlay.innerHTML = `
             <div class="modal" style="width:360px;">
                 <h3 style="margin-bottom:6px;">🤖 AI 识别账单</h3>
-                <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;">在对话里把截图发给 AI，AI 会把账单整理成清单。复制 AI 回复的清单内容，粘贴到这里：</p>
+                <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;">在对话里把截图发给 AI，AI 识别后会自动推送到云端。点下面的按钮一键拉取：</p>
+                <div style="display:flex;gap:8px;margin-bottom:14px;">
+                    <button class="btn btn-primary" style="flex:1;" onclick="fetchAiPending()">⬇️ 获取AI最新结果</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                    <div style="flex:1;height:1px;background:var(--border);"></div>
+                    <span style="font-size:0.75rem;color:var(--text-muted);">或手动粘贴</span>
+                    <div style="flex:1;height:1px;background:var(--border);"></div>
+                </div>
                 <div class="form-group">
                     <label>识别结果清单</label>
-                    <textarea id="aiImportText" style="min-height:120px;font-size:0.85rem;" placeholder="每行一条，格式：金额|分类|备注&#10;例如：&#10;23.5|吃喝|美团外卖午餐&#10;8|交通|地铁&#10;168|购物|网购T恤"></textarea>
+                    <textarea id="aiImportText" style="min-height:100px;font-size:0.85rem;" placeholder="每行一条，格式：金额|分类|备注&#10;例如：&#10;23.5|吃喝|美团外卖午餐&#10;8|交通|地铁"></textarea>
                 </div>
-                <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:12px;">格式说明：每行一条，<b>金额 | 分类 | 备注</b>（分类可不写，默认"吃喝"；备注可不写）</p>
                 <div class="modal-actions">
                     <button class="btn btn-outline" onclick="closeModal()">取消</button>
-                    <button class="btn btn-primary" onclick="parseAiImport()">解析并审核 →</button>
+                    <button class="btn btn-outline" onclick="parseAiImport()">解析粘贴内容</button>
                 </div>
             </div>`;
             overlay.classList.add('open');
+        }
+
+        // 一键拉取 AI 识别结果（推送到云端固定 URL）
+        async function fetchAiPending() {
+            const btn = event && event.target ? event.target : null;
+            if (btn) { btn.textContent = '⏳ 拉取中...'; btn.disabled = true; }
+            try {
+                const url = './ai_pending.json?v=' + Date.now();
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const data = await resp.json();
+                if (!data || !Array.isArray(data.items) || data.items.length === 0) {
+                    throw new Error('还没有 AI 识别结果，先把截图发给 AI 吧');
+                }
+                // 兼容两种格式：带字段 / 纯字符串
+                aiImportItems = data.items.map(it => {
+                    if (typeof it === 'string') {
+                        return parseAiLine(it);
+                    }
+                    return {
+                        amount: Math.round(parseFloat(it.amount || it.price || 0) * 100) / 100,
+                        category: it.category || '吃喝',
+                        note: it.note || it.name || it.title || '',
+                        txn_type: (it.type === 'income' || INCOME_CATS.includes(it.category || '')) ? 'income' : 'expense',
+                        date: it.date || new Date().toISOString().split('T')[0],
+                    };
+                }).filter(i => i.amount > 0);
+                if (aiImportItems.length === 0) throw new Error('识别结果里没有有效金额');
+                renderAiReview();
+            } catch (e) {
+                alert('拉取失败：' + e.message);
+            } finally {
+                if (btn) { btn.textContent = '⬇️ 获取AI最新结果'; btn.disabled = false; }
+            }
+        }
+
+        // 解析单行：金额|分类|备注
+        function parseAiLine(line) {
+            const parts = String(line).split(/[|｜,，;；]+/).map(s => s.trim()).filter(Boolean);
+            if (parts.length === 0) return null;
+            const amtMatch = String(line).match(/(\d+(?:\.\d{1,2})?)/);
+            if (!amtMatch) return null;
+            const amount = parseFloat(amtMatch[1]);
+            const allCats = [...EXPENSE_CATS, ...INCOME_CATS];
+            const catHit = allCats.find(c => String(line).includes(c));
+            const cat = catHit || '吃喝';
+            const note = String(line).replace(amtMatch[0], '').replace(cat, '').replace(/[¥￥元]|^\s*[:：]?\s*/, '').trim();
+            return {
+                amount: Math.round(amount * 100) / 100,
+                category: cat,
+                note,
+                txn_type: INCOME_CATS.includes(cat) ? 'income' : 'expense',
+                date: new Date().toISOString().split('T')[0],
+            };
         }
 
         function parseAiImport() {
