@@ -1527,6 +1527,7 @@
                     <button class="btn btn-primary" onclick="openTxnModal('expense')">＋ 记支出</button>
                     <button class="btn btn-outline" onclick="openTxnModal('income')">＋ 记收入</button>
                 </div>
+                <div id="quickTxnBar" style="display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;margin-bottom:4px;-webkit-overflow-scrolling:touch;"></div>
                 <div class="money-summary" id="moneySummary"></div>
                 <div class="money-charts">
                     <div class="chart-container">
@@ -2857,8 +2858,28 @@
 
         async function loadMoney() {
             renderMoneyMonthLabel();
+            renderQuickTxnBar();
             await renderMoneyStats();
             await renderTxnList();
+        }
+
+        // 快捷记账：常用分类一键直达
+        function renderQuickTxnBar() {
+            const bar = document.getElementById('quickTxnBar');
+            if (!bar) return;
+            const quick = ['吃喝', '交通', '购物', '变美', '玩乐', '生活', '工资', '红包'];
+            bar.innerHTML = quick.map(cat => `
+                <button onclick="quickAddTxn('${cat}')"
+                    style="flex-shrink:0;display:flex;align-items:center;gap:5px;padding:9px 14px;border-radius:22px;border:1px solid var(--border);background:var(--surface);font-size:0.85rem;cursor:pointer;color:var(--text);box-shadow:var(--shadow);">
+                    <span style="font-size:1rem;">${CAT_ICONS[cat] || '📦'}</span> ${cat}
+                </button>`).join('');
+        }
+
+        // 点快捷分类：记住分类 → 打开记账弹窗，金额自动聚焦
+        function quickAddTxn(cat) {
+            const type = INCOME_CATS.includes(cat) ? 'income' : 'expense';
+            try { localStorage.setItem('wb_lastTxnCategory', cat); } catch (e) {}
+            openTxnModal(type, null, cat);
         }
 
         function renderMoneyMonthLabel() {
@@ -2985,11 +3006,17 @@
             `).join('');
         }
 
-        function openTxnModal(type, txn) {
+        function openTxnModal(type, txn, presetCat) {
             const isEdit = !!txn;
             const cats = type === 'income' ? INCOME_CATS : EXPENSE_CATS;
             const overlay = document.getElementById('modalOverlay');
             const today = new Date().toISOString().split('T')[0];
+            // 记住上次用的分类（非编辑时）
+            let lastCat = null;
+            if (!isEdit) {
+                try { lastCat = localStorage.getItem('wb_lastTxnCategory') || null; } catch (e) {}
+            }
+            const selectedCat = isEdit ? txn.category : (presetCat || (cats.includes(lastCat) ? lastCat : cats[0]));
             overlay.innerHTML = `
             <div class="modal">
                 <h3>${isEdit ? '✏️ 编辑账目' : (type === 'income' ? '💰 记收入' : '💸 记支出')}</h3>
@@ -3005,13 +3032,13 @@
                 </div>
                 <div class="form-group">
                     <label>分类</label>
-                    <select id="tCategory">
-                        ${cats.map(c => `<option value="${c}" ${isEdit && txn.category === c ? 'selected' : ''}>${CAT_ICONS[c] || '📦'} ${c}</option>`).join('')}
-                    </select>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;" id="tCatGrid">
+                        ${cats.map(c => `<button type="button" onclick="pickTxnCat('${c}')" data-cat="${c}" style="padding:8px 12px;border-radius:18px;border:1.5px solid ${c === selectedCat ? 'var(--primary)' : 'var(--border)'};background:${c === selectedCat ? 'color-mix(in srgb, var(--primary) 12%, transparent)' : 'var(--surface)'};font-size:0.85rem;cursor:pointer;color:var(--text);">${CAT_ICONS[c] || '📦'} ${c}</button>`).join('')}
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>备注</label>
-                    <input id="tNote" value="${isEdit ? esc(txn.note) : ''}" placeholder="这笔钱花在哪/来自哪（可选）">
+                    <label>备注 <span style="color:var(--text-muted);font-weight:400;">（可选）</span></label>
+                    <input id="tNote" value="${isEdit ? esc(txn.note) : ''}" placeholder="不用填也行">
                 </div>
                 <div class="modal-actions">
                     <button class="btn btn-outline" onclick="closeModal()">取消</button>
@@ -3019,16 +3046,37 @@
                 </div>
             </div>`;
             overlay.classList.add('open');
+            // 打开后自动聚焦金额（手机弹出数字键盘）
+            setTimeout(() => {
+                const el = document.getElementById('tAmount');
+                if (el) { el.focus(); el.select(); }
+            }, 150);
+        }
+
+        // 记账弹窗内点选分类
+        function pickTxnCat(cat) {
+            document.querySelectorAll('#tCatGrid [data-cat]').forEach(btn => {
+                const active = btn.dataset.cat === cat;
+                btn.style.borderColor = active ? 'var(--primary)' : 'var(--border)';
+                btn.style.background = active ? 'color-mix(in srgb, var(--primary) 12%, transparent)' : 'var(--surface)';
+            });
+            try { localStorage.setItem('wb_lastTxnCategory', cat); } catch (e) {}
+            document.getElementById('tCategory') || true; // noop
         }
 
         async function saveTxn(id, type) {
             const amount = parseFloat(document.getElementById('tAmount').value);
             if (isNaN(amount) || amount <= 0) return alert('请输入有效金额');
+            // 分类从按钮网格取选中项（没选中取第一个）
+            const catBtns = document.querySelectorAll('#tCatGrid [data-cat]');
+            const selected = Array.from(catBtns).find(b => b.style.borderColor === 'var(--primary)') || catBtns[0];
+            const category = selected ? selected.dataset.cat : '其他';
+            try { localStorage.setItem('wb_lastTxnCategory', category); } catch (e) {}
             const data = {
                 date: document.getElementById('tDate').value,
                 txn_type: id ? (await api(`/api/transactions/${id}`)).txn_type : type,
                 amount: Math.round(amount * 100) / 100,
-                category: document.getElementById('tCategory').value,
+                category,
                 note: document.getElementById('tNote').value.trim(),
             };
             if (id) {
