@@ -1375,6 +1375,11 @@
             <!-- ===== Page: Dashboard ===== -->
             <div class="page active" id="page-dashboard">
                 <div class="stats-grid" id="statsGrid"></div>
+                <div style="margin-top:14px;display:flex;gap:8px;">
+                    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportBackup()">💾 一键备份</button>
+                    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="document.getElementById('restoreFileInput2').click()">📥 恢复备份</button>
+                    <input type="file" id="restoreFileInput2" accept=".json" style="display:none;" onchange="importBackup(this)">
+                </div>
                 <div style="margin-top:24px">
                     <h3 style="font-size:1rem;margin-bottom:10px;cursor:pointer;" onclick="goToPage('tasks','📋 待办')">📋 今日待办 <span style="font-size:0.75rem;color:var(--text-muted);">›</span></h3>
                     <div id="todayTasks"></div>
@@ -1615,7 +1620,8 @@
         }
         document.querySelectorAll('.nav-item, .bn-item').forEach(btn => {
             btn.addEventListener('click', () => {
-                goToPage(btn.dataset.page, btn.dataset.title || btn.textContent.trim());
+                const title = btn.dataset.title || (btn.querySelector('.bn-text') ? btn.querySelector('.bn-text').textContent.trim() : btn.textContent.trim());
+                goToPage(btn.dataset.page, title);
             });
         });
 
@@ -2584,6 +2590,18 @@
 
         function viewImage(url) {
             const src = LocalDB.resolveImgSync(url) || url;
+            if (!src || src === 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==') {
+                // 图片未加载出来：异步取，取不到则提示
+                LocalDB.resolveImg(url).then(resolved => {
+                    if (resolved && resolved.startsWith('data:')) {
+                        document.getElementById('imageViewerImg').src = resolved;
+                        document.getElementById('imageViewer').classList.add('open');
+                    } else {
+                        alert('图片加载失败（可能已丢失，请用备份恢复）');
+                    }
+                });
+                return;
+            }
             document.getElementById('imageViewerImg').src = src;
             document.getElementById('imageViewer').classList.add('open');
         }
@@ -2837,8 +2855,7 @@
             if (pieCats.length === 0) {
                 const parent = ctxPie.parentElement;
                 parent.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="icon">🍔</div><p>本月暂无支出</p></div><canvas id="expensePieChart" height="220" style="display:none;"></canvas>';
-                return;
-            }
+            } else {
             if (!document.getElementById('expensePieChart')) {
                 const parent = ctxPie.parentElement;
                 parent.innerHTML = '<canvas id="expensePieChart" height="220"></canvas>';
@@ -2863,6 +2880,7 @@
                     },
                 },
             });
+            }
 
             // Daily trend chart
             const ctxTrend = document.getElementById('moneyTrendChart');
@@ -3182,7 +3200,16 @@
             if (!text) return '<span style="color:var(--text-muted);">（空白笔记）</span>';
             try {
                 if (window.marked) {
-                    return marked.parse(esc(text));
+                    let html = marked.parse(esc(text));
+                    // 净化链接：仅允许 http/https/mailto/tel，防 javascript: XSS
+                    html = html.replace(/<a\s+href=["']([^"']*)["']/gi, (match, href) => {
+                        const h = (href || '').trim().toLowerCase();
+                        if (h.startsWith('http://') || h.startsWith('https://') || h.startsWith('mailto:') || h.startsWith('tel:') || h.startsWith('#')) {
+                            return match;
+                        }
+                        return '<a href="#" onclick="return false;"';
+                    });
+                    return html;
                 }
             } catch (e) { /* fallback */ }
             return esc(text).replace(/\n/g, '<br>');

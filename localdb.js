@@ -16,11 +16,35 @@
   function loadTable(name) {
     try {
       const raw = localStorage.getItem(LS_PREFIX + name);
-      return raw ? JSON.parse(raw) : [];
+      if (!raw) return [];
+      const rows = JSON.parse(raw);
+      // 日记图片归一化：兼容字符串(JSON)或数组；引用统一指向缩略图
+      if (name === 'diaries' && Array.isArray(rows)) {
+        rows.forEach(d => {
+          if (typeof d.images === 'string') {
+            try { d.images = JSON.parse(d.images); } catch (e) { d.images = []; }
+          }
+          if (!Array.isArray(d.images)) d.images = [];
+          d.images = d.images.map(u => {
+            if (u && typeof u === 'object') u = u.url || '';
+            return typeof u === 'string' && u.includes('.') ? u.replace(/\.(jpg|jpeg|png|webp)$/i, '_thumb.jpg') : u;
+          });
+        });
+      }
+      return rows;
     } catch (e) { return []; }
   }
   function saveTable(name, rows) {
-    localStorage.setItem(LS_PREFIX + name, JSON.stringify(rows));
+    try {
+      localStorage.setItem(LS_PREFIX + name, JSON.stringify(rows));
+    } catch (e) {
+      // 配额超限等异常：提示用户备份，避免静默丢失
+      if (e && e.name === 'QuotaExceededError') {
+        try { alert('⚠️ 手机存储空间不足，保存失败！请点「💾 一键备份」保存数据后，清理浏览器缓存再试。'); } catch (e2) {}
+      } else {
+        try { alert('⚠️ 保存失败：' + (e && e.message ? e.message : '未知错误')); } catch (e2) {}
+      }
+    }
   }
   function nextId(name) {
     const rows = loadTable(name);
@@ -92,6 +116,9 @@
     const base = t.due_date ? new Date(t.due_date + 'T00:00:00') : new Date();
     const lastDay = new Date(year, month, 0).getDate();
     const out = [];
+    // 目标月早于基准月：不产生任何记录（避免"幽灵已完成项"）
+    const baseYear = base.getFullYear(), baseMonth = base.getMonth() + 1;
+    if (year < baseYear || (year === baseYear && month < baseMonth)) return out;
     if (r === 'custom' && t.repeat_days) {
       const days = new Set(String(t.repeat_days).split(',').map(x => parseInt(x)).filter(x => !isNaN(x)));
       for (let d = 1; d <= lastDay; d++) {
@@ -99,22 +126,25 @@
         if (days.has(dt.getDay() === 0 ? 6 : dt.getDay() - 1)) out.push(dt);
       }
     } else if (r === 'weekly') {
-      let d0 = new Date(base);
-      while (d0 > new Date(year, month - 1, 1)) d0.setDate(d0.getDate() - 7);
-      while (d0.getFullYear() === year && d0.getMonth() === month - 1 && d0.getDate() <= lastDay) {
-        out.push(new Date(d0));
-        d0.setDate(d0.getDate() + 7);
+      // 目标月内与 base 同星期几的所有日期（从月初正向枚举）
+      const baseDow = base.getDay();
+      for (let d = 1; d <= lastDay; d++) {
+        const dt = new Date(year, month - 1, d);
+        if (dt.getDay() === baseDow) out.push(dt);
       }
+    } else if (r === 'monthly') {
+      // 每月：目标月内与 base 同日（月末 clamp）
+      const baseDay = base.getDate();
+      const day = Math.min(baseDay, lastDay);
+      out.push(new Date(year, month - 1, day));
     } else if (r === 'daily') {
       let d0 = new Date(base);
-      if (d0 < new Date(year, month - 1, 1)) d0 = new Date(year, month - 1, 1);
       while (d0.getFullYear() === year && d0.getMonth() === month - 1 && d0.getDate() <= lastDay) {
         out.push(new Date(d0));
         d0.setDate(d0.getDate() + 1);
       }
     } else if (r === 'weekdays') {
       let d0 = new Date(base);
-      if (d0 < new Date(year, month - 1, 1)) d0 = new Date(year, month - 1, 1);
       while (d0.getFullYear() === year && d0.getMonth() === month - 1 && d0.getDate() <= lastDay) {
         if (d0.getDay() >= 1 && d0.getDay() <= 5) out.push(new Date(d0));
         d0.setDate(d0.getDate() + 1);
@@ -323,7 +353,13 @@
     else if (r === 'weekdays') {
       do { d.setDate(d.getDate() + 1); } while (d.getDay() === 0 || d.getDay() === 6);
     } else if (r === 'weekly') d.setDate(d.getDate() + 7);
-    else if (r === 'monthly') d.setMonth(d.getMonth() + 1);
+    else if (r === 'monthly') {
+      // 下月同日（月末 clamp，避免 1/31 → 3/3 跳过 2月）
+      const y2 = d.getFullYear(), m2 = d.getMonth() + 1;
+      const ny = m2 === 12 ? y2 + 1 : y2, nm = m2 === 12 ? 1 : m2 + 1;
+      const last = new Date(ny, nm, 0).getDate();
+      d.setFullYear(ny, nm - 1, Math.min(d.getDate(), last));
+    }
     else if (r === 'custom' && t.repeat_days) {
       const days = new Set(String(t.repeat_days).split(',').map(x => parseInt(x)).filter(x => !isNaN(x)));
       for (let i = 0; i < 15; i++) {
@@ -478,9 +514,10 @@
       const dataURL = await blobToDataURL(blob);
       // 生成文件名
       const key = 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '.jpg';
+      // 只存一份原图；thumb 直接复用（避免体积翻倍）
       await imgPut(key, dataURL);
       const thumb = key.replace('.jpg', '_thumb.jpg');
-      await imgPut(thumb, dataURL); // 缩略图同图（本地无需额外压缩）
+      IMG_CACHE[thumb] = dataURL;
       return { url: '/uploads/' + key, thumb: '/uploads/' + thumb };
     } catch (e) {
       return { error: '图片处理失败: ' + e.message };
@@ -502,11 +539,18 @@
     const d = await imgGet(key);
     return d || '';
   }
-  // 同步版：从内存缓存取（预加载后可用）
+  // 同步版：从内存缓存取（预加载后可用）；未命中返回透明占位图避免破图
+  const PLACEHOLDER = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
   function resolveImgSync(url) {
     if (!url || !url.startsWith('/uploads/')) return url;
     const key = url.replace('/uploads/', '');
-    return IMG_CACHE[key] || '';
+    if (IMG_CACHE[key]) return IMG_CACHE[key];
+    // thumb 未单独存储时，回退到原图
+    if (key.endsWith('_thumb.jpg')) {
+      const orig = key.replace('_thumb.jpg', '.jpg');
+      if (IMG_CACHE[orig]) return IMG_CACHE[orig];
+    }
+    return PLACEHOLDER;
   }
 
   // ---------- 覆盖 fetch ----------
@@ -579,7 +623,18 @@
   async function importBackupData(payload) {
     if (!payload || !payload.tables) throw new Error('备份文件格式不正确');
     TABLES.forEach(t => {
-      if (Array.isArray(payload.tables[t])) saveTable(t, payload.tables[t]);
+      if (Array.isArray(payload.tables[t])) {
+        // 备份中的日记图片同样归一化
+        if (t === 'diaries') {
+          payload.tables[t].forEach(d => {
+            if (typeof d.images === 'string') {
+              try { d.images = JSON.parse(d.images); } catch (e) { d.images = []; }
+            }
+            if (!Array.isArray(d.images)) d.images = [];
+          });
+        }
+        saveTable(t, payload.tables[t]);
+      }
     });
     if (payload.images && typeof payload.images === 'object') {
       for (const key of Object.keys(payload.images)) {
