@@ -240,6 +240,17 @@
             border-radius: var(--radius);
             padding: 18px 20px;
             box-shadow: var(--shadow);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .stat-card[data-page] {
+            cursor: pointer;
+        }
+        .stat-card[data-page]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+        .stat-card[data-page]:active {
+            transform: translateY(0);
         }
         .stat-card .label {
             font-size: 0.8rem;
@@ -1365,7 +1376,7 @@
             <div class="page active" id="page-dashboard">
                 <div class="stats-grid" id="statsGrid"></div>
                 <div style="margin-top:24px">
-                    <h3 style="font-size:1rem;margin-bottom:10px;">📋 今日待办</h3>
+                    <h3 style="font-size:1rem;margin-bottom:10px;cursor:pointer;" onclick="goToPage('tasks','📋 待办')">📋 今日待办 <span style="font-size:0.75rem;color:var(--text-muted);">›</span></h3>
                     <div id="todayTasks"></div>
                 </div>
                 <div id="todayWorkout"></div>
@@ -1642,21 +1653,27 @@
             const stats = await api('/api/stats');
             const statsGrid = document.getElementById('statsGrid');
             const cards = [
-                { label: '待办总数', value: stats.total_tasks, cls: '' },
-                { label: '待完成', value: stats.pending_tasks, cls: 'warn' },
-                { label: '今日待办', value: stats.today_tasks, cls: stats.today_tasks > 0 ? 'warn' : 'good' },
-                { label: '已逾期', value: stats.overdue_tasks, cls: stats.overdue_tasks > 0 ? 'danger' : '' },
-                { label: '笔记数', value: stats.notes_count, cls: '' },
-                { label: '本周训练', value: stats.workouts_this_week, cls: stats.workouts_this_week > 0 ? 'good' : '' },
-                { label: '最新体重', value: stats.latest_weight ? stats.latest_weight + 'kg' : '--', cls: '' },
-                { label: '活跃目标', value: stats.active_goals, cls: stats.active_goals > 0 ? 'warn' : '' },
-                { label: '本月收入', value: '¥' + (stats.month_income || 0), cls: 'good' },
-                { label: '本月支出', value: '¥' + (stats.month_expense || 0), cls: (stats.month_expense || 0) > 0 ? 'warn' : '' },
-                { label: '本月结余', value: '¥' + (stats.month_balance || 0), cls: (stats.month_balance || 0) >= 0 ? 'good' : 'danger' },
+                { label: '待办总数', value: stats.total_tasks, cls: '', page: 'tasks', title: '📋 待办' },
+                { label: '待完成', value: stats.pending_tasks, cls: 'warn', page: 'tasks', title: '📋 待办' },
+                { label: '今日待办', value: stats.today_tasks, cls: stats.today_tasks > 0 ? 'warn' : 'good', page: 'tasks', title: '📋 待办' },
+                { label: '已逾期', value: stats.overdue_tasks, cls: stats.overdue_tasks > 0 ? 'danger' : '', page: 'tasks', title: '📋 待办' },
+                { label: '笔记数', value: stats.notes_count, cls: '', page: 'notes', title: '📝 笔记' },
+                { label: '本周训练', value: stats.workouts_this_week, cls: stats.workouts_this_week > 0 ? 'good' : '', page: 'fitness', title: '💪 健身' },
+                { label: '最新体重', value: stats.latest_weight ? stats.latest_weight + 'kg' : '--', cls: '', page: 'fitness', title: '💪 健身' },
+                { label: '活跃目标', value: stats.active_goals, cls: stats.active_goals > 0 ? 'warn' : '', page: 'fitness', title: '💪 健身' },
+                { label: '本月收入', value: '¥' + (stats.month_income || 0), cls: 'good', page: 'money', title: '💰 记账' },
+                { label: '本月支出', value: '¥' + (stats.month_expense || 0), cls: (stats.month_expense || 0) > 0 ? 'warn' : '', page: 'money', title: '💰 记账' },
+                { label: '本月结余', value: '¥' + (stats.month_balance || 0), cls: (stats.month_balance || 0) >= 0 ? 'good' : 'danger', page: 'money', title: '💰 记账' },
             ];
             statsGrid.innerHTML = cards.map(c =>
-                `<div class="stat-card"><div class="label">${c.label}</div><div class="value ${c.cls}">${c.value}</div></div>`
+                `<div class="stat-card" ${c.page ? `data-page="${c.page}" data-title="${c.title}"` : ''}><div class="label">${c.label}</div><div class="value ${c.cls}">${c.value}</div></div>`
             ).join('');
+            // 概览卡片点击跳转到对应页面
+            statsGrid.querySelectorAll('.stat-card[data-page]').forEach(card => {
+                card.addEventListener('click', () => {
+                    goToPage(card.dataset.page, card.dataset.title);
+                });
+            });
 
             // Today's tasks
             const tasks = await api('/api/tasks?status=active');
