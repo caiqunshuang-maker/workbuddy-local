@@ -434,10 +434,52 @@
     }
   }
 
+  // ---------- 一键备份 / 恢复 ----------
+  async function exportBackupData() {
+    const payload = {
+      version: 1,
+      exported_at: nowIso(),
+      tables: {},
+      images: {},
+    };
+    TABLES.forEach(t => { payload.tables[t] = loadTable(t); });
+    // 从 IndexedDB 导出图片（dataURL）
+    try {
+      const db = await openDB();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction('images', 'readonly');
+        const req = tx.objectStore('images').getAll();
+        req.onsuccess = () => {
+          (req.result || []).forEach(r => { payload.images[r.key] = r.data; });
+          resolve();
+        };
+        req.onerror = reject;
+      });
+    } catch (e) { /* 无图片可忽略 */ }
+    return payload;
+  }
+
+  async function importBackupData(payload) {
+    if (!payload || !payload.tables) throw new Error('备份文件格式不正确');
+    TABLES.forEach(t => {
+      if (Array.isArray(payload.tables[t])) saveTable(t, payload.tables[t]);
+    });
+    if (payload.images && typeof payload.images === 'object') {
+      for (const key of Object.keys(payload.images)) {
+        await imgPut(key, payload.images[key]);
+      }
+      // 刷新内存缓存
+      Object.keys(IMG_CACHE).forEach(k => delete IMG_CACHE[k]);
+      await loadAllImagesToCache();
+    }
+    localStorage.setItem(LS_PREFIX + '_seeded', '1');
+  }
+
   // ---------- 导出 ----------
   window.LocalDB = {
     resolveImg, resolveImgSync, loadAllImagesToCache, imgPut, imgGet,
     handle, loadTable, saveTable, expandRepeatInMonth, seedIfNeeded,
+    exportBackupData, importBackupData,
   };
 
   // 启动时：先导入 seed，再预加载图片
