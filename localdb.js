@@ -123,6 +123,107 @@
     return out.map(d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
   }
 
+  // ---------- 训练动作文本解析（与原后端 parse_exercise_line 一致） ----------
+  // "卧推 50kg 3x10" / "阿诺德推肩12*2.5kg" / "跑步 30min" / "游泳 1km" / "前束3轮"
+  function parseExerciseLine(text) {
+    text = String(text || '').trim();
+    if (!text) return null;
+    const result = { name: '', sets: 0, reps: 0, weight: 0.0, weight_unit: 'kg', duration: 0, distance: 0.0, notes: '', sort_order: 0 };
+
+    // 名称：第一个数字前是动作名
+    const numMatch = text.search(/\d/);
+    let namePart, paramPart;
+    if (numMatch >= 0) {
+      namePart = text.slice(0, numMatch).trim();
+      paramPart = text.slice(numMatch);
+    } else {
+      namePart = text.trim();
+      paramPart = '';
+    }
+    result.name = namePart.replace(/[\s,，、。.·\-—:：()（）\[\]【】]+$/g, '').trim() || '未知动作';
+    if (!paramPart) return result;
+
+    // 次数×重量 "12*2.5kg" "20x7.5kg"
+    let m = paramPart.match(/(\d+)\s*[xX×*]\s*(\d+\.?\d*)\s*(kg|公斤|斤|磅|lb|KG|LB)/);
+    if (m) {
+      result.reps = parseInt(m[1]);
+      let w = parseFloat(m[2]);
+      const unit = m[3].toLowerCase();
+      if (unit === '斤') w = w / 2;
+      else if (unit === '磅' || unit === 'lb') w = w * 0.4536;
+      result.weight = Math.round(w * 100) / 100;
+      result.weight_unit = (unit === '斤' || unit === '磅' || unit === 'lb') ? 'kg' : m[3];
+      paramPart = paramPart.replace(m[0], '');
+    }
+
+    // 组×次 "3x10" "5组5次" "4*8"
+    if (!result.reps) {
+      m = paramPart.match(/(\d+)\s*[xX×*组]\s*(\d+)\s*(?:次|个|下)?/);
+      if (m) {
+        result.sets = parseInt(m[1]);
+        result.reps = parseInt(m[2]);
+        paramPart = paramPart.replace(m[0], '');
+      }
+    }
+
+    // 孤立重量 "50kg" "20公斤"（组次之后残留的重量数字）
+    if (!result.weight) {
+      m = paramPart.match(/(\d+\.?\d*)\s*(kg|公斤|斤|磅|lb|KG|LB)/);
+      if (m) {
+        let w = parseFloat(m[1]);
+        const unit = m[2].toLowerCase();
+        if (unit === '斤') w = w / 2;
+        else if (unit === '磅' || unit === 'lb') w = w * 0.4536;
+        result.weight = Math.round(w * 100) / 100;
+        result.weight_unit = (unit === '斤' || unit === '磅' || unit === 'lb') ? 'kg' : m[2];
+        paramPart = paramPart.replace(m[0], '');
+      }
+    }
+
+    // 仅组数 "3轮" "4组"
+    if (!result.sets) {
+      m = paramPart.match(/(\d+)\s*(?:轮|组|R|r|set|sets)/);
+      if (m) { result.sets = parseInt(m[1]); paramPart = paramPart.replace(m[0], ''); }
+    }
+
+    // 时长 "30min" "1小时"
+    m = paramPart.match(/(\d+\.?\d*)\s*(min|分钟|小时|h)/i);
+    if (m) {
+      let dur = parseFloat(m[1]);
+      const unit = m[2].toLowerCase();
+      if (unit === '小时' || unit === 'h') dur *= 60;
+      result.duration = Math.round(dur);
+      paramPart = paramPart.replace(m[0], '');
+    }
+
+    // 距离 "1km" "500m"
+    m = paramPart.match(/(\d+\.?\d*)\s*(?:km|公里|m|米)/i);
+    if (m) {
+      let dist = parseFloat(m[1]);
+      if (m[2] === 'm' || m[2] === '米') dist = dist / 1000;
+      result.distance = Math.round(dist * 1000) / 1000;
+      paramPart = paramPart.replace(m[0], '');
+    }
+
+    // 次数 "500个" "20下"
+    if (!result.reps) {
+      m = paramPart.match(/(\d+)\s*(?:个|下|次)/);
+      if (m) { result.reps = parseInt(m[1]); paramPart = paramPart.replace(m[0], ''); }
+    }
+
+    // 剩余文本作为备注
+    result.notes = paramPart.trim();
+    return result;
+  }
+
+  function parseExercisesText(text) {
+    return String(text || '').split('\n').map(l => l.trim()).filter(Boolean).map((line, i) => {
+      const p = parseExerciseLine(line) || {};
+      p.sort_order = i;
+      return p;
+    });
+  }
+
   // ---------- 模拟 API 处理 ----------
   function handle(path, opts) {
     const method = (opts && opts.method) || 'GET';
@@ -173,6 +274,17 @@
       if (!row.updated_at) row.updated_at = row.created_at;
       rows.push(row);
       saveTable(table, rows);
+      // 训练记录：解析 exercises_raw → workout_exercises
+      if (table === 'workouts' && row.exercises_raw) {
+        const parsed = parseExercisesText(row.exercises_raw);
+        if (parsed.length) {
+          const exRows = loadTable('workout_exercises');
+          parsed.forEach((ex, i) => {
+            exRows.push(Object.assign({}, ex, { id: nextId('workout_exercises'), workout_id: row.id, created_at: nowIso() }));
+          });
+          saveTable('workout_exercises', exRows);
+        }
+      }
       return row;
     }
 
@@ -193,6 +305,11 @@
     if (method === 'DELETE') {
       rows = rows.filter(r => r.id !== id);
       saveTable(table, rows);
+      // 删除训练时级联删除动作明细
+      if (table === 'workouts') {
+        const ex = loadTable('workout_exercises').filter(e => e.workout_id !== id);
+        saveTable('workout_exercises', ex);
+      }
       return { message: '已删除' };
     }
     return null;
