@@ -1,33 +1,5 @@
 {
   "version": 1,
-  "note": "微信账单 2026-08 识别结果",
-  "items": [
-    {"amount": 24.00, "category": "生活", "note": "漫里村禾氏-Park", "date": "2026-08-01", "type": "expense"},
-    {"amount": 63.60, "category": "吃喝", "note": "美团买菜-菜园", "date": "2026-08-01", "type": "expense"},
-    {"amount": 0.05, "category": "吃喝", "note": "美团退款", "date": "2026-08-01", "type": "income"},
-    {"amount": 38.00, "category": "其他", "note": "韩影-转奶L 来自苏三", "date": "2026-08-01", "type": "income"},
-    {"amount": 200.00, "category": "其他", "note": "韩影-转奶M 普比", "date": "2026-08-01", "type": "expense"},
-    {"amount": 2000.00, "category": "其他", "note": "韩影-买自M 妈沫", "date": "2026-08-02", "type": "income"},
-    {"amount": 237.00, "category": "吃喝", "note": "广州市御崇餐饮服务", "date": "2026-08-03", "type": "expense"},
-    {"amount": 471.00, "category": "其他", "note": "韩影-买奶LNUL 反应 微信", "date": "2026-08-04", "type": "expense"},
-    {"amount": 3.80, "category": "其他", "note": "韩影-买自L 腿C 林柠力蛮", "date": "2026-08-05", "type": "income"},
-    {"amount": 10.00, "category": "其他", "note": "深圳市派恩澄恒业科技", "date": "2026-08-05", "type": "expense"},
-    {"amount": 9.18, "category": "其他", "note": "韩影-买奶L 腿C 付咩", "date": "2026-08-05", "type": "expense"},
-    {"amount": 22.00, "category": "其他", "note": "韩影-买奶L 腿C 买俩", "date": "2026-08-05", "type": "expense"},
-    {"amount": 18.00, "category": "交通", "note": "万达广场停车场", "date": "2026-08-05", "type": "expense"},
-    {"amount": 104.15, "category": "吃喝", "note": "美团买菜-菜园", "date": "2026-08-06", "type": "expense"},
-    {"amount": 0.41, "category": "吃喝", "note": "美团退款", "date": "2026-08-06", "type": "income"},
-    {"amount": 18.00, "category": "其他", "note": "韩影-买自L 腿C 林柠力蛮", "date": "2026-08-06", "type": "income"},
-    {"amount": 18.80, "category": "其他", "note": "韩影-买自L 腿C 买俩", "date": "2026-08-06", "type": "income"},
-    {"amount": 30.00, "category": "其他", "note": "韩影-买自L 腿C 柴思然", "date": "2026-08-06", "type": "income"},
-    {"amount": 6039.00, "category": "生活", "note": "山东省敏捷健身管理-健身卡", "date": "2026-08-07", "type": "expense"},
-    {"amount": 21.90, "category": "吃喝", "note": "美团买菜-菜园", "date": "2026-08-07", "type": "expense"},
-    {"amount": 42.50, "category": "吃喝", "note": "美团买菜-菜园", "date": "2026-08-07", "type": "expense"},
-    {"amount": 170.00, "category": "生活", "note": "济南奇尚玖汉滨K11店", "date": "2026-08-07", "type": "expense"},
-    {"amount": 500.00, "category": "其他", "note": "韩影-买自M 普比", "date": "2026-08-08", "type": "income"},
-    {"amount": 196.00, "category": "吃喝", "note": "广州市壹兜餐饮服务", "date": "2026-08-08", "type": "expense"},
-    {"amount": 47.00, "category": "玩乐", "note": "猫眼-电影票", "date": "2026-08-08", "type": "expense"},
-    {"amount": 10.00, "category": "生活", "note": "广州市肆绿酒店管理", "date": "2026-08-09", "type": "expense"},
-    {"amount": 60.00, "category": "其他", "note": "韩影-美白苏三", "date": "2026-08-09", "type": "income"}
-  ]
+  "note": "AI识别账单暂存区 - 截图发给AI后，AI会更新此文件，App 点“获取AI最新结果”拉取",
+  "items": []
 }
