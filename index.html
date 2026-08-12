@@ -4937,7 +4937,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v9';
+                b.textContent = 'v11';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
@@ -4947,7 +4947,19 @@
         // 注册 Service Worker（离线可用）
         try {
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js').catch(() => {});
+                navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((reg) => {
+                    // 检测到新版本安装完成 → 自动刷新一次，立即加载最新页面
+                    reg.addEventListener('updatefound', () => {
+                        const nw = reg.installing;
+                        if (!nw) return;
+                        nw.addEventListener('statechange', () => {
+                            if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                                try { localStorage.setItem('wb_updated', '1'); } catch (e) {}
+                                setTimeout(() => location.reload(), 500);
+                            }
+                        });
+                    });
+                }).catch(() => {});
             }
         } catch (e) {}
         // 请求通知权限（用户首次打开时提示）

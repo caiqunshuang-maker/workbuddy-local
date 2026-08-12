@@ -1,5 +1,5 @@
 /* 御前指挥部 - Service Worker：实现离线可用 */
-const CACHE_NAME = 'workbuddy-v10';
+const CACHE_NAME = 'workbuddy-v11';
 const ASSETS = [
   './',
   './index.html',
@@ -44,6 +44,22 @@ self.addEventListener('fetch', (e) => {
     url.includes('fonts.googleapis.com') ||
     url.includes('fonts.gstatic.com');
   if (!isAsset) return;
+
+  // 导航请求（打开页面）：network-first，保证每次都拿到最新页面
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request).then((resp) => {
+        if (resp && resp.status === 200) {
+          const clone = resp.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        }
+        return resp;
+      }).catch(() =>
+        caches.match(e.request).then((c) => c || caches.match('./index.html') || caches.match('./'))
+      )
+    );
+    return;
+  }
 
   e.respondWith(
     caches.match(e.request).then((cached) => {
