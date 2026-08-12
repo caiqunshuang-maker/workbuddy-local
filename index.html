@@ -2536,7 +2536,7 @@
                         ? '<div style="color:var(--text-muted);font-size:0.82rem;padding:8px 0;">当天没有待办</div>'
                         : tasks.map(t => `
                             <div class="task-item" style="margin-bottom:4px;box-shadow:none;border:1px solid var(--border);">
-                                <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTaskFromCalendar(${t.id}, '${dateStr}')"></div>
+                                <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTaskFromCalendar(${t.id}, '${dateStr}', ${t.completed})"></div>
                                 <div class="task-body">
                                     <div class="task-title ${t.completed ? 'done' : ''}">${esc(t.title)}</div>
                                     <div class="task-meta">
@@ -2573,14 +2573,14 @@
             overlay.classList.add('open');
         }
 
-        async function toggleTaskFromCalendar(id, dateStr) {
-            const task = state.tasks.find(t => t.id === id) || await api(`/api/tasks/${id}`);
+        async function toggleTaskFromCalendar(id, dateStr, completed) {
             await api(`/api/tasks/${id}`, {
                 method: 'PUT',
-                body: JSON.stringify({ completed: !task.completed }),
+                body: JSON.stringify({ completed: !completed, date: dateStr }),
             });
             await openDayDetail(dateStr);
             renderTasks();
+            renderCalendar();
             loadDashboard();
         }
 

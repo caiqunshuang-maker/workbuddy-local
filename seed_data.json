@@ -357,5 +357,6 @@
  ],
  "transactions": [],
  "storage_items": [],
- "anniversaries": []
+ "anniversaries": [],
+ "task_logs": []
 }

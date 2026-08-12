@@ -10,7 +10,7 @@
   // ---------- 表定义 ----------
   const TABLES = ['tasks', 'notes', 'schedules', 'workouts', 'body_metrics',
     'fitness_goals', 'workout_exercises', 'diaries', 'transactions',
-    'storage_items', 'anniversaries', 'habits', 'habit_logs'];
+    'storage_items', 'anniversaries', 'habits', 'habit_logs', 'task_logs'];
 
   // ---------- localStorage 读写 ----------
   function loadTable(name) {
@@ -322,10 +322,20 @@
       const idx = rows.findIndex(r => r.id === id);
       if (idx < 0) return null;
       const updated = Object.assign({}, rows[idx], body, { updated_at: nowIso() });
-      // 重复待办完成滚动（与原后端一致）
-      if (table === 'tasks' && body && 'completed' in body && body.completed && updated.repeat && updated.repeat !== 'none') {
-        const next = nextRepeatDate(updated);
-        if (next) { updated.due_date = next; updated.completed = false; updated.last_completed_at = nowIso(); }
+      // 重复待办完成：记录完成日志（日历上该天保留灰色划线），再滚动到下一条
+      if (table === 'tasks' && body && 'completed' in body && updated.repeat && updated.repeat !== 'none') {
+        if (body.completed) {
+          const logs = loadTable('task_logs');
+          logs.push({ id: nextId('task_logs'), task_id: id, date: updated.due_date, created_at: nowIso() });
+          saveTable('task_logs', logs);
+          const next = nextRepeatDate(updated);
+          if (next) { updated.due_date = next; updated.completed = false; updated.last_completed_at = nowIso(); }
+        } else {
+          // 取消完成：删除该日期的完成日志（日历上恢复为未完成）
+          const cancelDate = body.date || updated.due_date;
+          saveTable('task_logs', loadTable('task_logs').filter(l => !(l.task_id === id && l.date === cancelDate)));
+          updated.last_completed_at = null;
+        }
       }
       rows[idx] = updated;
       saveTable(table, rows);
@@ -339,6 +349,10 @@
       if (table === 'workouts') {
         const ex = loadTable('workout_exercises').filter(e => e.workout_id !== id);
         saveTable('workout_exercises', ex);
+      }
+      // 删除待办时级联删除完成日志
+      if (table === 'tasks') {
+        saveTable('task_logs', loadTable('task_logs').filter(l => l.task_id !== id));
       }
       return { message: '已删除' };
     }
@@ -385,11 +399,14 @@
           if (t.repeat && t.repeat !== 'none') {
             const occ = expandRepeatInMonth(t, y, m);
             if (occ) {
-              const baseDate = t.due_date;
+              // 查完成日志：哪天打了勾，日历上哪天显示灰色划线
+              const doneDates = new Set(
+                loadTable('task_logs').filter(l => l.task_id === t.id).map(l => l.date)
+              );
               occ.forEach(od => {
                 const copy = Object.assign({}, t);
                 copy.due_date = od;
-                if (baseDate && od < baseDate) copy.completed = true;
+                if (doneDates.has(od)) copy.completed = true;
                 result.push(copy);
               });
               return;
