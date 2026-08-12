@@ -4107,8 +4107,10 @@
                 parent.innerHTML = '<canvas id="weightChart" height="220"></canvas>';
             }
             const canvas = document.getElementById('weightChart');
-            const labels = metrics.map(m => m.date.slice(5));
-            const weightData = metrics.map(m => m.weight !== null && m.weight !== undefined ? m.weight : null);
+            // API 返回按日期降序(最新在前)，折线图需按时间升序，先排序再画
+            const sorted = metrics.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+            const labels = sorted.map(m => m.date.slice(5));
+            const weightData = sorted.map(m => m.weight !== null && m.weight !== undefined ? m.weight : null);
             weightChartInstance = new Chart(canvas, {
                 type: 'line',
                 data: {
@@ -4937,7 +4939,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v12';
+                b.textContent = 'v13';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
