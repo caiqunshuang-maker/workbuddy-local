@@ -4892,14 +4892,24 @@
         }
 
         // ===== Init =====
-        // 一次性创建"跳舞"每周三待办
+        // 一次性创建/修复"跳舞"每周三待办（从2026年1月起）
         (async function initDanceTask() {
             try {
-                if (localStorage.getItem('_dance_task_created')) return;
+                if (localStorage.getItem('_dance_task_fixed')) return;
                 const tasks = await api('/api/tasks');
-                const exists = tasks.find(t => t.title === '跳舞' && t.repeat === 'weekly');
-                if (exists) {
-                    localStorage.setItem('_dance_task_created', '1');
+                const dances = tasks.filter(t => t.title === '跳舞' && (t.repeat === 'weekly' || t.repeat === 'custom'));
+                if (dances.length > 0) {
+                    // 合并：保留最早创建的，删除重复的（避免日历每周三出现两条跳舞）
+                    const keep = dances.slice().sort((a, b) => (a.id || 0) - (b.id || 0))[0];
+                    for (const d of dances) {
+                        if (d.id === keep.id) continue;
+                        await api(`/api/tasks/${d.id}`, { method: 'DELETE' });
+                    }
+                    // 补起点：2026年第一个周三（这样1月起每个周三都会在日历显示）
+                    if (!keep.repeat_start) {
+                        await api(`/api/tasks/${keep.id}`, { method: 'PUT', body: JSON.stringify({ repeat_start: '2026-01-07' }) });
+                    }
+                    localStorage.setItem('_dance_task_fixed', '1');
                     return;
                 }
                 await api('/api/tasks', {
@@ -4907,13 +4917,14 @@
                     body: JSON.stringify({
                         title: '跳舞',
                         due_date: '2026-01-07',
+                        repeat_start: '2026-01-07',
                         repeat: 'weekly',
                         category: '生活',
                         priority: 2,
                         completed: 0
                     })
                 });
-                localStorage.setItem('_dance_task_created', '1');
+                localStorage.setItem('_dance_task_fixed', '1');
             } catch (e) { /* 静默失败，下次重试 */ }
         })();
 

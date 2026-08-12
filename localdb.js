@@ -113,10 +113,13 @@
   function expandRepeatInMonth(t, year, month) {
     const r = t.repeat || 'none';
     if (r === 'none') return null;
-    const base = t.due_date ? new Date(t.due_date + 'T00:00:00') : new Date();
+    // 展开基准 = repeat_start（重复任务的起点）。不能直接用 due_date，
+    // 因为完成后 due_date 会滚动到未来，导致历史月份（如1月）被"早退"逻辑吞掉。
+    const startStr = t.repeat_start || t.due_date;
+    const base = startStr ? new Date(startStr + 'T00:00:00') : new Date();
     const lastDay = new Date(year, month, 0).getDate();
     const out = [];
-    // 目标月早于基准月：不产生任何记录（避免"幽灵已完成项"）
+    // 目标月早于起始月：不产生任何记录（避免"幽灵已完成项"）
     const baseYear = base.getFullYear(), baseMonth = base.getMonth() + 1;
     if (year < baseYear || (year === baseYear && month < baseMonth)) return out;
     if (r === 'custom' && t.repeat_days) {

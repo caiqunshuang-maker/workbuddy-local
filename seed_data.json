@@ -36,6 +36,7 @@
    "category": "life",
    "completed": 0,
    "due_date": "2026-08-12",
+   "repeat_start": "2026-01-07",
    "created_at": "2026-08-07 12:15:17.612304",
    "due_time": "07:30",
    "repeat": "custom",
