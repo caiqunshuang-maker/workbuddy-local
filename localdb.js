@@ -572,6 +572,8 @@
   };
 
   // ---------- 首次启动导入 seed 数据 ----------
+  // 安全策略：只填充"空的表"，绝不覆盖任何已有数据。
+  // 即使 _seeded 标记丢失（浏览器清缓存/换入口打开），用户真实数据也不会被演示数据冲掉。
   async function seedIfNeeded() {
     try {
       if (localStorage.getItem(LS_PREFIX + '_seeded')) return;
@@ -582,7 +584,8 @@
         for (const table of TABLES) {
           const rows = seed[table];
           if (Array.isArray(rows) && rows.length) {
-            saveTable(table, rows);
+            const existing = loadTable(table);
+            if (!existing.length) saveTable(table, rows);
           }
         }
       }
