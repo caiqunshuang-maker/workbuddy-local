@@ -1,5 +1,5 @@
 /* 御前指挥部 - Service Worker：实现离线可用 */
-const CACHE_NAME = 'workbuddy-v11';
+const CACHE_NAME = 'workbuddy-v12';
 const ASSETS = [
   './',
   './index.html',

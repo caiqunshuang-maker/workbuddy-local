@@ -286,8 +286,17 @@
       return txnStats(parseInt(qs.year) || new Date().getFullYear(), parseInt(qs.month) || new Date().getMonth() + 1);
     }
 
-    // 通用 CRUD（URL 用连字符，表名用下划线：habit-logs → habit_logs）
-    const table = resource === 'habit-logs' ? 'habit_logs' : resource;
+    // 通用 CRUD：URL 资源名(连字符) → 表名(下划线) 映射
+    // 之前只处理了 habit-logs，漏了 body-metrics/fitness-goals/storage，
+    // 导致这些接口全部返回 null（体重记录/弹窗打不开、存储物品失效）
+    const RESOURCE_TABLE = {
+      'body-metrics': 'body_metrics',
+      'fitness-goals': 'fitness_goals',
+      'habit-logs': 'habit_logs',
+      'storage': 'storage_items',
+      'workout-exercises': 'workout_exercises',
+    };
+    const table = RESOURCE_TABLE[resource] || resource;
     if (!TABLES.includes(table)) return null;
     let rows = loadTable(table);
 
