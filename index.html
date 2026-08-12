@@ -963,6 +963,124 @@
             margin-bottom: 20px;
         }
 
+        /* ===== 体重记录（可爱风） ===== */
+        .weight-hero {
+            position: relative;
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #8b7cf7 0%, #6d5ef0 45%, #a78bfa 100%);
+            color: #fff;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            overflow: hidden;
+        }
+        .weight-hero .wh-svg {
+            flex-shrink: 0;
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(255,255,255,0.45);
+        }
+        .weight-hero .wh-main { flex: 1; min-width: 0; }
+        .weight-hero .wh-label { font-size: 0.8rem; opacity: 0.92; }
+        .weight-hero .wh-value { font-size: 2.1rem; font-weight: 800; line-height: 1.15; }
+        .weight-hero .wh-value small { font-size: 1rem; font-weight: 600; opacity: 0.9; }
+        .weight-hero .wh-diff {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 0.78rem; background: rgba(255,255,255,0.2);
+            border-radius: 20px; padding: 3px 10px; margin-top: 6px;
+        }
+        .weight-hero .wh-diff.down { background: rgba(52,211,153,0.38); }
+        .weight-hero .wh-diff.up { background: rgba(251,146,60,0.42); }
+        .weight-hero .wh-btn {
+            flex-shrink: 0;
+            background: #fff;
+            color: #6d5ef0;
+            border: none;
+            border-radius: 24px;
+            padding: 11px 18px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: transform 0.12s;
+        }
+        .weight-hero .wh-btn:active { transform: scale(0.94); }
+        /* 体重日历 */
+        .weight-cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .weight-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .weight-cal-day {
+            border-radius: 8px;
+            padding: 5px 2px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            min-height: 54px;
+            transition: transform 0.12s, background 0.12s;
+        }
+        .weight-cal-day .wcd-date { font-size: 0.66rem; color: var(--text-muted); line-height: 1.1; }
+        .weight-cal-day .wcd-weight { font-size: 0.82rem; font-weight: 700; line-height: 1.2; color: var(--text-secondary); }
+        .weight-cal-day.done { background: var(--green); }
+        .weight-cal-day.done .wcd-date { color: rgba(255,255,255,0.85); }
+        .weight-cal-day.done .wcd-weight { color: #fff; }
+        .weight-cal-day.miss { background: var(--surface-2, #f0f0f0); }
+        .weight-cal-day.empty { cursor: default; background: transparent; }
+        .weight-cal-day.future { opacity: 0.35; cursor: default; }
+        .weight-cal-day.today { border: 2px solid var(--primary); }
+        .weight-cal-day:not(.empty):not(.future):active { transform: scale(0.92); }
+        /* 可爱称重弹窗 */
+        .weight-modal-hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #a78bfa 0%, #6d5ef0 100%);
+            border-radius: 16px;
+            padding: 22px 16px 18px;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+        .weight-input-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 12px 0 4px; }
+        .weight-input-row input {
+            width: 150px;
+            font-size: 2.3rem;
+            font-weight: 800;
+            text-align: center;
+            border: none;
+            background: rgba(255,255,255,0.22);
+            color: #fff;
+            border-radius: 14px;
+            padding: 6px 8px;
+            outline: none;
+            caret-color: #fff;
+        }
+        .weight-input-row input::placeholder { color: rgba(255,255,255,0.6); }
+        .weight-input-row span { font-size: 1.1rem; font-weight: 700; }
+        .weight-quick-row { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+        .weight-quick-row button {
+            background: rgba(255,255,255,0.24);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.45);
+            border-radius: 18px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .weight-quick-row button:active { transform: scale(0.92); }
+        .weight-diff-note { font-size: 0.78rem; opacity: 0.95; margin-top: 8px; }
+
         .goal-card {
             background: var(--surface);
             border-radius: var(--radius);
@@ -1288,6 +1406,11 @@
             .notes-grid { grid-template-columns: 1fr; }
             .fitness-tabs { width: 100%; }
             .fitness-tab { flex: 1; padding: 8px 6px; font-size: 0.78rem; text-align: center; }
+            .weight-hero { padding: 14px; gap: 10px; }
+            .weight-hero .wh-svg { width: 58px; height: 58px; }
+            .weight-hero .wh-value { font-size: 1.7rem; }
+            .weight-hero .wh-btn { padding: 9px 12px; font-size: 0.8rem; }
+            .weight-cal-day { min-height: 46px; }
             .calendar-grid .day-cell { min-height: 0; }
             .calendar-grid .day-cell .cell-item { font-size: 0.62rem; padding: 1px 4px; line-height: 1.35; }
             .calendar-grid .day-cell .more-items { font-size: 0.58rem; }
@@ -1490,14 +1613,41 @@
 
                 <!-- Panel: Body Metrics -->
                 <div class="fitness-panel" id="panel-metrics">
+                    <!-- 今日体重卡片 -->
+                    <div id="weightHero"></div>
+
+                    <!-- 体重日历 -->
+                    <div class="chart-container" style="padding:16px;">
+                        <div class="weight-cal-head">
+                            <span style="font-weight:600;font-size:0.95rem;">🗓️ 体重日历</span>
+                            <div class="calendar-nav">
+                                <button onclick="weightCalNav(-1)">‹</button>
+                                <span id="weightCalTitle" style="font-weight:600;font-size:0.9rem;min-width:74px;text-align:center;">2026年 8月</span>
+                                <button onclick="weightCalNav(1)">›</button>
+                            </div>
+                        </div>
+                        <div class="weight-cal-grid" id="weightCalGrid"></div>
+                        <div class="habit-cal-legend" style="margin-top:10px;">
+                            <span><span class="dot" style="background:var(--green);"></span>已记录</span>
+                            <span><span class="dot" style="background:var(--surface-2,#f0f0f0);"></span>未记录</span>
+                            <span><span class="dot" style="background:transparent;border:2px solid var(--primary);"></span>今天</span>
+                        </div>
+                    </div>
+
+                    <!-- 体重趋势图 -->
                     <div class="chart-container">
-                        <h4 style="margin-bottom:12px;">📈 体重趋势</h4>
-                        <canvas id="weightChart" height="250"></canvas>
+                        <h4 style="margin-bottom:12px;">📉 体重趋势</h4>
+                        <canvas id="weightChart" height="220"></canvas>
                     </div>
-                    <div class="toolbar">
-                        <button class="btn btn-primary" onclick="openMetricModal()">＋ 记录数据</button>
+
+                    <!-- 其他指标 -->
+                    <div class="chart-container" style="padding:16px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;">
+                            <h4 style="margin:0;font-size:0.95rem;">📏 其他指标（体脂/腰围等）</h4>
+                            <button class="btn btn-outline btn-sm" onclick="openMetricModal()">＋ 完整记录</button>
+                        </div>
+                        <div id="metricHistory"></div>
                     </div>
-                    <div id="metricHistory"></div>
                 </div>
 
                 <!-- Panel: Goals -->
@@ -3601,7 +3751,6 @@
         }
 
         // ===== Fitness =====
-        let weightChartInstance = null;
 
         async function loadFitness() {
             renderWorkouts();
@@ -3744,93 +3893,244 @@
         }
 
         // ----- Body Metrics -----
+        let weightChartInstance = null;
+        let _weightCalState = null; // { year, month }
+
         async function renderMetricsChart() {
-            const metrics = await api('/api/body-metrics?limit=90');
+            const metrics = await api('/api/body-metrics');
+            renderWeightHero(metrics);
+            renderWeightCal();
+            renderWeightChart(metrics);
+            renderMetricHistory(metrics);
+        }
+
+        // 今日体重卡片
+        function renderWeightHero(metrics) {
+            const el = document.getElementById('weightHero');
+            const withW = metrics.filter(m => m.weight !== null && m.weight !== undefined);
+            const latest = withW[0] || null; // 已按日期倒序
+            const prev = withW[1] || null;
+            const today = todayStr();
+            const diff = (latest && prev) ? Math.round((latest.weight - prev.weight) * 10) / 10 : null;
+            const diffStr = diff === null ? '' : (diff > 0 ? `▲ +${diff}kg` : `▼ ${diff}kg`);
+            el.innerHTML = `
+            <div class="weight-hero">
+                <div class="wh-svg">
+                    <svg viewBox="0 0 120 120" width="52" height="52">
+                        <circle cx="60" cy="60" r="54" fill="rgba(255,255,255,0.18)" stroke="#fff" stroke-width="3"/>
+                        <circle cx="60" cy="60" r="40" fill="rgba(255,255,255,0.22)"/>
+                        <g stroke="#fff" stroke-width="2.6" stroke-linecap="round">
+                            <line x1="60" y1="24" x2="60" y2="33"/>
+                            <line x1="83" y1="37" x2="77" y2="43"/>
+                            <line x1="92" y1="60" x2="83" y2="60"/>
+                            <line x1="83" y1="83" x2="77" y2="77"/>
+                            <line x1="37" y1="37" x2="43" y2="43"/>
+                            <line x1="28" y1="60" x2="37" y2="60"/>
+                        </g>
+                        <line x1="60" y1="60" x2="62" y2="26" stroke="#ffd54f" stroke-width="5" stroke-linecap="round"/>
+                        <circle cx="60" cy="60" r="7" fill="#ffd54f"/>
+                        <circle cx="47" cy="55" r="2.6" fill="#fff"/>
+                        <circle cx="73" cy="55" r="2.6" fill="#fff"/>
+                        <path d="M50 68 Q60 76 70 68" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="wh-main">
+                    <div class="wh-label">${latest && latest.date === today ? '今日体重' : '最新体重'}</div>
+                    <div class="wh-value">${latest ? latest.weight : '--'}<small> kg</small></div>
+                    ${diff !== null ? `<span class="wh-diff ${diff > 0 ? 'up' : 'down'}">${diffStr} 较上次</span>` : `<span class="wh-diff">${latest ? '第一笔记录' : '今天开始记录吧'}</span>`}
+                </div>
+                <button class="wh-btn" onclick="openWeightModal('${today}')">⚖️ 记录体重</button>
+            </div>`;
+        }
+
+        // 体重日历
+        async function renderWeightCal() {
+            if (!_weightCalState) {
+                const n = new Date();
+                _weightCalState = { year: n.getFullYear(), month: n.getMonth() + 1 };
+            }
+            const y = _weightCalState.year, m = _weightCalState.month;
+            const titleEl = document.getElementById('weightCalTitle');
+            if (titleEl) titleEl.textContent = `${y}年 ${m}月`;
+            const grid = document.getElementById('weightCalGrid');
+            if (!grid) return;
+            const metrics = await api('/api/body-metrics');
+            const wmap = {};
+            metrics.forEach(mm => { if (mm.date && mm.weight !== null && mm.weight !== undefined) wmap[mm.date] = mm.weight; });
+            const todayDate = new Date();
+            const todayStrVal = todayStr();
+            const dows = ['日', '一', '二', '三', '四', '五', '六'];
+            const firstDay = new Date(y, m - 1, 1).getDay();
+            const daysInMonth = new Date(y, m, 0).getDate();
+            let html = dows.map(d => `<div class="habit-cal-dow">${d}</div>`).join('');
+            for (let i = 0; i < firstDay; i++) html += `<div class="weight-cal-day empty"></div>`;
+            for (let d = 1; d <= daysInMonth; d++) {
+                const ds = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const w = wmap[ds];
+                const isToday = ds === todayStrVal;
+                const isFuture = new Date(y, m - 1, d) > new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
+                let cls = 'weight-cal-day';
+                if (isFuture) cls += ' future';
+                else if (w !== undefined) cls += ' done';
+                else cls += ' miss';
+                if (isToday) cls += ' today';
+                const wStr = w !== undefined ? (Math.round(w * 10) / 10).toFixed(1) : '';
+                html += `<div class="${cls}" onclick="${isFuture ? '' : `openWeightModal('${ds}')`}">
+                    <div class="wcd-date">${d}</div>
+                    <div class="wcd-weight">${wStr}</div>
+                </div>`;
+            }
+            grid.innerHTML = html;
+        }
+
+        function weightCalNav(delta) {
+            if (!_weightCalState) { const n = new Date(); _weightCalState = { year: n.getFullYear(), month: n.getMonth() + 1 }; }
+            _weightCalState.month += delta;
+            if (_weightCalState.month < 1) { _weightCalState.month = 12; _weightCalState.year--; }
+            if (_weightCalState.month > 12) { _weightCalState.month = 1; _weightCalState.year++; }
+            renderWeightCal();
+        }
+
+        // 可爱称重弹窗
+        async function openWeightModal(dateStr) {
+            const metrics = await api('/api/body-metrics');
+            const existing = metrics.find(m => m.date === dateStr);
+            const prevRecs = metrics.filter(m => m.date < dateStr && m.weight !== null && m.weight !== undefined).sort((a, b) => b.date.localeCompare(a.date));
+            const prevW = prevRecs[0] ? prevRecs[0].weight : null;
+            const curW = existing && existing.weight !== null && existing.weight !== undefined ? existing.weight : (prevW !== null ? prevW : '');
+            const diff = (existing && existing.weight !== null && prevW !== null) ? Math.round((existing.weight - prevW) * 10) / 10 : null;
+            const wd = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][new Date(dateStr + 'T00:00:00').getDay()];
+            const overlay = document.getElementById('modalOverlay');
+            overlay.innerHTML = `
+            <div class="modal" style="width:340px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                    <h3 style="margin:0;">⚖️ 称体重</h3>
+                    <button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button>
+                </div>
+                <div class="weight-modal-hero">
+                    <svg viewBox="0 0 120 120" width="72" height="72">
+                        <circle cx="60" cy="60" r="54" fill="rgba(255,255,255,0.15)" stroke="#fff" stroke-width="3"/>
+                        <circle cx="60" cy="60" r="40" fill="rgba(255,255,255,0.22)"/>
+                        <g stroke="#fff" stroke-width="2.6" stroke-linecap="round">
+                            <line x1="60" y1="24" x2="60" y2="33"/>
+                            <line x1="83" y1="37" x2="77" y2="43"/>
+                            <line x1="92" y1="60" x2="83" y2="60"/>
+                            <line x1="83" y1="83" x2="77" y2="77"/>
+                            <line x1="37" y1="37" x2="43" y2="43"/>
+                            <line x1="28" y1="60" x2="37" y2="60"/>
+                        </g>
+                        <line x1="60" y1="60" x2="62" y2="26" stroke="#ffd54f" stroke-width="5" stroke-linecap="round"/>
+                        <circle cx="60" cy="60" r="7" fill="#ffd54f"/>
+                        <circle cx="47" cy="55" r="2.6" fill="#fff"/>
+                        <circle cx="73" cy="55" r="2.6" fill="#fff"/>
+                        <path d="M50 68 Q60 76 70 68" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+                    </svg>
+                    <div style="font-size:0.85rem;opacity:0.92;margin-top:10px;">📅 ${dateStr} ${wd}</div>
+                    <div class="weight-input-row">
+                        <input id="wInput" type="number" step="0.1" min="0" placeholder="65.0" value="${curW !== '' ? curW : ''}">
+                        <span>kg</span>
+                    </div>
+                    <div class="weight-quick-row">
+                        <button onclick="nudgeWeight(-0.5)">-0.5</button>
+                        <button onclick="nudgeWeight(-0.1)">-0.1</button>
+                        <button onclick="nudgeWeight(0.1)">+0.1</button>
+                        <button onclick="nudgeWeight(0.5)">+0.5</button>
+                    </div>
+                    <div class="weight-diff-note">${diff !== null ? `📊 较上次${diff > 0 ? '上升' : '下降'} ${Math.abs(diff)}kg` : (prevW !== null ? `📊 上次记录 ${prevW}kg` : '🎉 第一次记录体重！')}</div>
+                </div>
+                <div class="modal-actions">
+                    ${existing ? `<button class="btn btn-outline" onclick="deleteMetricForDate('${dateStr}')">🗑 删除</button>` : ''}
+                    <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                    <button class="btn btn-primary" onclick="saveWeight('${dateStr}')">✓ 保存</button>
+                </div>
+            </div>`;
+            overlay.classList.add('open');
+            const inp = document.getElementById('wInput');
+            inp.focus();
+            inp.select();
+        }
+
+        function nudgeWeight(delta) {
+            const inp = document.getElementById('wInput');
+            if (!inp) return;
+            const v = parseFloat(inp.value);
+            const nv = (isNaN(v) ? 0 : v) + delta;
+            inp.value = Math.round(nv * 10) / 10;
+            inp.focus();
+        }
+
+        async function saveWeight(dateStr) {
+            const v = parseFloat(document.getElementById('wInput').value);
+            if (isNaN(v) || v <= 0) return alert('请输入有效体重');
+            const w = Math.round(v * 10) / 10;
+            const metrics = await api('/api/body-metrics');
+            const existing = metrics.find(m => m.date === dateStr);
+            if (existing) {
+                await api(`/api/body-metrics/${existing.id}`, { method: 'PUT', body: JSON.stringify({ weight: w }) });
+            } else {
+                await api('/api/body-metrics', { method: 'POST', body: JSON.stringify({ date: dateStr, weight: w }) });
+            }
+            closeModal();
+            renderMetricsChart();
+            loadDashboard();
+        }
+
+        async function deleteMetricForDate(dateStr) {
+            const metrics = await api('/api/body-metrics');
+            const rec = metrics.find(m => m.date === dateStr);
+            if (!rec) return;
+            confirmDialog(`确定删除 ${dateStr} 的记录吗？`, async () => {
+                await api(`/api/body-metrics/${rec.id}`, { method: 'DELETE' });
+                renderMetricsChart();
+                loadDashboard();
+            });
+        }
+
+        // 体重趋势折线图（体重专属，其他指标进完整记录）
+        async function renderWeightChart(metrics) {
             const ctx = document.getElementById('weightChart');
-
+            if (!ctx) return;
             if (weightChartInstance) weightChartInstance.destroy();
-
-            if (metrics.length === 0) {
+            const withW = metrics.filter(m => m.weight !== null && m.weight !== undefined);
+            if (withW.length === 0) {
                 const parent = ctx.parentElement;
-                parent.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="icon">📈</div><p>暂无数据，开始记录体重吧！</p></div><canvas id="weightChart" height="250" style="display:none;"></canvas>';
+                parent.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="icon">📉</div><p>暂无体重数据，点上面的「记录体重」开始吧！</p></div><canvas id="weightChart" height="220" style="display:none;"></canvas>';
                 return;
             }
-
-            // Re-create canvas if it was replaced
             if (!document.getElementById('weightChart')) {
                 const parent = ctx.parentElement;
-                parent.innerHTML = '<canvas id="weightChart" height="250"></canvas>';
+                parent.innerHTML = '<canvas id="weightChart" height="220"></canvas>';
             }
-
             const canvas = document.getElementById('weightChart');
             const labels = metrics.map(m => m.date.slice(5));
-            const weightData = metrics.map(m => m.weight);
-            const bodyFatData = metrics.map(m => m.body_fat);
-            const waistData = metrics.map(m => m.waist);
-
+            const weightData = metrics.map(m => m.weight !== null && m.weight !== undefined ? m.weight : null);
             weightChartInstance = new Chart(canvas, {
                 type: 'line',
                 data: {
                     labels,
-                    datasets: [
-                        {
-                            label: '体重 (kg)',
-                            data: weightData,
-                            borderColor: '#5b6af0',
-                            backgroundColor: 'rgba(91,106,240,0.1)',
-                            fill: true,
-                            tension: 0.3,
-                            pointRadius: 3,
-                        },
-                        ...(bodyFatData.some(v => v !== null) ? [{
-                            label: '体脂率 (%)',
-                            data: bodyFatData,
-                            borderColor: '#ec4899',
-                            backgroundColor: 'rgba(236,72,153,0.1)',
-                            fill: true,
-                            tension: 0.3,
-                            pointRadius: 3,
-                            yAxisID: 'y1',
-                        }] : []),
-                        ...(waistData.some(v => v !== null) ? [{
-                            label: '腰围 (cm)',
-                            data: waistData,
-                            borderColor: '#f59e0b',
-                            backgroundColor: 'rgba(245,158,11,0.1)',
-                            fill: true,
-                            tension: 0.3,
-                            pointRadius: 3,
-                            borderDash: [5, 5],
-                        }] : []),
-                    ],
+                    datasets: [{
+                        label: '体重 (kg)',
+                        data: weightData,
+                        borderColor: '#6d5ef0',
+                        backgroundColor: 'rgba(109,94,240,0.12)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        spanGaps: true,
+                    }],
                 },
                 options: {
                     responsive: true,
-                    interaction: { intersect: false, mode: 'index' },
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { size: 12 } } },
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
                         y: {
                             type: 'linear',
-                            display: true,
-                            position: 'left',
-                            title: { display: true, text: 'kg / cm' },
+                            ticks: { precision: 1 },
+                            title: { display: true, text: 'kg' },
                         },
-                        ...(bodyFatData.some(v => v !== null) ? {
-                            y1: {
-                                type: 'linear',
-                                display: true,
-                                position: 'right',
-                                grid: { drawOnChartArea: false },
-                                title: { display: true, text: '%' },
-                            },
-                        } : {}),
                     },
                 },
             });
-
-            renderMetricHistory(metrics);
         }
 
         function renderMetricHistory(metrics) {
@@ -3898,7 +4198,14 @@
             };
             if (!data.date) return alert('请选择日期');
             if (!data.weight && !data.body_fat && !data.waist) return alert('请至少输入一项数据');
-            await api('/api/body-metrics', { method: 'POST', body: JSON.stringify(data) });
+            // 同一天已有记录则合并更新，避免重复
+            const metrics = await api('/api/body-metrics');
+            const existing = metrics.find(m => m.date === data.date);
+            if (existing) {
+                await api(`/api/body-metrics/${existing.id}`, { method: 'PUT', body: JSON.stringify(data) });
+            } else {
+                await api('/api/body-metrics', { method: 'POST', body: JSON.stringify(data) });
+            }
             closeModal();
             renderMetricsChart();
             loadDashboard();
