@@ -475,6 +475,7 @@
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
+            grid-auto-rows: 116px; /* 所有格子固定同高，不随内容变化 */
             gap: 4px;
             background: var(--surface);
             border-radius: var(--radius);
@@ -495,10 +496,11 @@
             cursor: pointer;
             position: relative;
             transition: all 0.1s;
-            min-height: 120px;
+            min-height: 0;
             border: 1px solid transparent;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
         .calendar-grid .day-cell:hover { border-color: var(--primary); }
         .calendar-grid .day-cell.other-month { opacity: 0.3; }
@@ -1134,7 +1136,8 @@
             padding: 16px;
             box-shadow: var(--shadow);
         }
-        .diary-calendar .calendar-grid .day-cell { min-height: 110px; aspect-ratio: auto; position: relative; }
+        .diary-calendar .calendar-grid { grid-auto-rows: 132px; }
+        .diary-calendar .calendar-grid .day-cell { min-height: 0; aspect-ratio: auto; position: relative; overflow: hidden; }
         .diary-calendar .day-cell.has-diary {
             background: var(--primary-light);
             border-color: var(--primary);
@@ -1285,7 +1288,7 @@
             .notes-grid { grid-template-columns: 1fr; }
             .fitness-tabs { width: 100%; }
             .fitness-tab { flex: 1; padding: 8px 6px; font-size: 0.78rem; text-align: center; }
-            .calendar-grid .day-cell { min-height: 84px; }
+            .calendar-grid .day-cell { min-height: 0; }
             .calendar-grid .day-cell .cell-item { font-size: 0.62rem; padding: 1px 4px; line-height: 1.35; }
             .calendar-grid .day-cell .more-items { font-size: 0.58rem; }
             .calendar-grid .day-cell .holiday-tag, .calendar-grid .day-cell .workday-tag { font-size: 0.52rem; padding: 0 2px; }
@@ -1304,7 +1307,7 @@
             .modal { width: 92vw !important; max-width: 92vw !important; max-height: 85vh; overflow-y: auto; }
             .metric-form-inline { grid-template-columns: repeat(2, 1fr); }
             .diary-layout { grid-template-columns: 1fr; }
-            .diary-calendar .calendar-grid .day-cell { min-height: 92px; }
+            .diary-calendar .calendar-grid .day-cell { min-height: 0; }
             .diary-calendar .day-cell .diary-preview { font-size: 0.55rem; -webkit-line-clamp: 2; }
             .diary-calendar .day-cell .diary-mood { font-size: 0.85rem; }
             .stats-grid { gap: 8px; }
