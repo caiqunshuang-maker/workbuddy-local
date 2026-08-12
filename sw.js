@@ -1,5 +1,5 @@
 /* 御前指挥部 - Service Worker：实现离线可用 */
-const CACHE_NAME = 'workbuddy-v1';
+const CACHE_NAME = 'workbuddy-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -47,18 +47,15 @@ self.addEventListener('fetch', (e) => {
 
   e.respondWith(
     caches.match(e.request).then((cached) => {
-      if (cached) return cached;
-      // 在线时抓取并缓存（CDN 资源可能因跨域失败，用 opaque 响应缓存）
-      return fetch(e.request).then((resp) => {
-        if (resp && resp.status === 200) {
+      const fetchPromise = fetch(e.request).then((resp) => {
+        if (resp && (resp.status === 200 || resp.type === 'opaque')) {
           const clone = resp.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
         }
         return resp;
-      }).catch(() => {
-        // 离线时回退缓存
-        return caches.match(e.request);
-      });
+      }).catch(() => cached);
+      // 本地文件 stale-while-revalidate：先返回缓存，后台更新
+      return cached || fetchPromise;
     })
   );
 });
