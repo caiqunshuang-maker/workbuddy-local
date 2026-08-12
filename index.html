@@ -4892,24 +4892,24 @@
         }
 
         // ===== Init =====
-        // 一次性创建/修复"跳舞"每周三待办（从2026年1月起）
+        // "跳舞"每周三待办自愈（幂等：每次启动都检查，不依赖任何标记）
+        // 1. 有跳舞任务但缺 repeat_start → 补起点 2026-01-07（1月起每个周三都显示）
+        // 2. 有多条跳舞 → 合并保留最早一条
+        // 3. 完全没有 → 创建一条
         (async function initDanceTask() {
             try {
-                if (localStorage.getItem('_dance_task_fixed')) return;
                 const tasks = await api('/api/tasks');
                 const dances = tasks.filter(t => t.title === '跳舞' && (t.repeat === 'weekly' || t.repeat === 'custom'));
                 if (dances.length > 0) {
-                    // 合并：保留最早创建的，删除重复的（避免日历每周三出现两条跳舞）
                     const keep = dances.slice().sort((a, b) => (a.id || 0) - (b.id || 0))[0];
                     for (const d of dances) {
                         if (d.id === keep.id) continue;
                         await api(`/api/tasks/${d.id}`, { method: 'DELETE' });
                     }
-                    // 补起点：2026年第一个周三（这样1月起每个周三都会在日历显示）
                     if (!keep.repeat_start) {
                         await api(`/api/tasks/${keep.id}`, { method: 'PUT', body: JSON.stringify({ repeat_start: '2026-01-07' }) });
+                        console.log('[init] 跳舞任务已补起点 2026-01-07');
                     }
-                    localStorage.setItem('_dance_task_fixed', '1');
                     return;
                 }
                 await api('/api/tasks', {
@@ -4924,8 +4924,18 @@
                         completed: 0
                     })
                 });
-                localStorage.setItem('_dance_task_fixed', '1');
+                console.log('[init] 已创建跳舞每周三待办');
             } catch (e) { /* 静默失败，下次重试 */ }
+        })();
+        // 版本水印：确认手机加载的是哪一版（调试用）
+        (function versionBadge() {
+            try {
+                const b = document.createElement('div');
+                b.id = 'verBadge';
+                b.textContent = 'v9';
+                b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
+                document.body.appendChild(b);
+            } catch (e) { /* ignore */ }
         })();
 
         loadDashboard();
