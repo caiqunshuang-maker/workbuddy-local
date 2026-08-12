@@ -973,6 +973,7 @@
             color: #fff;
             box-shadow: var(--shadow);
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             gap: 16px;
             overflow: hidden;
@@ -1409,7 +1410,7 @@
             .weight-hero { padding: 14px; gap: 10px; }
             .weight-hero .wh-svg { width: 58px; height: 58px; }
             .weight-hero .wh-value { font-size: 1.7rem; }
-            .weight-hero .wh-btn { padding: 9px 12px; font-size: 0.8rem; }
+            .weight-hero .wh-btn { padding: 9px 12px; font-size: 0.8rem; margin-left: auto; }
             .weight-cal-day { min-height: 46px; }
             .calendar-grid .day-cell { min-height: 0; }
             .calendar-grid .day-cell .cell-item { font-size: 0.62rem; padding: 1px 4px; line-height: 1.35; }
@@ -1613,6 +1614,10 @@
 
                 <!-- Panel: Body Metrics -->
                 <div class="fitness-panel" id="panel-metrics">
+                    <!-- 记录体重按钮（始终显示） -->
+                    <div class="toolbar" style="margin-bottom:12px;">
+                        <button class="btn btn-primary" style="flex:1;padding:13px;font-size:1.05rem;border-radius:26px;" onclick="openWeightModal(todayStr())">⚖️ 记录体重</button>
+                    </div>
                     <!-- 今日体重卡片 -->
                     <div id="weightHero"></div>
 
