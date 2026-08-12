@@ -1327,6 +1327,23 @@
         .habit-dot.done { background: var(--green); }
         .habit-check { transition: transform 0.15s; }
         .habit-check:active { transform: scale(0.85); }
+        .habit-card { cursor: pointer; transition: box-shadow 0.15s; }
+        .habit-card:active { box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        /* 习惯日历 */
+        .habit-cal { width: 100%; }
+        .habit-cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .habit-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .habit-cal-dow { text-align: center; font-size: 0.7rem; color: var(--text-muted); padding: 4px 0; font-weight: 600; }
+        .habit-cal-day { aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; position: relative; cursor: pointer; transition: background 0.12s; }
+        .habit-cal-day.empty { cursor: default; }
+        .habit-cal-day.future { color: var(--text-muted); opacity: 0.35; cursor: default; }
+        .habit-cal-day.done { background: var(--green); color: #fff; font-weight: 600; }
+        .habit-cal-day.miss { background: var(--surface-2, #f0f0f0); color: var(--text-muted); }
+        .habit-cal-day.today { border: 2px solid var(--primary); }
+        .habit-cal-day:not(.empty):not(.future):active { transform: scale(0.9); }
+        .habit-cal-legend { display: flex; gap: 16px; justify-content: center; margin-top: 12px; font-size: 0.75rem; color: var(--text-muted); }
+        .habit-cal-legend span { display: flex; align-items: center; gap: 4px; }
+        .habit-cal-legend .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
     </style>
 </head>
 <body>
@@ -4156,8 +4173,8 @@
                 const isDone = doneToday.has(h.id);
                 const st = streak(h.id);
                 return `
-                <div class="habit-card ${isDone ? 'done' : ''}" style="background:var(--surface);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:10px;display:flex;align-items:center;gap:12px;">
-                    <button class="habit-check ${isDone ? 'checked' : ''}" onclick="toggleHabit(${h.id})" style="width:36px;height:36px;border-radius:50%;border:2px solid ${isDone ? 'var(--green)' : 'var(--border)'};background:${isDone ? 'var(--green)' : 'transparent'};color:#fff;font-size:1.1rem;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;">${isDone ? '✓' : ''}</button>
+                <div class="habit-card ${isDone ? 'done' : ''}" style="background:var(--surface);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:10px;display:flex;align-items:center;gap:12px;" onclick="openHabitDetail(${h.id})">
+                    <button class="habit-check ${isDone ? 'checked' : ''}" onclick="event.stopPropagation();toggleHabit(${h.id})" style="width:36px;height:36px;border-radius:50%;border:2px solid ${isDone ? 'var(--green)' : 'var(--border)'};background:${isDone ? 'var(--green)' : 'transparent'};color:#fff;font-size:1.1rem;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;">${isDone ? '✓' : ''}</button>
                     <div style="flex:1;min-width:0;">
                         <div style="font-weight:600;font-size:0.95rem;">${esc(h.name)}</div>
                         <div style="display:flex;align-items:center;gap:4px;margin-top:6px;">${dots(h.id)}</div>
@@ -4166,7 +4183,7 @@
                         <div style="font-size:1.2rem;font-weight:700;color:${st > 0 ? 'var(--orange)' : 'var(--text-muted)'};">${st}</div>
                         <div style="font-size:0.7rem;color:var(--text-muted);">天连击</div>
                     </div>
-                    <button class="btn btn-outline btn-sm" style="flex-shrink:0;padding:4px 8px;" onclick="deleteHabit(${h.id})">✕</button>
+                    <button class="btn btn-outline btn-sm" style="flex-shrink:0;padding:4px 8px;" onclick="event.stopPropagation();deleteHabit(${h.id})">✕</button>
                 </div>`;
             }).join('');
         }
@@ -4220,6 +4237,144 @@
             await api('/api/habits', { method: 'POST', body: JSON.stringify({ name }) });
             closeModal();
             renderHabits();
+        }
+
+        // ===== 习惯详情日历 =====
+        let _habitDetailState = null; // { id, name, logs:Set, year, month }
+
+        async function openHabitDetail(id) {
+            const habits = await api('/api/habits');
+            const habit = habits.find(h => h.id === id);
+            if (!habit) return;
+            const logs = await api('/api/habit-logs');
+            const logDates = new Set(logs.filter(l => l.habit_id === id).map(l => l.date));
+            const now = new Date();
+            _habitDetailState = { id, name: habit.name, logDates, year: now.getFullYear(), month: now.getMonth() };
+            renderHabitDetail();
+        }
+
+        function renderHabitDetail() {
+            if (!_habitDetailState) return;
+            const s = _habitDetailState;
+            const overlay = document.getElementById('modalOverlay');
+            const today = todayStr();
+            const y = s.year, m = s.month;
+            const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+            const dows = ['日','一','二','三','四','五','六'];
+            const firstDay = new Date(y, m, 1).getDay(); // 0=Sun
+            const daysInMonth = new Date(y, m + 1, 0).getDate();
+
+            // 统计本月打卡
+            let monthDone = 0;
+            let monthTotal = 0; // 截至今天（或月末）的天数
+            const todayDate = new Date();
+            const isCurrentMonth = (y === todayDate.getFullYear() && m === todayDate.getMonth());
+            const lastDay = isCurrentMonth ? todayDate.getDate() : daysInMonth;
+            for (let d = 1; d <= lastDay; d++) {
+                monthTotal++;
+                const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                if (s.logDates.has(ds)) monthDone++;
+            }
+
+            // 计算总打卡天数和总连续天数
+            const totalDays = s.logDates.size;
+            // streak from today
+            let st = 0;
+            {
+                const dd = new Date();
+                if (!s.logDates.has(today)) dd.setDate(dd.getDate() - 1);
+                while (s.logDates.has(`${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}-${String(dd.getDate()).padStart(2,'0')}`)) {
+                    st++;
+                    dd.setDate(dd.getDate() - 1);
+                }
+            }
+
+            let gridHtml = '';
+            // 空白格
+            for (let i = 0; i < firstDay; i++) {
+                gridHtml += `<div class="habit-cal-day empty"></div>`;
+            }
+            for (let d = 1; d <= daysInMonth; d++) {
+                const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const done = s.logDates.has(ds);
+                const isToday = (ds === today);
+                const isFuture = new Date(y, m, d) > new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
+                let cls = 'habit-cal-day';
+                if (isFuture) cls += ' future';
+                else if (done) cls += ' done';
+                else cls += ' miss';
+                if (isToday) cls += ' today';
+                gridHtml += `<div class="${cls}" ${isFuture ? '' : `onclick="toggleHabitDate('${ds}')"`}>${d}</div>`;
+            }
+
+            const monthRate = monthTotal > 0 ? Math.round(monthDone / monthTotal * 100) : 0;
+
+            overlay.innerHTML = `
+            <div class="modal" style="width:360px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                    <h3 style="margin:0;">🔥 ${esc(s.name)}</h3>
+                    <button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button>
+                </div>
+                <div style="display:flex;gap:12px;margin-bottom:16px;text-align:center;">
+                    <div style="flex:1;background:var(--surface-2,#f5f5f5);border-radius:8px;padding:8px;">
+                        <div style="font-size:1.3rem;font-weight:700;color:var(--orange);">${st}</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted);">连续天数</div>
+                    </div>
+                    <div style="flex:1;background:var(--surface-2,#f5f5f5);border-radius:8px;padding:8px;">
+                        <div style="font-size:1.3rem;font-weight:700;color:var(--green);">${totalDays}</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted);">累计打卡</div>
+                    </div>
+                    <div style="flex:1;background:var(--surface-2,#f5f5f5);border-radius:8px;padding:8px;">
+                        <div style="font-size:1.3rem;font-weight:700;color:var(--primary);">${monthRate}%</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted);">本月完成</div>
+                    </div>
+                </div>
+                <div class="habit-cal">
+                    <div class="habit-cal-head">
+                        <button class="btn btn-outline btn-sm" onclick="habitCalNav(-1)">‹</button>
+                        <span style="font-weight:600;font-size:1rem;">${y}年 ${monthNames[m]}</span>
+                        <button class="btn btn-outline btn-sm" onclick="habitCalNav(1)">›</button>
+                    </div>
+                    <div class="habit-cal-grid">
+                        ${dows.map(d => `<div class="habit-cal-dow">${d}</div>`).join('')}
+                        ${gridHtml}
+                    </div>
+                    <div class="habit-cal-legend">
+                        <span><span class="dot" style="background:var(--green);"></span>已打卡</span>
+                        <span><span class="dot" style="background:var(--surface-2,#f0f0f0);"></span>未打卡</span>
+                        <span><span class="dot" style="background:transparent;border:2px solid var(--primary);"></span>今天</span>
+                    </div>
+                    <div style="margin-top:12px;text-align:center;font-size:0.75rem;color:var(--text-muted);">
+                        ${isCurrentMonth ? `本月打卡 ${monthDone}/${monthTotal} 天` : `${y}年${monthNames[m]} 打卡 ${monthDone} 天`}
+                    </div>
+                </div>
+            </div>`;
+            overlay.classList.add('open');
+        }
+
+        function habitCalNav(delta) {
+            if (!_habitDetailState) return;
+            _habitDetailState.month += delta;
+            if (_habitDetailState.month < 0) { _habitDetailState.month = 11; _habitDetailState.year--; }
+            if (_habitDetailState.month > 11) { _habitDetailState.month = 0; _habitDetailState.year++; }
+            renderHabitDetail();
+        }
+
+        async function toggleHabitDate(dateStr) {
+            if (!_habitDetailState) return;
+            const s = _habitDetailState;
+            const logs = await api('/api/habit-logs');
+            const existing = logs.find(l => l.habit_id === s.id && l.date === dateStr);
+            if (existing) {
+                await api(`/api/habit-logs/${existing.id}`, { method: 'DELETE' });
+                s.logDates.delete(dateStr);
+            } else {
+                await api('/api/habit-logs', { method: 'POST', body: JSON.stringify({ habit_id: s.id, date: dateStr }) });
+                s.logDates.add(dateStr);
+            }
+            renderHabitDetail();
+            renderHabits();
+            loadDashboard();
         }
 
         // ===== 月度回顾 =====
