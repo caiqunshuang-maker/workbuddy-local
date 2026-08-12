@@ -295,6 +295,7 @@
       'habit-logs': 'habit_logs',
       'storage': 'storage_items',
       'workout-exercises': 'workout_exercises',
+      'task-logs': 'task_logs',
     };
     const table = RESOURCE_TABLE[resource] || resource;
     if (!TABLES.includes(table)) return null;
@@ -337,11 +338,20 @@
       // 重复待办完成：记录完成日志（日历上该天保留灰色划线），再滚动到下一条
       if (table === 'tasks' && body && 'completed' in body && updated.repeat && updated.repeat !== 'none') {
         if (body.completed) {
+          // 日志日期 = 前端传入的 date（日历补记历史日期用），没有则用模板当前 due_date（今日列表点击）
+          const logDate = body.date || updated.due_date;
           const logs = loadTable('task_logs');
-          logs.push({ id: nextId('task_logs'), task_id: id, date: updated.due_date, created_at: nowIso() });
+          logs.push({ id: nextId('task_logs'), task_id: id, date: logDate, created_at: nowIso() });
           saveTable('task_logs', logs);
-          const next = nextRepeatDate(updated);
-          if (next) { updated.due_date = next; updated.completed = false; updated.last_completed_at = nowIso(); }
+          // 仅当补记日期 >= 模板当前 due_date（或今日列表点击不传date）时才滚动模板指针；
+          // 补记过去日期时模板保持原状，避免把"今日待办"里还没完成的当天顶掉
+          if (!body.date || body.date >= updated.due_date) {
+            const next = nextRepeatDate(updated);
+            if (next) { updated.due_date = next; updated.completed = false; updated.last_completed_at = nowIso(); }
+          } else {
+            updated.completed = false; // 补记历史：模板本身仍为待办
+            updated.last_completed_at = nowIso();
+          }
         } else {
           // 取消完成：删除该日期的完成日志（日历上恢复为未完成）
           const cancelDate = body.date || updated.due_date;
