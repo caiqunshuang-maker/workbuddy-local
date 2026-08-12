@@ -4582,6 +4582,31 @@
         }
 
         // ===== Init =====
+        // 一次性创建"跳舞"每周三待办
+        (async function initDanceTask() {
+            try {
+                if (localStorage.getItem('_dance_task_created')) return;
+                const tasks = await api('/api/tasks');
+                const exists = tasks.find(t => t.title === '跳舞' && t.repeat === 'weekly');
+                if (exists) {
+                    localStorage.setItem('_dance_task_created', '1');
+                    return;
+                }
+                await api('/api/tasks', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title: '跳舞',
+                        due_date: '2026-01-07',
+                        repeat: 'weekly',
+                        category: '生活',
+                        priority: 2,
+                        completed: 0
+                    })
+                });
+                localStorage.setItem('_dance_task_created', '1');
+            } catch (e) { /* 静默失败，下次重试 */ }
+        })();
+
         loadDashboard();
         // 注册 Service Worker（离线可用）
         try {
