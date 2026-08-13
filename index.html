@@ -363,8 +363,35 @@
         }
         .task-item .task-title.done {
             text-decoration: line-through;
+            text-decoration-thickness: 2px;
             color: var(--text-muted);
         }
+        /* ===== 状态卡片：完成/跳过 与未完成强烈区分 ===== */
+        .task-item.done-item {
+            background: #ecfdf5;
+            border-left: 4px solid var(--green);
+            box-shadow: 0 0 0 1px #a7f3d0 inset;
+        }
+        .task-item.done-item .task-title.done { color: #047857; font-weight: 600; }
+        .task-item.done-item .task-meta { color: #6ee7b7; }
+        .task-item.skipped-item {
+            background: #fef2f2;
+            border-left: 4px solid var(--red);
+            box-shadow: 0 0 0 1px #fecaca inset;
+        }
+        .task-item.skipped-item .task-title.done { color: #b91c1c; font-weight: 600; }
+        .task-item.skipped-item .task-meta { color: #fca5a5; }
+        /* 状态徽章 */
+        .status-chip {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-right: 2px;
+        }
+        .status-chip.done { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; }
+        .status-chip.skipped { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
         .task-item .task-meta {
             display: flex;
             gap: 8px;
@@ -626,17 +653,18 @@
         .calendar-grid .day-cell .cell-item.done {
             text-decoration: line-through;
             text-decoration-thickness: 1.5px;
-            opacity: 0.55;
-            filter: grayscale(1);
-            background: #f0f1f4;
-            color: #9aa0ad;
+            background: #d1fae5;
+            color: #047857;
+            font-weight: 600;
+            opacity: 0.9;
         }
         .calendar-grid .day-cell .cell-item.skipped {
             text-decoration: line-through;
             text-decoration-thickness: 1.5px;
-            opacity: 0.6;
             background: #fee2e2;
-            color: #dc2626;
+            color: #b91c1c;
+            font-weight: 600;
+            opacity: 0.9;
         }
         .calendar-grid .day-cell .cell-item.schedule-item {
             background: #eef2f7;
@@ -1937,14 +1965,14 @@
                 container.innerHTML = '<div class="empty-state"><div class="icon">🎉</div><p>今天没有待办，放松一下吧！</p></div>';
             } else {
                 container.innerHTML = todayTasks.map(t =>
-                    `<div class="task-item" style="margin-bottom:6px;">
+                    `<div class="task-item ${statusItemClass(t)}" style="margin-bottom:6px;">
                         <div style="display:flex;gap:4px;flex-shrink:0;">
                             <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
                             <div class="checkbox-skip ${t.skipped ? 'skipped' : ''}" onclick="toggleTaskSkip(${t.id})">✕</div>
                         </div>
                         <div class="task-body">
                             <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
-                            <div class="task-meta"><span class="tag tag-${t.priority}">${priorityLabel(t.priority)}</span></div>
+                            <div class="task-meta"><span class="tag tag-${t.priority}">${priorityLabel(t.priority)}</span>${statusChip(t)}</div>
                         </div>
                     </div>`
                 ).join('');
@@ -1995,7 +2023,7 @@
                     ? `🔄${formatRepeatDays(t.repeat_days)}`
                     : { daily: '🔄每天', weekdays: '🔄工作日', weekly: '🔄每周', monthly: '🔄每月' }[t.repeat] || '';
                 return `
-                <div class="task-item">
+                <div class="task-item ${statusItemClass(t)}">
                     <div style="display:flex;gap:4px;flex-shrink:0;">
                         <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
                         <div class="checkbox-skip ${t.skipped ? 'skipped' : ''}" onclick="toggleTaskSkip(${t.id})">✕</div>
@@ -2003,6 +2031,7 @@
                     <div class="task-body">
                         <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
                         <div class="task-meta">
+                            ${statusChip(t)}
                             <span class="tag tag-${t.priority}">${priorityLabel(t.priority)}</span>
                             <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
                             ${t.due_date ? `<span>📅 ${t.due_date}</span>` : ''}
@@ -2033,6 +2062,14 @@
         }
         function categoryLabel(c) {
             return { life: '生活', work: '工作' }[c] || '生活';
+        }
+        function statusChip(t) {
+            if (t.completed) return '<span class="status-chip done">✓ 已完成</span>';
+            if (t.skipped) return '<span class="status-chip skipped">✕ 已跳过</span>';
+            return '';
+        }
+        function statusItemClass(t) {
+            return t.completed ? 'done-item' : t.skipped ? 'skipped-item' : '';
         }
 
         function formatRepeatDays(daysStr) {
@@ -2476,7 +2513,7 @@
                 return;
             }
             el.innerHTML = noDate.map(t => `
-                <div class="task-item" style="margin-bottom:4px;">
+                <div class="task-item ${statusItemClass(t)}" style="margin-bottom:4px;">
                     <div style="display:flex;gap:4px;flex-shrink:0;">
                         <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
                         <div class="checkbox-skip ${t.skipped ? 'skipped' : ''}" onclick="toggleTaskSkip(${t.id})">✕</div>
@@ -2484,6 +2521,7 @@
                     <div class="task-body">
                         <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
                         <div class="task-meta">
+                            ${statusChip(t)}
                             <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
                             <span style="color:var(--text-muted);">未设置日期</span>
                         </div>
@@ -2583,7 +2621,7 @@
                     ${tasks.length === 0
                         ? '<div style="color:var(--text-muted);font-size:0.82rem;padding:8px 0;">当天没有待办</div>'
                         : tasks.map(t => `
-                            <div class="task-item" style="margin-bottom:4px;box-shadow:none;border:1px solid var(--border);">
+                            <div class="task-item ${statusItemClass(t)}" style="margin-bottom:4px;box-shadow:none;border:1px solid var(--border);">
                                 <div style="display:flex;gap:4px;flex-shrink:0;">
                                     <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTaskFromCalendar(${t.id}, '${dateStr}', ${t.completed})"></div>
                                     <div class="checkbox-skip ${t.skipped ? 'skipped' : ''}" onclick="toggleTaskSkipFromCalendar(${t.id}, '${dateStr}', ${t.skipped})">✕</div>
@@ -2591,6 +2629,7 @@
                                 <div class="task-body">
                                     <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
                                     <div class="task-meta">
+                                        ${statusChip(t)}
                                         <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
                                         ${t.due_time ? `<span>⏰ ${t.due_time}</span>` : ''}
                                     </div>
@@ -5054,7 +5093,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v16';
+                b.textContent = 'v17';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
