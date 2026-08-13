@@ -331,8 +331,8 @@
             transition: all 0.15s;
         }
         .task-item .checkbox.checked {
-            background: var(--green);
-            border-color: var(--green);
+            background: #9ca3af;
+            border-color: #9ca3af;
         }
         .task-item .checkbox.checked::after {
             content: '✓';
@@ -366,32 +366,29 @@
             text-decoration-thickness: 2px;
             color: var(--text-muted);
         }
-        /* ===== 状态卡片：完成/跳过 与未完成强烈区分 ===== */
-        .task-item.done-item {
-            background: #ecfdf5;
-            border-left: 4px solid var(--green);
-            box-shadow: 0 0 0 1px #a7f3d0 inset;
+        /* ===== 状态区分：只有两种颜色 =====
+           已完成 → 灰色 + 删除线（低调）
+           未完成/没去 → 红色 + 前面红色叉（醒目） */
+        .task-item.todo-item { border-left: 4px solid var(--red); }
+        .task-item.todo-item .task-title { color: var(--red); font-weight: 600; }
+        .task-item.todo-item .checkbox-skip {
+            border-color: var(--red);
+            color: var(--red);
+            font-weight: 700;
         }
-        .task-item.done-item .task-title.done { color: #047857; font-weight: 600; }
-        .task-item.done-item .task-meta { color: #6ee7b7; }
+        .task-item.done-item {
+            background: #f3f4f6;
+            border-left: 4px solid #9ca3af;
+        }
+        .task-item.done-item .task-title.done { color: #9ca3af; font-weight: 400; }
+        .task-item.done-item .task-meta { opacity: 0.55; }
+        .task-item.done-item .checkbox-skip { opacity: 0.3; }
         .task-item.skipped-item {
             background: #fef2f2;
             border-left: 4px solid var(--red);
-            box-shadow: 0 0 0 1px #fecaca inset;
         }
-        .task-item.skipped-item .task-title.done { color: #b91c1c; font-weight: 600; }
-        .task-item.skipped-item .task-meta { color: #fca5a5; }
-        /* 状态徽章 */
-        .status-chip {
-            display: inline-block;
-            padding: 1px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            margin-right: 2px;
-        }
-        .status-chip.done { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; }
-        .status-chip.skipped { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .task-item.skipped-item .task-title.done { color: var(--red); font-weight: 600; }
+        .task-item.skipped-item .task-meta { opacity: 0.75; }
         .task-item .task-meta {
             display: flex;
             gap: 8px;
@@ -653,18 +650,21 @@
         .calendar-grid .day-cell .cell-item.done {
             text-decoration: line-through;
             text-decoration-thickness: 1.5px;
-            background: #d1fae5;
-            color: #047857;
+            background: #f0f1f4;
+            color: #9aa0ad;
+            font-weight: 400;
+        }
+        .calendar-grid .day-cell .cell-item.todo {
+            background: #fee2e2;
+            color: #dc2626;
             font-weight: 600;
-            opacity: 0.9;
         }
         .calendar-grid .day-cell .cell-item.skipped {
             text-decoration: line-through;
             text-decoration-thickness: 1.5px;
             background: #fee2e2;
-            color: #b91c1c;
+            color: #dc2626;
             font-weight: 600;
-            opacity: 0.9;
         }
         .calendar-grid .day-cell .cell-item.schedule-item {
             background: #eef2f7;
@@ -1972,7 +1972,7 @@
                         </div>
                         <div class="task-body">
                             <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
-                            <div class="task-meta"><span class="tag tag-${t.priority}">${priorityLabel(t.priority)}</span>${statusChip(t)}</div>
+                            <div class="task-meta"><span class="tag tag-${t.priority}">${priorityLabel(t.priority)}</span></div>
                         </div>
                     </div>`
                 ).join('');
@@ -2031,7 +2031,6 @@
                     <div class="task-body">
                         <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
                         <div class="task-meta">
-                            ${statusChip(t)}
                             <span class="tag tag-${t.priority}">${priorityLabel(t.priority)}</span>
                             <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
                             ${t.due_date ? `<span>📅 ${t.due_date}</span>` : ''}
@@ -2063,13 +2062,8 @@
         function categoryLabel(c) {
             return { life: '生活', work: '工作' }[c] || '生活';
         }
-        function statusChip(t) {
-            if (t.completed) return '<span class="status-chip done">✓ 已完成</span>';
-            if (t.skipped) return '<span class="status-chip skipped">✕ 已跳过</span>';
-            return '';
-        }
         function statusItemClass(t) {
-            return t.completed ? 'done-item' : t.skipped ? 'skipped-item' : '';
+            return t.completed ? 'done-item' : t.skipped ? 'skipped-item' : 'todo-item';
         }
 
         function formatRepeatDays(daysStr) {
@@ -2325,8 +2319,9 @@
                     items.push(`<div class="cell-item workout-item">${wlabel}</div>`);
                 }
                 dayTasks.forEach(t => {
-                    const cls = t.completed ? ' done' : t.skipped ? ' skipped' : '';
-                    items.push(`<div class="cell-item todo-${t.category}${cls}">${esc(t.title)}</div>`);
+                    const cls = t.completed ? ' done' : t.skipped ? ' skipped' : ' todo';
+                    const mark = t.completed || t.skipped ? '' : '✕ ';
+                    items.push(`<div class="cell-item todo-${t.category}${cls}">${mark}${esc(t.title)}</div>`);
                 });
                 daySchedules.forEach(s => {
                     items.push(`<div class="cell-item schedule-item" style="--sc:${s.color}">${esc(s.title)}${s.time ? ' ' + esc(s.time) : ''}</div>`);
@@ -2521,7 +2516,6 @@
                     <div class="task-body">
                         <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
                         <div class="task-meta">
-                            ${statusChip(t)}
                             <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
                             <span style="color:var(--text-muted);">未设置日期</span>
                         </div>
@@ -2629,7 +2623,6 @@
                                 <div class="task-body">
                                     <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
                                     <div class="task-meta">
-                                        ${statusChip(t)}
                                         <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
                                         ${t.due_time ? `<span>⏰ ${t.due_time}</span>` : ''}
                                     </div>
@@ -5093,7 +5086,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v17';
+                b.textContent = 'v18';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
