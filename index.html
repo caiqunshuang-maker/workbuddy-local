@@ -672,6 +672,25 @@
             padding-left: 9px;
             position: relative;
         }
+        .calendar-grid .day-cell .cell-item.schedule-item.done {
+            text-decoration: line-through;
+            text-decoration-thickness: 1.5px;
+            opacity: 0.55;
+            filter: grayscale(1);
+            background: #f0f1f4;
+            color: #9aa0ad;
+        }
+        /* 日程完成态（列表/弹窗） */
+        .task-item.sched-done {
+            background: #f4f5f7;
+            box-shadow: 0 0 0 1px var(--border) inset;
+        }
+        .task-item.sched-done .task-title {
+            text-decoration: line-through;
+            text-decoration-thickness: 2px;
+            color: var(--text-muted);
+        }
+        .task-item.sched-done .task-meta { opacity: 0.6; }
         .calendar-grid .day-cell .cell-item.schedule-item::before {
             content: '';
             position: absolute;
@@ -2324,7 +2343,7 @@
                     items.push(`<div class="cell-item todo-${t.category}${cls}">${mark}${esc(t.title)}</div>`);
                 });
                 daySchedules.forEach(s => {
-                    items.push(`<div class="cell-item schedule-item" style="--sc:${s.color}">${esc(s.title)}${s.time ? ' ' + esc(s.time) : ''}</div>`);
+                    items.push(`<div class="cell-item schedule-item${s.completed ? ' done' : ''}" style="--sc:${s.color}">${esc(s.title)}${s.time ? ' ' + esc(s.time) : ''}</div>`);
                 });
 
                 // Show up to 4 items in the cell, rest as "+N 更多"
@@ -2558,8 +2577,9 @@
                 return;
             }
             list.innerHTML = schedules.map(s => `
-                <div class="task-item" style="margin-bottom:6px;">
+                <div class="task-item ${s.completed ? 'sched-done' : ''}" style="margin-bottom:6px;">
                     <div style="width:4px;background:${s.color};border-radius:2px;flex-shrink:0;align-self:stretch;"></div>
+                    <div class="checkbox ${s.completed ? 'checked' : ''}" onclick="toggleSchedule(${s.id})" style="margin-top:4px;"></div>
                     <div class="task-body">
                         <div class="task-title">${esc(s.title)}</div>
                         <div class="task-meta">
@@ -2634,8 +2654,9 @@
                     ${schedules.length === 0
                         ? '<div style="color:var(--text-muted);font-size:0.82rem;padding:8px 0;">当天没有日程</div>'
                         : schedules.map(s => `
-                            <div class="task-item" style="margin-bottom:4px;box-shadow:none;border:1px solid var(--border);">
+                            <div class="task-item ${s.completed ? 'sched-done' : ''}" style="margin-bottom:4px;box-shadow:none;border:1px solid var(--border);">
                                 <div style="width:4px;background:${s.color};border-radius:2px;flex-shrink:0;align-self:stretch;"></div>
+                                <div class="checkbox ${s.completed ? 'checked' : ''}" onclick="toggleScheduleFromDay(${s.id}, '${dateStr}')" style="margin-top:2px;"></div>
                                 <div class="task-body">
                                     <div class="task-title">${esc(s.title)}</div>
                                     <div class="task-meta">
@@ -2759,6 +2780,21 @@
                 loadDashboard();
             });
         }
+
+        // 日程完成/取消完成（日历页列表 & 日历详情弹窗共用）
+        async function toggleSchedule(id, dateStr) {
+            const schedules = await api('/api/schedules');
+            const s = schedules.find(x => x.id === id);
+            if (!s) return;
+            await api(`/api/schedules/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({ completed: !s.completed }),
+            });
+            if (dateStr) await openDayDetail(dateStr);
+            renderCalendar();
+            loadDashboard();
+        }
+        function toggleScheduleFromDay(id, dateStr) { toggleSchedule(id, dateStr); }
 
         // ===== Diary =====
         const diaryState = {
@@ -5086,7 +5122,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v18';
+                b.textContent = 'v19';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
