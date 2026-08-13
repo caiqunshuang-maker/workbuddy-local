@@ -354,6 +354,13 @@
       if (table === 'tasks') {
         const logDate = body.date || updated.due_date;
         const isRepeat = updated.repeat && updated.repeat !== 'none';
+        const todayStr = `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-${String(new Date().getDate()).padStart(2,'0')}`;
+        if (logDate > todayStr) {
+          console.warn('[localdb] 拒绝写入未来日志:', logDate);
+          rows[idx] = updated;
+          saveTable(table, rows);
+          return updated;
+        }
 
         // 处理"跳过/没去"：写 task_logs(status='skipped')，不滚动模板指针
         if (body && 'skipped' in body) {
@@ -687,6 +694,33 @@
     }
   }
 
+  // ---------- 启动自清理：删除未来日期的错误日志、清理重复任务模板 ----------
+  function selfHeal() {
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    // 清理未来 task_logs（不可能已经完成/跳过了未来的任务）
+    const logs = loadTable('task_logs');
+    const cleanLogs = logs.filter(l => (l.date || '') <= todayStr);
+    if (cleanLogs.length !== logs.length) {
+      console.warn('[localdb] self-heal: 删除', logs.length - cleanLogs.length, '条未来日志');
+      saveTable('task_logs', cleanLogs);
+    }
+    // 清理重复任务模板上的非规范字段（这些字段只该出现在非重复任务上）
+    const tasks = loadTable('tasks');
+    let dirty = false;
+    tasks.forEach(t => {
+      if (t.repeat && t.repeat !== 'none') {
+        if ('skipped' in t) { delete t.skipped; dirty = true; }
+        if ('date' in t) { delete t.date; dirty = true; }
+        if (t.completed === true) { t.completed = false; dirty = true; }
+      }
+    });
+    if (dirty) {
+      console.warn('[localdb] self-heal: 清理重复任务模板');
+      saveTable('tasks', tasks);
+    }
+  }
+
   // ---------- 一键备份 / 恢复 ----------
   async function exportBackupData() {
     const payload = {
@@ -748,7 +782,7 @@
 
   // 启动时：先导入 seed，再预加载图片
   function boot() {
-    seedIfNeeded().then(() => loadAllImagesToCache());
+    seedIfNeeded().then(() => { selfHeal(); loadAllImagesToCache(); });
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);

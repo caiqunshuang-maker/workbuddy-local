@@ -2291,6 +2291,7 @@
             });
 
             const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
             // Previous month days (clickable -> jump to that month)
             const prevMonthDate = new Date(year, month - 2, 1);  // 0-based month of prev month
@@ -2338,8 +2339,9 @@
                     items.push(`<div class="cell-item workout-item">${wlabel}</div>`);
                 }
                 dayTasks.forEach(t => {
-                    const cls = t.completed ? ' done' : t.skipped ? ' skipped' : ' todo';
-                    const mark = t.completed || t.skipped ? '' : '✕ ';
+                    const isFuture = dateStr > todayStr;
+                    const cls = t.completed ? ' done' : t.skipped ? ' skipped' : (isFuture ? '' : ' todo');
+                    const mark = t.completed || t.skipped || isFuture ? '' : '✕ ';
                     items.push(`<div class="cell-item todo-${t.category}${cls}">${mark}${esc(t.title)}</div>`);
                 });
                 daySchedules.forEach(s => {
@@ -5152,7 +5154,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v20';
+                b.textContent = 'v21';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
