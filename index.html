@@ -2342,7 +2342,7 @@
                     const isFuture = dateStr > todayStr;
                     const cls = t.completed ? ' done' : t.skipped ? ' skipped' : (isFuture ? '' : ' todo');
                     const mark = t.completed || t.skipped || isFuture ? '' : '✕ ';
-                    items.push(`<div class="cell-item todo-${t.category}${cls}">${mark}${esc(t.title)}</div>`);
+                    items.push(`<div class="cell-item todo-${t.category}${cls}" title="查看这个任务的日程" onclick="event.stopPropagation();showTaskSchedule(${t.id},'${dateStr}')">${mark}${esc(t.title)}</div>`);
                 });
                 daySchedules.forEach(s => {
                     items.push(`<div class="cell-item schedule-item${s.completed ? ' done' : ''}" style="--sc:${s.color}">${esc(s.title)}${s.time ? ' ' + esc(s.time) : ''}</div>`);
@@ -2663,7 +2663,7 @@
                                     <div class="checkbox-skip ${t.skipped ? 'skipped' : ''}" onclick="toggleTaskSkipFromCalendar(${t.id}, '${dateStr}', ${t.skipped})">✕</div>
                                 </div>
                                 <div class="task-body">
-                                    <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
+                                    <div class="task-title ${t.completed || t.skipped ? 'done' : ''}" style="cursor:pointer;" onclick="event.stopPropagation();showTaskSchedule(${t.id})" title="查看这个任务的日程">${esc(t.title)}</div>
                                     <div class="task-meta">
                                         <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
                                         ${t.due_time ? `<span>⏰ ${t.due_time}</span>` : ''}
@@ -2697,6 +2697,121 @@
                 </div>
             </div>`;
             overlay.classList.add('open');
+        }
+
+        // ===== 任务日程时间线：点任务 → 显示这个任务在哪些日期有安排 =====
+        function weekdayCN(dateStr) {
+            const d = new Date(dateStr + 'T00:00:00');
+            return ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][d.getDay()];
+        }
+
+        function repeatLabel(t) {
+            const r = t.repeat;
+            if (!r || r === 'none') return '仅一次';
+            if (r === 'daily') return '每天';
+            if (r === 'weekdays') return '每个工作日';
+            if (r === 'weekly') return '每周一次';
+            if (r === 'monthly') return '每月一次';
+            if (r === 'custom') {
+                const names = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+                const days = String(t.repeat_days || '').split(',').map(x => parseInt(x)).filter(n => !isNaN(n) && n >= 0 && n <= 6);
+                return days.length ? '每周' + days.map(d => names[d]).join('、') : '每周';
+            }
+            return r;
+        }
+
+        async function showTaskSchedule(taskId, fromDate) {
+            const [allTasks, logs] = await Promise.all([
+                api('/api/tasks'),
+                api('/api/task-logs'),
+            ]);
+            const t = allTasks.find(x => x.id === taskId);
+            if (!t) return;
+            const now = new Date();
+            const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            const isRepeat = t.repeat && t.repeat !== 'none';
+
+            // 日志状态映射
+            const logMap = {};
+            logs.filter(l => l.task_id === taskId).forEach(l => { logMap[l.date] = l.status || 'done'; });
+
+            // 收集所有日程日期: { date: 'done'|'skipped'|'missed'|'future' }
+            const dates = {};
+            const setDate = (ds) => {
+                if (!ds || dates[ds]) return;
+                if (logMap[ds] && ds <= todayStr) dates[ds] = logMap[ds];  // 过去的日志：done/skipped
+                else dates[ds] = ds <= todayStr ? 'missed' : 'future';      // 过去未做 / 未来待做
+            };
+
+            if (isRepeat) {
+                // 从 repeat_start 所在月展开到未来 6 个月
+                const start = t.repeat_start || t.due_date;
+                let sy = now.getFullYear(), sm = now.getMonth() + 1;
+                if (start) { sy = parseInt(start.slice(0, 4)); sm = parseInt(start.slice(5, 7)); }
+                const endDate = new Date(now.getFullYear(), now.getMonth() + 6, 1);
+                const ey = endDate.getFullYear(), em = endDate.getMonth() + 1;
+                let y = sy, m = sm, guard = 0;
+                while (guard++ < 300) {
+                    const occ = window.LocalDB.expandRepeatInMonth(t, y, m);
+                    if (occ) occ.forEach(setDate);
+                    if (y === ey && m === em) break;
+                    m++;
+                    if (m > 12) { m = 1; y++; }
+                }
+            } else {
+                setDate(t.due_date);
+                if (t.due_date && !logMap[t.due_date]) {
+                    dates[t.due_date] = t.completed ? 'done' : t.skipped ? 'skipped' : (t.due_date <= todayStr ? 'missed' : 'future');
+                }
+            }
+
+            const sorted = Object.keys(dates).sort();
+            const statusConf = {
+                done:    { mark: '✅', label: '已做', color: '#9ca3af', line: true },
+                skipped: { mark: '✕',  label: '跳过', color: '#ef4444', line: true },
+                missed:  { mark: '❗',  label: '没做', color: '#ef4444', line: false },
+                future:  { mark: '📅',  label: '待做', color: 'var(--text-primary)', line: false },
+            };
+            const rowsHtml = sorted.map(ds => {
+                const st = statusConf[dates[ds]] || statusConf.future;
+                const [yy, mm, dd] = ds.split('-').map(Number);
+                const line = st.line ? 'text-decoration:line-through;' : '';
+                const isToday = ds === todayStr;
+                const dateLabel = `${mm}月${dd}日${yy !== now.getFullYear() ? '（' + yy + '年）' : ''}`;
+                return `<div class="task-item" style="margin-bottom:4px;box-shadow:none;border:1px solid var(--border);cursor:pointer;" onclick="showTaskSchedule_jump('${ds}')">
+                    <div style="width:4px;background:${st.color};border-radius:2px;flex-shrink:0;align-self:stretch;"></div>
+                    <div class="task-body">
+                        <div class="task-title" style="color:${st.color};${line}">${st.mark} ${dateLabel} ${weekdayCN(ds)}${isToday ? '（今天）' : ''}</div>
+                        <div class="task-meta"><span>${st.label}</span>${ds < todayStr ? '<span>· 已过去</span>' : ''}</div>
+                    </div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);flex-shrink:0;padding-top:6px;">查看 ›</div>
+                </div>`;
+            }).join('');
+
+            const overlay = document.getElementById('modalOverlay');
+            overlay.innerHTML = `
+            <div class="modal" style="width:520px;display:flex;flex-direction:column;max-height:80vh;">
+                <h3>📌 ${esc(t.title)}</h3>
+                <div style="margin:-6px 0 10px;font-size:0.82rem;color:var(--text-muted);">
+                    <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
+                    <span style="margin-left:6px;">🔁 ${repeatLabel(t)}</span>
+                    ${isRepeat ? `<span style="margin-left:6px;">共 ${sorted.length} 次</span>` : ''}
+                </div>
+                <div style="flex:1;overflow-y:auto;min-height:0;margin-bottom:10px;">
+                    ${rowsHtml || '<div style="color:var(--text-muted);font-size:0.85rem;padding:12px 0;text-align:center;">这个任务还没有安排日期</div>'}
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="showTaskSchedule_jump('${todayStr}')">📍 回到今天</button>
+                    ${fromDate ? `<button class="btn btn-outline" onclick="showTaskSchedule_jump('${fromDate}')">← 回到 ${parseInt(fromDate.slice(5, 7))}月${parseInt(fromDate.slice(8, 10))}日</button>` : ''}
+                    <button class="btn btn-primary" onclick="closeModal()">关闭</button>
+                </div>
+            </div>`;
+            overlay.classList.add('open');
+        }
+
+        function showTaskSchedule_jump(date) {
+            closeModal();
+            jumpToDate(date);
         }
 
         async function toggleTaskFromCalendar(id, dateStr, completed) {
@@ -5154,7 +5269,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v21';
+                b.textContent = 'v22';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
