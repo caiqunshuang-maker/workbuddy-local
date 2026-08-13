@@ -2347,7 +2347,7 @@
                     items.push(`<div class="cell-item todo-${t.category}${cls}" title="查看这个任务的日程" onclick="event.stopPropagation();showTaskSchedule(${t.id},'${dateStr}')">${mark}${esc(t.title)}</div>`);
                 });
                 daySchedules.forEach(s => {
-                    items.push(`<div class="cell-item schedule-item${s.completed ? ' done' : ''}" style="--sc:${s.color}">${esc(s.title)}${s.time ? ' ' + esc(s.time) : ''}</div>`);
+                    items.push(`<div class="cell-item schedule-item${s.completed ? ' done' : ''}" style="--sc:${s.color}" title="查看这个日程的安排" onclick="event.stopPropagation();showScheduleTimeline(${s.id},'${dateStr}')">${esc(s.title)}${s.time ? ' ' + esc(s.time) : ''}</div>`);
                 });
 
                 // Show up to 4 items in the cell, rest as "+N 更多"
@@ -2585,7 +2585,7 @@
                     <div style="width:4px;background:${s.color};border-radius:2px;flex-shrink:0;align-self:stretch;"></div>
                     <div class="checkbox ${s.completed ? 'checked' : ''}" onclick="toggleSchedule(${s.id})" style="margin-top:4px;"></div>
                     <div class="task-body">
-                        <div class="task-title">${esc(s.title)}</div>
+                        <div class="task-title" style="cursor:pointer;" onclick="event.stopPropagation();showScheduleTimeline(${s.id})" title="查看这个日程的安排">${esc(s.title)}</div>
                         <div class="task-meta">
                             <span>📅 ${s.date}</span>
                             ${s.time ? `<span>🕐 ${s.time}</span>` : ''}
@@ -2682,7 +2682,7 @@
                                 <div style="width:4px;background:${s.color};border-radius:2px;flex-shrink:0;align-self:stretch;"></div>
                                 <div class="checkbox ${s.completed ? 'checked' : ''}" onclick="toggleScheduleFromDay(${s.id}, '${dateStr}')" style="margin-top:2px;"></div>
                                 <div class="task-body">
-                                    <div class="task-title">${esc(s.title)}</div>
+                                    <div class="task-title" style="cursor:pointer;" onclick="event.stopPropagation();showScheduleTimeline(${s.id}, '${dateStr}')" title="查看这个日程的安排">${esc(s.title)}</div>
                                     <div class="task-meta">
                                         ${s.time ? `<span>🕐 ${s.time}</span>` : ''}
                                         ${s.description ? `<span>${esc(s.description)}</span>` : ''}
@@ -2814,6 +2814,60 @@
         function showTaskSchedule_jump(date) {
             closeModal();
             jumpToDate(date);
+        }
+
+        // ===== 日程时间线：点日程（如背部刷酸/看中医）→ 显示这个日程的所有日期 =====
+        async function showScheduleTimeline(id, fromDate) {
+            const schedules = await api('/api/schedules');
+            const s = schedules.find(x => x.id === id);
+            if (!s) return;
+            const now = new Date();
+            const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            // 同名日程按日期排序（背部刷酸可能有 5/4、6/28、8/2 多条）
+            const same = schedules.filter(x => x.title === s.title).sort((a, b) => a.date < b.date ? -1 : 1);
+            const statusConf = {
+                done:   { mark: '✅', label: '已做', color: '#9ca3af', line: true },
+                missed: { mark: '❗', label: '没做', color: '#ef4444', line: false },
+                future: { mark: '📅', label: '待做', color: 'var(--text-primary)', line: false },
+            };
+            const rowsHtml = same.map(x => {
+                const st = x.completed ? statusConf.done : (x.date <= todayStr ? statusConf.missed : statusConf.future);
+                const [yy, mm, dd] = x.date.split('-').map(Number);
+                const line = st.line ? 'text-decoration:line-through;' : '';
+                const isToday = x.date === todayStr;
+                const dateLabel = `${mm}月${dd}日${yy !== now.getFullYear() ? '（' + yy + '年）' : ''}`;
+                return `<div class="task-item" style="margin-bottom:4px;box-shadow:none;border:1px solid var(--border);cursor:pointer;" onclick="showTaskSchedule_jump('${x.date}')">
+                    <div style="width:4px;background:${st.color};border-radius:2px;flex-shrink:0;align-self:stretch;"></div>
+                    <div class="task-body">
+                        <div class="task-title" style="color:${st.color};${line}">${st.mark} ${dateLabel} ${weekdayCN(x.date)}${isToday ? '（今天）' : ''}</div>
+                        <div class="task-meta">
+                            <span>${st.label}</span>
+                            ${x.time ? `<span>🕐 ${esc(x.time)}</span>` : ''}
+                            ${x.description ? `<span>${esc(x.description)}</span>` : ''}
+                        </div>
+                    </div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);flex-shrink:0;padding-top:6px;">查看 ›</div>
+                </div>`;
+            }).join('');
+
+            const overlay = document.getElementById('modalOverlay');
+            overlay.innerHTML = `
+            <div class="modal" style="width:520px;display:flex;flex-direction:column;max-height:80vh;">
+                <h3>📌 ${esc(s.title)}</h3>
+                <div style="margin:-6px 0 10px;font-size:0.82rem;color:var(--text-muted);">
+                    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${s.color};margin-right:4px;vertical-align:middle;"></span>
+                    <span style="vertical-align:middle;">日程 · 共 ${same.length} 次</span>
+                </div>
+                <div style="flex:1;overflow-y:auto;min-height:0;margin-bottom:10px;">
+                    ${rowsHtml || '<div style="color:var(--text-muted);font-size:0.85rem;padding:12px 0;text-align:center;">这个日程还没有记录</div>'}
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="showTaskSchedule_jump('${todayStr}')">📍 回到今天</button>
+                    ${fromDate ? `<button class="btn btn-outline" onclick="showTaskSchedule_jump('${fromDate}')">← 回到 ${parseInt(fromDate.slice(5, 7))}月${parseInt(fromDate.slice(8, 10))}日</button>` : ''}
+                    <button class="btn btn-primary" onclick="closeModal()">关闭</button>
+                </div>
+            </div>`;
+            overlay.classList.add('open');
         }
 
         async function toggleTaskFromCalendar(id, dateStr, completed) {
@@ -5271,7 +5325,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v23';
+                b.textContent = 'v24';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
