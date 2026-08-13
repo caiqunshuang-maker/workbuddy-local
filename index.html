@@ -414,6 +414,7 @@
         .tag-general { background: #f3f4f6; color: var(--text-secondary); }
         .tag-overdue { background: #fef2f2; color: var(--red); }
         .tag-repeat { background: #ecfdf5; color: var(--green); }
+        .tag-schedule { background: #eef2ff; color: #6366f1; cursor: pointer; }
         .task-item .actions {
             display: flex;
             gap: 4px;
@@ -2048,10 +2049,11 @@
                         <div class="checkbox-skip ${t.skipped ? 'skipped' : ''}" onclick="toggleTaskSkip(${t.id})">✕</div>
                     </div>
                     <div class="task-body">
-                        <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
+                        <div class="task-title ${t.completed || t.skipped ? 'done' : ''}" style="cursor:pointer;" onclick="event.stopPropagation();showTaskSchedule(${t.id})" title="查看这个任务的日程">${esc(t.title)}</div>
                         <div class="task-meta">
                             <span class="tag tag-${t.priority}">${priorityLabel(t.priority)}</span>
                             <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
+                            <span class="tag tag-schedule" style="cursor:pointer;" onclick="event.stopPropagation();showTaskSchedule(${t.id})">🗓 日程</span>
                             ${t.due_date ? `<span>📅 ${t.due_date}</span>` : ''}
                             ${t.due_time ? `<span>⏰ ${t.due_time}</span>` : ''}
                             ${repeatIcon ? `<span class="tag tag-repeat">${repeatIcon}</span>` : ''}
@@ -5269,7 +5271,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v22';
+                b.textContent = 'v23';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
