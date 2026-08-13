@@ -2596,13 +2596,15 @@
         }
 
         async function openDayDetail(dateStr) {
-            const [dayTasks, daySchedules, annivs] = await Promise.all([
+            const [dayTasks, daySchedules, annivs, allWorkouts] = await Promise.all([
                 api(`/api/tasks?year=${dateStr.slice(0,4)}&month=${dateStr.slice(5,7)}`),
                 api(`/api/schedules?year=${dateStr.slice(0,4)}&month=${dateStr.slice(5,7)}`),
                 api('/api/anniversaries'),
+                api('/api/workouts'),
             ]);
             const tasks = dayTasks.filter(t => t.due_date === dateStr);
             const schedules = daySchedules.filter(s => s.date === dateStr);
+            const dayWorkout = allWorkouts.find(w => w.date === dateStr);
             const holiday = getHolidayInfo(dateStr);
             // Anniversary on this date
             const [y, m, dd] = dateStr.split('-').map(Number);
@@ -2630,6 +2632,24 @@
                 <h3>📅 ${dateStr}</h3>
                 ${annivBanner}
                 ${holidayBanner}
+                ${dayWorkout ? `
+                <div style="margin-bottom:8px;font-size:0.85rem;color:var(--text-secondary);">💪 训练记录</div>
+                <div style="max-height:120px;overflow-y:auto;margin-bottom:14px;">
+                    <div class="task-item" style="margin-bottom:4px;box-shadow:none;border:1px solid var(--border);">
+                        <div style="width:4px;background:#6366f1;border-radius:2px;flex-shrink:0;align-self:stretch;"></div>
+                        <div class="task-body">
+                            <div class="task-title">💪 ${dayWorkout.workout_type === 'strength' ? '力量训练' : dayWorkout.workout_type === 'cardio' ? '有氧运动' : dayWorkout.workout_type === 'mixed' ? '混合训练' : '其他'}</div>
+                            <div class="task-meta">
+                                <span>⏱ ${dayWorkout.duration}min</span>
+                                ${dayWorkout.mood ? `<span>${({1:'😞',2:'😐',3:'🙂',4:'😀',5:'😊'})[dayWorkout.mood] || ''}</span>` : ''}
+                                ${dayWorkout.notes ? `<span>📝 ${esc(dayWorkout.notes)}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-sm btn-danger" onclick="deleteWorkoutFromDay(${dayWorkout.id}, '${dateStr}')">🗑</button>
+                        </div>
+                    </div>
+                </div>` : ''}
                 <div style="margin-bottom:8px;font-size:0.85rem;color:var(--text-secondary);">📋 待办（${tasks.length}）</div>
                 <div style="max-height:200px;overflow-y:auto;margin-bottom:14px;">
                     ${tasks.length === 0
@@ -4019,6 +4039,16 @@
             });
         }
 
+        // 从日历详情弹窗删除训练记录
+        async function deleteWorkoutFromDay(id, dateStr) {
+            confirmDialog('确定删除这条训练记录吗？', async () => {
+                await api(`/api/workouts/${id}`, { method: 'DELETE' });
+                await openDayDetail(dateStr);
+                loadDashboard();
+                renderCalendar();
+            });
+        }
+
         // ----- Body Metrics -----
         let weightChartInstance = null;
         let _weightCalState = null; // { year, month }
@@ -5122,7 +5152,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v19';
+                b.textContent = 'v20';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
