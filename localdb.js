@@ -32,7 +32,14 @@
         });
       }
       return rows;
-    } catch (e) { return []; }
+    } catch (e) {
+      // 数据损坏：先备份原始字符串（存到 _corrupt 键），避免后续保存用 [] 覆盖造成永久丢失
+      try {
+        const raw = localStorage.getItem(LS_PREFIX + name);
+        if (raw) localStorage.setItem(LS_PREFIX + name + '_corrupt', raw);
+      } catch (e2) { /* ignore */ }
+      return [];
+    }
   }
   function saveTable(name, rows) {
     try {
@@ -51,7 +58,9 @@
     return rows.length ? Math.max(...rows.map(r => r.id || 0)) + 1 : 1;
   }
   function nowIso() {
-    return new Date().toISOString().replace('T', ' ').slice(0, 23);
+    // 用本地时间生成 "YYYY-MM-DD HH:MM:SS.mmm"，避免 UTC 与北京时间差 8 小时
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}.${String(d.getMilliseconds()).padStart(3, '0')}`;
   }
 
   // ---------- IndexedDB 图片存储 ----------
@@ -122,18 +131,19 @@
     // 目标月早于起始月：不产生任何记录（避免"幽灵已完成项"）
     const baseYear = base.getFullYear(), baseMonth = base.getMonth() + 1;
     if (year < baseYear || (year === baseYear && month < baseMonth)) return out;
+    // 统一从目标月正向枚举，并用 dt >= base 过滤掉起始点之前的"幽灵日期"
     if (r === 'custom' && t.repeat_days) {
       const days = new Set(String(t.repeat_days).split(',').map(x => parseInt(x)).filter(x => !isNaN(x)));
       for (let d = 1; d <= lastDay; d++) {
         const dt = new Date(year, month - 1, d);
-        if (days.has(dt.getDay() === 0 ? 6 : dt.getDay() - 1)) out.push(dt);
+        if (dt >= base && days.has(dt.getDay() === 0 ? 6 : dt.getDay() - 1)) out.push(dt);
       }
     } else if (r === 'weekly') {
       // 目标月内与 base 同星期几的所有日期（从月初正向枚举）
       const baseDow = base.getDay();
       for (let d = 1; d <= lastDay; d++) {
         const dt = new Date(year, month - 1, d);
-        if (dt.getDay() === baseDow) out.push(dt);
+        if (dt >= base && dt.getDay() === baseDow) out.push(dt);
       }
     } else if (r === 'monthly') {
       // 每月：目标月内与 base 同日（月末 clamp）
@@ -141,16 +151,16 @@
       const day = Math.min(baseDay, lastDay);
       out.push(new Date(year, month - 1, day));
     } else if (r === 'daily') {
-      let d0 = new Date(base);
-      while (d0.getFullYear() === year && d0.getMonth() === month - 1 && d0.getDate() <= lastDay) {
-        out.push(new Date(d0));
-        d0.setDate(d0.getDate() + 1);
+      // 每天：目标月内从起始点起的所有日期（修复：旧逻辑只认锚定月，后续月份全部消失）
+      for (let d = 1; d <= lastDay; d++) {
+        const dt = new Date(year, month - 1, d);
+        if (dt >= base) out.push(dt);
       }
     } else if (r === 'weekdays') {
-      let d0 = new Date(base);
-      while (d0.getFullYear() === year && d0.getMonth() === month - 1 && d0.getDate() <= lastDay) {
-        if (d0.getDay() >= 1 && d0.getDay() <= 5) out.push(new Date(d0));
-        d0.setDate(d0.getDate() + 1);
+      // 工作日：目标月内从起始点起的所有周一到周五
+      for (let d = 1; d <= lastDay; d++) {
+        const dt = new Date(year, month - 1, d);
+        if (dt >= base && dt.getDay() >= 1 && dt.getDay() <= 5) out.push(dt);
       }
     }
     return out.map(d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
@@ -322,8 +332,10 @@
         const parsed = parseExercisesText(row.exercises_raw);
         if (parsed.length) {
           const exRows = loadTable('workout_exercises');
+          // 循环外先算出起始 id 并递增，避免 nextId 每次都从 localStorage 读旧数据导致 id 重复
+          let exId = exRows.length ? Math.max(...exRows.map(r => r.id || 0)) : 0;
           parsed.forEach((ex, i) => {
-            exRows.push(Object.assign({}, ex, { id: nextId('workout_exercises'), workout_id: row.id, created_at: nowIso() }));
+            exRows.push(Object.assign({}, ex, { id: ++exId, workout_id: row.id, created_at: nowIso() }));
           });
           saveTable('workout_exercises', exRows);
         }
@@ -334,29 +346,56 @@
     if (method === 'PUT') {
       const idx = rows.findIndex(r => r.id === id);
       if (idx < 0) return null;
-      const updated = Object.assign({}, rows[idx], body, { updated_at: nowIso() });
-      // 重复待办完成：记录完成日志（日历上该天保留灰色划线），再滚动到下一条
-      if (table === 'tasks' && body && 'completed' in body && updated.repeat && updated.repeat !== 'none') {
-        if (body.completed) {
-          // 日志日期 = 前端传入的 date（日历补记历史日期用），没有则用模板当前 due_date（今日列表点击）
-          const logDate = body.date || updated.due_date;
+      // date 是日历补记的控制字段（标记"补的是哪一天"），绝不能写进任务行污染数据
+      const bodyClean = Object.assign({}, body);
+      if (table === 'tasks') delete bodyClean.date;
+      const updated = Object.assign({}, rows[idx], bodyClean, { updated_at: nowIso() });
+      // === 待办状态变更：完成(done) / 跳过(skipped)，二者互斥 ===
+      if (table === 'tasks') {
+        const logDate = body.date || updated.due_date;
+        const isRepeat = updated.repeat && updated.repeat !== 'none';
+
+        // 处理"跳过/没去"：写 task_logs(status='skipped')，不滚动模板指针
+        if (body && 'skipped' in body) {
           const logs = loadTable('task_logs');
-          logs.push({ id: nextId('task_logs'), task_id: id, date: logDate, created_at: nowIso() });
-          saveTable('task_logs', logs);
-          // 仅当补记日期 >= 模板当前 due_date（或今日列表点击不传date）时才滚动模板指针；
-          // 补记过去日期时模板保持原状，避免把"今日待办"里还没完成的当天顶掉
-          if (!body.date || body.date >= updated.due_date) {
-            const next = nextRepeatDate(updated);
-            if (next) { updated.due_date = next; updated.completed = false; updated.last_completed_at = nowIso(); }
+          if (body.skipped) {
+            // 标记跳过：清除该天已有的日志（完成或跳过），写入跳过日志
+            const filtered = logs.filter(l => !(l.task_id === id && l.date === logDate));
+            filtered.push({ id: nextId('task_logs'), task_id: id, date: logDate, status: 'skipped', created_at: nowIso() });
+            saveTable('task_logs', filtered);
+            if (!isRepeat) { updated.skipped = true; updated.completed = false; }
           } else {
-            updated.completed = false; // 补记历史：模板本身仍为待办
-            updated.last_completed_at = nowIso();
+            // 取消跳过：删除该天的跳过日志
+            saveTable('task_logs', logs.filter(l => !(l.task_id === id && l.date === logDate && (l.status || 'done') === 'skipped')));
+            if (!isRepeat) { updated.skipped = false; }
           }
-        } else {
-          // 取消完成：删除该日期的完成日志（日历上恢复为未完成）
-          const cancelDate = body.date || updated.due_date;
-          saveTable('task_logs', loadTable('task_logs').filter(l => !(l.task_id === id && l.date === cancelDate)));
-          updated.last_completed_at = null;
+        }
+
+        // 处理"完成"（重复任务：写日志+滚动指针；非重复任务：直接标记+清除跳过）
+        if (body && 'completed' in body) {
+          if (isRepeat) {
+            if (body.completed) {
+              const logs = loadTable('task_logs');
+              // 完成时清除该天已有的跳过日志（互斥），写入完成日志
+              const filtered = logs.filter(l => !(l.task_id === id && l.date === logDate));
+              filtered.push({ id: nextId('task_logs'), task_id: id, date: logDate, status: 'done', created_at: nowIso() });
+              saveTable('task_logs', filtered);
+              if (!body.date || body.date >= updated.due_date) {
+                const next = nextRepeatDate(updated);
+                if (next) { updated.due_date = next; updated.completed = false; updated.last_completed_at = nowIso(); }
+              } else {
+                updated.completed = false;
+                updated.last_completed_at = nowIso();
+              }
+            } else {
+              // 取消完成：删除该日期的完成日志
+              saveTable('task_logs', loadTable('task_logs').filter(l => !(l.task_id === id && l.date === logDate)));
+              updated.last_completed_at = null;
+            }
+          } else {
+            // 非重复任务完成时清除跳过标记
+            if (body.completed) updated.skipped = false;
+          }
         }
       }
       rows[idx] = updated;
@@ -390,18 +429,24 @@
       do { d.setDate(d.getDate() + 1); } while (d.getDay() === 0 || d.getDay() === 6);
     } else if (r === 'weekly') d.setDate(d.getDate() + 7);
     else if (r === 'monthly') {
-      // 下月同日（月末 clamp，避免 1/31 → 3/3 跳过 2月）
+      // 下月同日：锚定 repeat_start 的日号（避免 1/31→2/28→3/28 的 clamp 漂移与日历展开不一致）
+      const anchorDay = t.repeat_start ? parseInt(String(t.repeat_start).slice(8, 10)) : NaN;
+      const dayNum = isNaN(anchorDay) ? d.getDate() : anchorDay;
       const y2 = d.getFullYear(), m2 = d.getMonth() + 1;
       const ny = m2 === 12 ? y2 + 1 : y2, nm = m2 === 12 ? 1 : m2 + 1;
       const last = new Date(ny, nm, 0).getDate();
-      d.setFullYear(ny, nm - 1, Math.min(d.getDate(), last));
+      d.setFullYear(ny, nm - 1, Math.min(dayNum, last));
     }
-    else if (r === 'custom' && t.repeat_days) {
-      const days = new Set(String(t.repeat_days).split(',').map(x => parseInt(x)).filter(x => !isNaN(x)));
-      for (let i = 0; i < 15; i++) {
-        d.setDate(d.getDate() + 1);
-        const wd = d.getDay() === 0 ? 6 : d.getDay() - 1;
-        if (days.has(wd)) break;
+    else if (r === 'custom') {
+      const days = new Set(String(t.repeat_days || '').split(',').map(x => parseInt(x)).filter(x => !isNaN(x)));
+      if (days.size === 0) {
+        d.setDate(d.getDate() + 7); // 无有效星期配置，按周兜底，避免空循环滚到 15 天后
+      } else {
+        for (let i = 0; i < 15; i++) {
+          d.setDate(d.getDate() + 1);
+          const wd = d.getDay() === 0 ? 6 : d.getDay() - 1;
+          if (days.has(wd)) break;
+        }
       }
     }
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -421,14 +466,15 @@
           if (t.repeat && t.repeat !== 'none') {
             const occ = expandRepeatInMonth(t, y, m);
             if (occ) {
-              // 查完成日志：哪天打了勾，日历上哪天显示灰色划线
-              const doneDates = new Set(
-                loadTable('task_logs').filter(l => l.task_id === t.id).map(l => l.date)
-              );
+              // 查状态日志：done→打钩灰色划线，skipped→红色打叉划线
+              const logs = loadTable('task_logs').filter(l => l.task_id === t.id);
+              const logMap = {};
+              logs.forEach(l => { logMap[l.date] = l.status || 'done'; });
               occ.forEach(od => {
                 const copy = Object.assign({}, t);
                 copy.due_date = od;
-                if (doneDates.has(od)) copy.completed = true;
+                copy.completed = logMap[od] === 'done';
+                copy.skipped = logMap[od] === 'skipped';
                 result.push(copy);
               });
               return;

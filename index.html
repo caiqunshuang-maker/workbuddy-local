@@ -340,6 +340,22 @@
             font-size: 0.7rem;
             font-weight: 700;
         }
+        .task-item .checkbox-skip {
+            width: 20px; height: 20px; border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer; flex-shrink: 0;
+            margin-top: 2px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s;
+            font-size: 0.6rem; color: var(--text-muted);
+            line-height: 1;
+        }
+        .task-item .checkbox-skip.skipped {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+            font-weight: 700;
+        }
         .task-item .task-body { flex: 1; }
         .task-item .task-title {
             font-weight: 500;
@@ -614,6 +630,13 @@
             filter: grayscale(1);
             background: #f0f1f4;
             color: #9aa0ad;
+        }
+        .calendar-grid .day-cell .cell-item.skipped {
+            text-decoration: line-through;
+            text-decoration-thickness: 1.5px;
+            opacity: 0.6;
+            background: #fee2e2;
+            color: #dc2626;
         }
         .calendar-grid .day-cell .cell-item.schedule-item {
             background: #eef2f7;
@@ -1915,9 +1938,12 @@
             } else {
                 container.innerHTML = todayTasks.map(t =>
                     `<div class="task-item" style="margin-bottom:6px;">
-                        <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
+                        <div style="display:flex;gap:4px;flex-shrink:0;">
+                            <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
+                            <div class="checkbox-skip ${t.skipped ? 'skipped' : ''}" onclick="toggleTaskSkip(${t.id})">✕</div>
+                        </div>
                         <div class="task-body">
-                            <div class="task-title ${t.completed ? 'done' : ''}">${esc(t.title)}</div>
+                            <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
                             <div class="task-meta"><span class="tag tag-${t.priority}">${priorityLabel(t.priority)}</span></div>
                         </div>
                     </div>`
@@ -1970,9 +1996,12 @@
                     : { daily: '🔄每天', weekdays: '🔄工作日', weekly: '🔄每周', monthly: '🔄每月' }[t.repeat] || '';
                 return `
                 <div class="task-item">
-                    <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
+                    <div style="display:flex;gap:4px;flex-shrink:0;">
+                        <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
+                        <div class="checkbox-skip ${t.skipped ? 'skipped' : ''}" onclick="toggleTaskSkip(${t.id})">✕</div>
+                    </div>
                     <div class="task-body">
-                        <div class="task-title ${t.completed ? 'done' : ''}">${esc(t.title)}</div>
+                        <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
                         <div class="task-meta">
                             <span class="tag tag-${t.priority}">${priorityLabel(t.priority)}</span>
                             <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
@@ -2023,6 +2052,16 @@
             loadDashboard();
         }
 
+        async function toggleTaskSkip(id) {
+            const task = state.tasks.find(t => t.id === id) || await api(`/api/tasks/${id}`);
+            await api(`/api/tasks/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({ skipped: !task.skipped }),
+            });
+            renderTasks();
+            loadDashboard();
+        }
+
         async function deleteTask(id) {
             confirmDialog('确定删除这个待办吗？', async () => {
                 await api(`/api/tasks/${id}`, { method: 'DELETE' });
@@ -2065,7 +2104,7 @@
                 <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                     <div>
                         <label>截止日期（可选）</label>
-                        <input id="taskDue" type="date" value="${isEdit && task.due_date ? task.due_date : new Date().toISOString().split('T')[0]}">
+                        <input id="taskDue" type="date" value="${isEdit && task.due_date ? task.due_date : todayStr()}">
                         <div class="input-hint">默认今天 · 留空则放在「未安排日期」</div>
                     </div>
                     <div>
@@ -2249,7 +2288,8 @@
                     items.push(`<div class="cell-item workout-item">${wlabel}</div>`);
                 }
                 dayTasks.forEach(t => {
-                    items.push(`<div class="cell-item todo-${t.category}${t.completed ? ' done' : ''}">${esc(t.title)}</div>`);
+                    const cls = t.completed ? ' done' : t.skipped ? ' skipped' : '';
+                    items.push(`<div class="cell-item todo-${t.category}${cls}">${esc(t.title)}</div>`);
                 });
                 daySchedules.forEach(s => {
                     items.push(`<div class="cell-item schedule-item" style="--sc:${s.color}">${esc(s.title)}${s.time ? ' ' + esc(s.time) : ''}</div>`);
@@ -2437,9 +2477,12 @@
             }
             el.innerHTML = noDate.map(t => `
                 <div class="task-item" style="margin-bottom:4px;">
-                    <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
+                    <div style="display:flex;gap:4px;flex-shrink:0;">
+                        <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
+                        <div class="checkbox-skip ${t.skipped ? 'skipped' : ''}" onclick="toggleTaskSkip(${t.id})">✕</div>
+                    </div>
                     <div class="task-body">
-                        <div class="task-title ${t.completed ? 'done' : ''}">${esc(t.title)}</div>
+                        <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
                         <div class="task-meta">
                             <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
                             <span style="color:var(--text-muted);">未设置日期</span>
@@ -2541,9 +2584,12 @@
                         ? '<div style="color:var(--text-muted);font-size:0.82rem;padding:8px 0;">当天没有待办</div>'
                         : tasks.map(t => `
                             <div class="task-item" style="margin-bottom:4px;box-shadow:none;border:1px solid var(--border);">
-                                <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTaskFromCalendar(${t.id}, '${dateStr}', ${t.completed})"></div>
+                                <div style="display:flex;gap:4px;flex-shrink:0;">
+                                    <div class="checkbox ${t.completed ? 'checked' : ''}" onclick="toggleTaskFromCalendar(${t.id}, '${dateStr}', ${t.completed})"></div>
+                                    <div class="checkbox-skip ${t.skipped ? 'skipped' : ''}" onclick="toggleTaskSkipFromCalendar(${t.id}, '${dateStr}', ${t.skipped})">✕</div>
+                                </div>
                                 <div class="task-body">
-                                    <div class="task-title ${t.completed ? 'done' : ''}">${esc(t.title)}</div>
+                                    <div class="task-title ${t.completed || t.skipped ? 'done' : ''}">${esc(t.title)}</div>
                                     <div class="task-meta">
                                         <span class="tag tag-${t.category}">${categoryLabel(t.category)}</span>
                                         ${t.due_time ? `<span>⏰ ${t.due_time}</span>` : ''}
@@ -2582,6 +2628,17 @@
             await api(`/api/tasks/${id}`, {
                 method: 'PUT',
                 body: JSON.stringify({ completed: !completed, date: dateStr }),
+            });
+            await openDayDetail(dateStr);
+            renderTasks();
+            renderCalendar();
+            loadDashboard();
+        }
+
+        async function toggleTaskSkipFromCalendar(id, dateStr, skipped) {
+            await api(`/api/tasks/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({ skipped: !skipped, date: dateStr }),
             });
             await openDayDetail(dateStr);
             renderTasks();
@@ -2675,7 +2732,7 @@
         const diaryState = {
             year: new Date().getFullYear(),
             month: new Date().getMonth() + 1,
-            selectedDate: new Date().toISOString().split('T')[0],
+            selectedDate: todayStr(),
             monthDiaries: [],
         };
 
@@ -2833,7 +2890,7 @@
                 // Normalize images to plain URL strings for internal state
                 diaryImages = diary ? (diary.images || []).map(it => (typeof it === 'object' && it) ? it.url : it) : [];
                 const overlay = document.getElementById('modalOverlay');
-                const today = diaryState.selectedDate || new Date().toISOString().split('T')[0];
+                const today = diaryState.selectedDate || todayStr();
                 overlay.innerHTML = `
                 <div class="modal" style="width:600px;">
                     <h3>${isEdit ? '✏️ 编辑日记' : '📖 写日记'}</h3>
@@ -3087,37 +3144,35 @@
                 </div>`;
 
             // Expense pie chart
-            const ctxPie = document.getElementById('expensePieChart');
-            if (expensePieChart) expensePieChart.destroy();
+            if (expensePieChart) { expensePieChart.destroy(); expensePieChart = null; }
             const pieCats = Object.keys(stats.expense_by_cat);
+            const pieBox = document.getElementById('expensePieChart');
+            if (!pieBox) return;
+            // 每次重建容器内容：空态不留隐藏 canvas，有数据时重建可见 canvas（修复：旧逻辑复用 display:none 的画布导致图表永远不可见）
             if (pieCats.length === 0) {
-                const parent = ctxPie.parentElement;
-                parent.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="icon">🍔</div><p>本月暂无支出</p></div><canvas id="expensePieChart" height="220" style="display:none;"></canvas>';
+                pieBox.parentElement.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="icon">🍔</div><p>本月暂无支出</p></div>';
             } else {
-            if (!document.getElementById('expensePieChart')) {
-                const parent = ctxPie.parentElement;
-                parent.innerHTML = '<canvas id="expensePieChart" height="220"></canvas>';
-            }
-            const pieColors = ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6', '#10b981', '#ec4899', '#14b8a6', '#64748b'];
-            expensePieChart = new Chart(document.getElementById('expensePieChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: pieCats,
-                    datasets: [{
-                        data: pieCats.map(c => stats.expense_by_cat[c]),
-                        backgroundColor: pieColors.slice(0, pieCats.length),
-                        borderWidth: 2,
-                        borderColor: '#fff',
-                    }],
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { font: { size: 11 } } },
-                        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ¥${ctx.raw.toFixed(2)}` } },
+                pieBox.parentElement.innerHTML = '<canvas id="expensePieChart" height="220"></canvas>';
+                const pieColors = ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6', '#10b981', '#ec4899', '#14b8a6', '#64748b'];
+                expensePieChart = new Chart(document.getElementById('expensePieChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: pieCats,
+                        datasets: [{
+                            data: pieCats.map(c => stats.expense_by_cat[c]),
+                            backgroundColor: pieColors.slice(0, pieCats.length),
+                            borderWidth: 2,
+                            borderColor: '#fff',
+                        }],
                     },
-                },
-            });
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { size: 11 } } },
+                            tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ¥${ctx.raw.toFixed(2)}` } },
+                        },
+                    },
+                });
             }
 
             // Daily trend chart
@@ -3186,7 +3241,7 @@
             const isEdit = !!txn;
             const cats = type === 'income' ? INCOME_CATS : EXPENSE_CATS;
             const overlay = document.getElementById('modalOverlay');
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayStr();
             // 记住上次用的分类（非编辑时）
             let lastCat = null;
             if (!isEdit) {
@@ -3321,7 +3376,7 @@
                         category: it.category || '吃喝',
                         note: it.note || it.name || it.title || '',
                         txn_type: (it.type === 'income' || INCOME_CATS.includes(it.category || '')) ? 'income' : 'expense',
-                        date: it.date || new Date().toISOString().split('T')[0],
+                        date: it.date || todayStr(),
                     };
                 }).filter(i => i.amount > 0);
                 if (aiImportItems.length === 0) throw new Error('识别结果里没有有效金额');
@@ -3349,7 +3404,7 @@
                 category: cat,
                 note,
                 txn_type: INCOME_CATS.includes(cat) ? 'income' : 'expense',
-                date: new Date().toISOString().split('T')[0],
+                date: todayStr(),
             };
         }
 
@@ -3383,7 +3438,7 @@
                     category: cat,
                     note,
                     txn_type: isIncome ? 'income' : 'expense',
-                    date: new Date().toISOString().split('T')[0],
+                    date: todayStr(),
                 });
             }
             if (items.length === 0) return alert('没解析出有效账单，请检查格式（每行要有金额数字）');
@@ -3774,7 +3829,6 @@
             }
             list.innerHTML = workouts.map(w => {
                 const typeLabel = w.workout_type === 'strength' ? '力量训练' : w.workout_type === 'cardio' ? '有氧运动' : '混合训练';
-                const wtypeEl = `力量`; // short tag
                 return `
                 <div class="workout-card">
                     <div class="wo-header">
@@ -3820,7 +3874,7 @@
 
         function openWorkoutModal() {
             const overlay = document.getElementById('modalOverlay');
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayStr();
             overlay.innerHTML = `
             <div class="modal" style="width:560px;">
                 <h3>🏋️ 记录训练</h3>
@@ -3917,7 +3971,7 @@
             const prev = withW[1] || null;
             const today = todayStr();
             const diff = (latest && prev) ? Math.round((latest.weight - prev.weight) * 10) / 10 : null;
-            const diffStr = diff === null ? '' : (diff > 0 ? `▲ +${diff}kg` : `▼ ${diff}kg`);
+            const diffStr = diff === null ? '' : (diff > 0 ? `▲ +${diff}kg` : diff < 0 ? `▼ ${diff}kg` : `± ${diff}kg`);
             el.innerHTML = `
             <div class="weight-hero">
                 <div class="wh-svg">
@@ -4095,22 +4149,19 @@
         async function renderWeightChart(metrics) {
             const ctx = document.getElementById('weightChart');
             if (!ctx) return;
-            if (weightChartInstance) weightChartInstance.destroy();
-            const withW = metrics.filter(m => m.weight !== null && m.weight !== undefined);
+            if (weightChartInstance) { weightChartInstance.destroy(); weightChartInstance = null; }
+            const withW = metrics.filter(m => m.weight != null);
             if (withW.length === 0) {
-                const parent = ctx.parentElement;
-                parent.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="icon">📉</div><p>暂无体重数据，点上面的「记录体重」开始吧！</p></div><canvas id="weightChart" height="220" style="display:none;"></canvas>';
+                ctx.parentElement.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="icon">📉</div><p>暂无体重数据，点上面的「记录体重」开始吧！</p></div>';
                 return;
             }
-            if (!document.getElementById('weightChart')) {
-                const parent = ctx.parentElement;
-                parent.innerHTML = '<canvas id="weightChart" height="220"></canvas>';
-            }
+            // 每次重建可见 canvas（修复：旧逻辑复用空态留下的 display:none 画布导致图表永远不可见）
+            ctx.parentElement.innerHTML = '<canvas id="weightChart" height="220"></canvas>';
             const canvas = document.getElementById('weightChart');
             // API 返回按日期降序(最新在前)，折线图需按时间升序，先排序再画
             const sorted = metrics.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
             const labels = sorted.map(m => m.date.slice(5));
-            const weightData = sorted.map(m => m.weight !== null && m.weight !== undefined ? m.weight : null);
+            const weightData = sorted.map(m => m.weight != null ? m.weight : null);
             weightChartInstance = new Chart(canvas, {
                 type: 'line',
                 data: {
@@ -4151,10 +4202,10 @@
                     <div class="task-body">
                         <div class="task-title">📅 ${m.date}</div>
                         <div class="task-meta">
-                            ${m.weight !== null ? `⚖️ ${m.weight}kg` : ''}
-                            ${m.body_fat !== null ? ` 体脂 ${m.body_fat}%` : ''}
-                            ${m.bmi !== null ? ` BMI ${m.bmi}` : ''}
-                            ${m.waist !== null ? ` 腰围 ${m.waist}cm` : ''}
+                            ${m.weight != null ? `⚖️ ${m.weight}kg` : ''}
+                            ${m.body_fat != null ? ` 体脂 ${m.body_fat}%` : ''}
+                            ${m.bmi != null ? ` BMI ${m.bmi}` : ''}
+                            ${m.waist != null ? ` 腰围 ${m.waist}cm` : ''}
                         </div>
                     </div>
                     <div class="actions">
@@ -4165,7 +4216,7 @@
         }
 
         function openMetricModal() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = todayStr();
             const overlay = document.getElementById('modalOverlay');
             overlay.innerHTML = `
             <div class="modal" style="width:520px;">
@@ -4193,25 +4244,29 @@
         }
 
         async function saveMetric() {
+            const numVal = v => { const n = parseFloat(v); return isNaN(n) ? null : n; };
             const data = {
                 date: document.getElementById('mDate').value,
-                weight: parseFloat(document.getElementById('mWeight').value) || null,
-                body_fat: parseFloat(document.getElementById('mBodyFat').value) || null,
-                waist: parseFloat(document.getElementById('mWaist').value) || null,
-                chest: parseFloat(document.getElementById('mChest').value) || null,
-                hip: parseFloat(document.getElementById('mHip').value) || null,
-                arm: parseFloat(document.getElementById('mArm').value) || null,
-                thigh: parseFloat(document.getElementById('mThigh').value) || null,
+                weight: numVal(document.getElementById('mWeight').value),
+                body_fat: numVal(document.getElementById('mBodyFat').value),
+                waist: numVal(document.getElementById('mWaist').value),
+                chest: numVal(document.getElementById('mChest').value),
+                hip: numVal(document.getElementById('mHip').value),
+                arm: numVal(document.getElementById('mArm').value),
+                thigh: numVal(document.getElementById('mThigh').value),
             };
             if (!data.date) return alert('请选择日期');
-            if (!data.weight && !data.body_fat && !data.waist) return alert('请至少输入一项数据');
+            if (data.weight === null && data.body_fat === null && data.waist === null && data.chest === null && data.hip === null && data.arm === null && data.thigh === null) return alert('请至少输入一项数据');
+            // 未填的字段（null）从 payload 中剔除：合并更新时不覆盖当天已有的其他指标
+            const payload = Object.assign({}, data);
+            Object.keys(payload).forEach(k => { if (payload[k] === null) delete payload[k]; });
             // 同一天已有记录则合并更新，避免重复
             const metrics = await api('/api/body-metrics');
             const existing = metrics.find(m => m.date === data.date);
             if (existing) {
-                await api(`/api/body-metrics/${existing.id}`, { method: 'PUT', body: JSON.stringify(data) });
+                await api(`/api/body-metrics/${existing.id}`, { method: 'PUT', body: JSON.stringify(payload) });
             } else {
-                await api('/api/body-metrics', { method: 'POST', body: JSON.stringify(data) });
+                await api('/api/body-metrics', { method: 'POST', body: JSON.stringify(payload) });
             }
             closeModal();
             renderMetricsChart();
@@ -4330,11 +4385,12 @@
         }
 
         async function saveGoal(id) {
+            const numVal = v => { const n = parseFloat(v); return isNaN(n) ? null : n; };
             const data = {
                 title: document.getElementById('gTitle').value.trim(),
-                start_value: parseFloat(document.getElementById('gStart').value) || null,
-                current_value: parseFloat(document.getElementById('gCurrent').value) || null,
-                target_value: parseFloat(document.getElementById('gTarget').value) || null,
+                start_value: numVal(document.getElementById('gStart').value),
+                current_value: numVal(document.getElementById('gCurrent').value),
+                target_value: numVal(document.getElementById('gTarget').value),
                 unit: document.getElementById('gUnit').value,
                 start_date: document.getElementById('gStartDate').value || null,
                 target_date: document.getElementById('gTargetDate').value || null,
@@ -4342,10 +4398,13 @@
                 achieved: document.getElementById('gAchieved').checked,
             };
             if (!data.title) return alert('请输入目标名称');
+            // 未填数值字段（null）剔除：编辑时不覆盖已有值
+            const payload = Object.assign({}, data);
+            Object.keys(payload).forEach(k => { if (payload[k] === null) delete payload[k]; });
             if (id) {
-                await api(`/api/fitness-goals/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+                await api(`/api/fitness-goals/${id}`, { method: 'PUT', body: JSON.stringify(payload) });
             } else {
-                await api('/api/fitness-goals', { method: 'POST', body: JSON.stringify(data) });
+                await api('/api/fitness-goals', { method: 'POST', body: JSON.stringify(payload) });
             }
             closeModal();
             renderGoals();
@@ -4714,10 +4773,28 @@
                 api(`/api/schedules?year=${y2}&month=${m2}`),
             ]);
 
-            // 待办完成率
-            const monthTasks = tasks.filter(t => t.due_date && t.due_date.startsWith(ms));
-            const totalTasks = monthTasks.length;
-            const doneTasks = monthTasks.filter(t => t.completed).length;
+            // 待办完成率：普通任务按 due_date+completed；重复任务按该月展开日期 + task_logs 日志（done/skipped）
+            const taskLogs = await api('/api/task-logs');
+            const logsThisMonth = taskLogs.filter(l => l.date && l.date.startsWith(ms));
+            const repeatIds = new Set(tasks.filter(t => t.repeat && t.repeat !== 'none').map(t => t.id));
+            const doneLogSet = new Set(logsThisMonth.filter(l => repeatIds.has(l.task_id) && (l.status || 'done') === 'done').map(l => l.task_id + '|' + l.date));
+            const skipLogSet = new Set(logsThisMonth.filter(l => repeatIds.has(l.task_id) && l.status === 'skipped').map(l => l.task_id + '|' + l.date));
+            let totalTasks = 0, doneTasks = 0, skippedTasks = 0;
+            tasks.forEach(t => {
+                if (t.repeat && t.repeat !== 'none') {
+                    const occ = repeatDatesInMonth(t, y2, m2);
+                    occ.forEach(d => {
+                        const key = t.id + '|' + d;
+                        if (skipLogSet.has(key)) { skippedTasks++; return; } // 跳过不计入总数
+                        totalTasks++;
+                        if (doneLogSet.has(key)) doneTasks++;
+                    });
+                } else if (t.due_date && t.due_date.startsWith(ms)) {
+                    if (t.skipped) { skippedTasks++; return; }
+                    totalTasks++;
+                    if (t.completed) doneTasks++;
+                }
+            });
             const doneRate = totalTasks > 0 ? Math.round(doneTasks / totalTasks * 100) : 0;
 
             // 收支
@@ -4748,7 +4825,7 @@
                 <div class="review-card" style="background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);text-align:center;">
                     <div style="font-size:0.8rem;color:var(--text-muted);">📋 待办完成率</div>
                     <div style="font-size:1.6rem;font-weight:700;margin-top:4px;color:${doneRate >= 60 ? 'var(--green)' : doneRate >= 30 ? 'var(--orange)' : 'var(--red)'};">${doneRate}%</div>
-                    <div style="font-size:0.75rem;color:var(--text-muted);">${doneTasks}/${totalTasks} 完成</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);">${doneTasks}/${totalTasks} 完成${skippedTasks > 0 ? ` · ${skippedTasks}跳过` : ''}</div>
                 </div>
                 <div class="review-card" style="background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);text-align:center;">
                     <div style="font-size:0.8rem;color:var(--text-muted);">💰 本月结余</div>
@@ -4833,9 +4910,49 @@
             return div.innerHTML;
         }
 
+        // 重复待办在指定月份的展开日期（与 localdb.expandRepeatInMonth 逻辑一致）
+        function repeatDatesInMonth(t, y, m) {
+            const r = t.repeat;
+            if (!r || r === 'none') return [];
+            const startStr = t.repeat_start || t.due_date;
+            const base = startStr ? new Date(startStr + 'T00:00:00') : new Date();
+            const lastDay = new Date(y, m, 0).getDate();
+            const out = [];
+            if (y < base.getFullYear() || (y === base.getFullYear() && m < base.getMonth() + 1)) return out;
+            if (r === 'custom' && t.repeat_days) {
+                const days = new Set(String(t.repeat_days).split(',').map(x => parseInt(x)).filter(x => !isNaN(x)));
+                for (let d = 1; d <= lastDay; d++) {
+                    const dt = new Date(y, m - 1, d);
+                    if (dt >= base && days.has(dt.getDay() === 0 ? 6 : dt.getDay() - 1)) out.push(dt);
+                }
+            } else if (r === 'weekly') {
+                const dow = base.getDay();
+                for (let d = 1; d <= lastDay; d++) {
+                    const dt = new Date(y, m - 1, d);
+                    if (dt >= base && dt.getDay() === dow) out.push(dt);
+                }
+            } else if (r === 'monthly') {
+                const day = Math.min(base.getDate(), lastDay);
+                out.push(new Date(y, m - 1, day));
+            } else if (r === 'daily') {
+                for (let d = 1; d <= lastDay; d++) {
+                    const dt = new Date(y, m - 1, d);
+                    if (dt >= base) out.push(dt);
+                }
+            } else if (r === 'weekdays') {
+                for (let d = 1; d <= lastDay; d++) {
+                    const dt = new Date(y, m - 1, d);
+                    if (dt >= base && dt.getDay() >= 1 && dt.getDay() <= 5) out.push(dt);
+                }
+            }
+            return out.map(dt => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`);
+        }
+
         function formatDate(iso) {
             if (!iso) return '';
-            const d = new Date(iso);
+            // 兼容 "YYYY-MM-DD HH:MM:SS.mmm"（nowIso 格式，iOS Safari 不认空格分隔，需转成 ISO 格式再解析）
+            const d = new Date(String(iso).replace(' ', 'T'));
+            if (isNaN(d.getTime())) return String(iso);
             return d.toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         }
 
@@ -4900,22 +5017,20 @@
 
         // ===== Init =====
         // "跳舞"每周三待办自愈（幂等：每次启动都检查，不依赖任何标记）
-        // 1. 有跳舞任务但缺 repeat_start → 补起点 2026-01-07（1月起每个周三都显示）
-        // 2. 有多条跳舞 → 合并保留最早一条
+        // 1. 先等 seed 导入完成，避免竞态导致 tasks 演示数据被跳过
+        // 2. 有跳舞任务但缺 repeat_start → 只补起点，绝不删除用户可能新建的其他跳舞任务
         // 3. 完全没有 → 创建一条
         (async function initDanceTask() {
             try {
+                if (window.LocalDB && LocalDB.seedIfNeeded) { try { await LocalDB.seedIfNeeded(); } catch (e) {} }
                 const tasks = await api('/api/tasks');
                 const dances = tasks.filter(t => t.title === '跳舞' && (t.repeat === 'weekly' || t.repeat === 'custom'));
                 if (dances.length > 0) {
-                    const keep = dances.slice().sort((a, b) => (a.id || 0) - (b.id || 0))[0];
                     for (const d of dances) {
-                        if (d.id === keep.id) continue;
-                        await api(`/api/tasks/${d.id}`, { method: 'DELETE' });
-                    }
-                    if (!keep.repeat_start) {
-                        await api(`/api/tasks/${keep.id}`, { method: 'PUT', body: JSON.stringify({ repeat_start: '2026-01-07' }) });
-                        console.log('[init] 跳舞任务已补起点 2026-01-07');
+                        if (!d.repeat_start) {
+                            await api(`/api/tasks/${d.id}`, { method: 'PUT', body: JSON.stringify({ repeat_start: '2026-01-07' }) });
+                            console.log('[init] 跳舞任务已补起点 2026-01-07');
+                        }
                     }
                     return;
                 }
@@ -4926,8 +5041,8 @@
                         due_date: '2026-01-07',
                         repeat_start: '2026-01-07',
                         repeat: 'weekly',
-                        category: '生活',
-                        priority: 2,
+                        category: 'life',
+                        priority: 'medium',
                         completed: 0
                     })
                 });
@@ -4939,7 +5054,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v14';
+                b.textContent = 'v16';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
