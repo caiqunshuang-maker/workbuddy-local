@@ -1017,6 +1017,140 @@
         }
         .workout-card .wo-exercise:last-child { border-bottom: none; }
 
+        /* ===== Action Library ===== */
+        .al-searchbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .al-searchbar input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background: var(--surface);
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .al-searchbar input:focus { border-color: var(--primary); }
+        .al-body {
+            display: flex;
+            gap: 12px;
+            min-height: 540px;
+        }
+        .al-cats {
+            flex: 0 0 88px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 6px;
+            box-shadow: var(--shadow);
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+        .al-cat-item {
+            padding: 10px 6px;
+            font-size: 0.88rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+            transition: background 0.15s;
+        }
+        .al-cat-item:hover { background: var(--surface-hover); }
+        .al-cat-item.active {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+        }
+        .al-grid-wrap {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 70vh;
+            padding-right: 4px;
+        }
+        .al-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .al-card {
+            background: var(--surface);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            position: relative;
+        }
+        .al-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .al-card-img {
+            width: 100%;
+            height: 110px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .al-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .al-card-tag {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background: var(--blue);
+            color: #fff;
+            font-size: 0.62rem;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        .al-card-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 8px 8px 2px;
+            color: var(--text);
+            text-align: center;
+            line-height: 1.2;
+        }
+        .al-card-meta {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 0 6px 8px;
+        }
+        .al-empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            width: 100%;
+        }
+        @media (max-width: 640px) {
+            .al-body { flex-direction: column; }
+            .al-cats {
+                flex: none;
+                max-height: none;
+                display: flex;
+                overflow-x: auto;
+                max-width: 100%;
+            }
+            .al-cat-item {
+                flex: 0 0 auto;
+                padding: 6px 12px;
+                margin-bottom: 0;
+                margin-right: 4px;
+            }
+            .al-grid-wrap { max-height: none; }
+        }
+
         .metric-form-inline {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -1671,6 +1805,7 @@
             <div class="page" id="page-fitness">
                 <div class="fitness-tabs" id="fitnessTabs">
                     <button class="fitness-tab active" data-panel="workout">🏋️ 训练记录</button>
+                    <button class="fitness-tab" data-panel="actions">🎬 动作库</button>
                     <button class="fitness-tab" data-panel="metrics">📈 体质追踪</button>
                     <button class="fitness-tab" data-panel="goals">🎯 目标</button>
                 </div>
@@ -1732,6 +1867,17 @@
                         <button class="btn btn-primary" onclick="openGoalModal()">＋ 设置目标</button>
                     </div>
                     <div id="goalList"></div>
+                </div>
+
+                <!-- Panel: Action Library -->
+                <div class="fitness-panel" id="panel-actions">
+                    <div class="al-searchbar">
+                        <input type="text" id="alSearch" placeholder="🔍 输入动作名字搜索" oninput="renderActionLibrary()">
+                        <button class="btn btn-primary" onclick="openActionLibraryPicker()">＋ 选动作</button>
+                    </div>
+                    <div class="al-body" id="alBody">
+                        <div class="al-empty">加载中...</div>
+                    </div>
                 </div>
             </div>
 
@@ -1923,6 +2069,10 @@
             document.getElementById(`panel-${tab.dataset.panel}`).classList.add('active');
             if (tab.dataset.panel === 'metrics') renderMetricsChart();
             if (tab.dataset.panel === 'goals') renderGoals();
+            if (tab.dataset.panel === 'actions') {
+                if (ACTION_LIBRARY_LOADED) renderActionLibrary();
+                else loadActionLibrary().then(renderActionLibrary);
+            }
         });
 
         // ===== Date display =====
@@ -4074,6 +4224,7 @@
         // ===== Fitness =====
 
         async function loadFitness() {
+            await loadActionLibrary();
             renderWorkouts();
             renderMetricsChart();
             renderGoals();
@@ -4158,7 +4309,15 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>训练内容 <span style="font-weight:400;color:var(--text-muted);font-size:0.75rem;">（一行一个动作，支持自然语言输入）</span></label>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <label style="margin:0;">训练内容 <span style="font-weight:400;color:var(--text-muted);font-size:0.75rem;">（一行一个动作）</span></label>
+                        <button class="btn btn-outline btn-sm" type="button" onclick="toggleInlinePicker()">🎬 从动作库选</button>
+                    </div>
+                    <div id="inlinePicker" style="display:none;margin-bottom:10px;padding:10px;background:var(--bg);border-radius:8px;border:1px solid var(--border);max-height:340px;overflow-y:auto;">
+                        <input type="text" id="pickerSearch" placeholder="🔍 搜索动作名/部位/器材" oninput="renderInlinePicker()" style="width:100%;padding:7px 12px;border:1px solid var(--border);border-radius:14px;background:var(--surface);outline:none;margin-bottom:8px;font-size:0.85rem;">
+                        <div style="margin-bottom:8px;line-height:1.8;font-size:0.78rem;" id="pickerCats"></div>
+                        <div id="pickerGrid"></div>
+                    </div>
                     <textarea id="woExercises" placeholder="示例：&#10;卧推 50kg 3x10&#10;深蹲 60kg 5组5次&#10;引体向上 4x8&#10;跑步 30min&#10;跳绳 500个&#10;游泳 1km" style="min-height:120px;"></textarea>
                     <div class="input-hint">💡 支持格式：卧推 50kg 3x10 / 引体向上 4x8 / 跑步 30min / 跳绳 500个</div>
                 </div>
@@ -4220,6 +4379,195 @@
                 loadDashboard();
                 renderCalendar();
             });
+        }
+
+        // ----- Action Library -----
+        let ACTION_LIBRARY = [];
+        let ACTION_LIBRARY_LOADED = false;
+        let CURRENT_AL_CAT = '全部';
+
+        const AL_CATS = ['全部', '胸', '上胸', '中下胸', '背', '腿', '肩', '前锯肌', '斜方肌',
+                         '二头', '三头', '小腿', '前臂', '颈部', '臀部', '核心稳定'];
+
+        async function loadActionLibrary() {
+            if (ACTION_LIBRARY_LOADED) return ACTION_LIBRARY;
+            try {
+                const res = await fetch('action_lib/img_manifest.json?_=' + Date.now());
+                const data = await res.json();
+                ACTION_LIBRARY = data.map(a => ({
+                    ...a,
+                    img: 'action_lib/' + a.img,
+                }));
+                ACTION_LIBRARY_LOADED = true;
+                console.log(`Action Library loaded: ${ACTION_LIBRARY.length} actions`);
+            } catch (e) {
+                console.error('Failed to load action library:', e);
+                ACTION_LIBRARY = [];
+            }
+            return ACTION_LIBRARY;
+        }
+
+        function alMatches(action, query) {
+            if (!query) return true;
+            const q = query.toLowerCase().trim();
+            return action.name_en.toLowerCase().includes(q) ||
+                   action.category.includes(q) ||
+                   (action.equipment_cn || '').includes(q) ||
+                   (action.main_muscle || '').includes(q);
+        }
+
+        function renderActionLibrary() {
+            const body = document.getElementById('alBody');
+            if (!body) return;
+            const search = (document.getElementById('alSearch')?.value || '').trim();
+            const cat = CURRENT_AL_CAT;
+
+            // 分类计数
+            const catCount = {};
+            AL_CATS.forEach(c => catCount[c] = 0);
+            catCount['全部'] = ACTION_LIBRARY.length;
+            ACTION_LIBRARY.forEach(a => {
+                if (alMatches(a, search)) {
+                    catCount[a.category] = (catCount[a.category] || 0) + 1;
+                }
+            });
+
+            // 类别列表
+            const catsHtml = AL_CATS.map(c => {
+                const count = catCount[c] || 0;
+                const disabled = count === 0 ? 'disabled' : '';
+                const active = c === cat ? 'active' : '';
+                return `<div class="al-cat-item ${active} ${disabled}" onclick="selectALCat('${c}')">${c} ${count}</div>`;
+            }).join('');
+
+            // 动作卡片
+            const filtered = ACTION_LIBRARY.filter(a =>
+                (cat === '全部' || a.category === cat) && alMatches(a, search)
+            );
+
+            if (filtered.length === 0) {
+                body.innerHTML = `<div class="al-cats">${catsHtml}</div><div class="al-grid-wrap"><div class="al-empty">没有匹配的动作</div></div>`;
+                return;
+            }
+
+            const cardsHtml = filtered.map(a => `
+                <div class="al-card" onclick="showActionDetail('${a.id}')">
+                    <div class="al-card-img"><img src="${esc(a.img)}" alt="${esc(a.name_en)}" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='💪'"></div>
+                    <div class="al-card-tag">讲解</div>
+                    <div class="al-card-name">${esc(a.name_en)}</div>
+                    <div class="al-card-meta">${esc(a.category)} · ${esc(a.equipment_cn)}</div>
+                </div>
+            `).join('');
+
+            body.innerHTML = `<div class="al-cats">${catsHtml}</div><div class="al-grid-wrap"><div class="al-grid">${cardsHtml}</div></div>`;
+        }
+
+        function selectALCat(cat) {
+            CURRENT_AL_CAT = cat;
+            renderActionLibrary();
+        }
+
+        function showActionDetail(id) {
+            const a = ACTION_LIBRARY.find(x => x.id === id);
+            if (!a) return;
+            const overlay = document.getElementById('modalOverlay');
+            const instructionsHtml = (a.instructions || []).map((s, i) =>
+                `<div style="display:flex;gap:8px;margin-bottom:6px;font-size:0.85rem;line-height:1.5;"><span style="flex:0 0 20px;height:20px;background:var(--primary);color:#fff;border-radius:50%;font-size:0.75rem;display:flex;align-items:center;justify-content:center;">${i+1}</span><span>${esc(s)}</span></div>`
+            ).join('');
+            overlay.innerHTML = `
+            <div class="modal" style="width:560px;max-width:96vw;">
+                <div style="display:flex;gap:14px;align-items:center;margin-bottom:14px;">
+                    <img src="${esc(a.img)}" style="width:120px;height:120px;object-fit:contain;background:#f3f4f6;border-radius:8px;" onerror="this.style.display='none'">
+                    <div>
+                        <h3 style="margin:0 0 4px;">${esc(a.name_en)}</h3>
+                        <div style="font-size:0.85rem;color:var(--text-muted);">${esc(a.category)} · ${esc(a.equipment_cn)} · ${esc(a.level || '')}</div>
+                        <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;">主肌群：${esc((a.primary_muscles || []).join(' / '))}</div>
+                    </div>
+                </div>
+                <h4 style="font-size:0.9rem;margin:12px 0 8px;">📝 动作要领</h4>
+                <div>${instructionsHtml || '<div style="color:var(--text-muted);font-size:0.85rem;">暂无说明</div>'}</div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="closeModal()">关闭</button>
+                    <button class="btn btn-primary" onclick="closeModal();addActionToWorkout('${a.id}')">＋ 加入训练</button>
+                </div>
+            </div>`;
+            overlay.classList.add('open');
+        }
+
+        // 训练 modal 内嵌的动作库选择器（不嵌套 modal）
+        function toggleInlinePicker() {
+            const el = document.getElementById('inlinePicker');
+            if (!el) return;
+            const show = el.style.display === 'none';
+            el.style.display = show ? 'block' : 'none';
+            if (show) {
+                if (ACTION_LIBRARY.length === 0) {
+                    loadActionLibrary().then(renderInlinePicker);
+                } else {
+                    renderInlinePicker();
+                }
+            }
+        }
+
+        function selectInlinePickerCat(cat) {
+            window.PICKER_CAT = cat;
+            renderInlinePicker();
+        }
+
+        function renderInlinePicker() {
+            const catsEl = document.getElementById('pickerCats');
+            const grid = document.getElementById('pickerGrid');
+            if (!catsEl || !grid) return;
+            const search = (document.getElementById('pickerSearch')?.value || '').trim();
+            const cat = window.PICKER_CAT || '全部';
+
+            // 分类按钮（按部位去重，只显示有动作的）
+            const presentCats = new Set(['全部']);
+            ACTION_LIBRARY.forEach(a => {
+                if (alMatches(a, search)) presentCats.add(a.category);
+            });
+            catsEl.innerHTML = AL_CATS.filter(c => presentCats.has(c)).map(c => {
+                const cls = c === cat ? 'btn-primary' : 'btn-outline';
+                return `<button class="btn btn-sm ${cls}" style="margin:2px;" onclick="selectInlinePickerCat('${c}')">${c}</button>`;
+            }).join('');
+
+            const filtered = ACTION_LIBRARY.filter(a =>
+                (cat === '全部' || a.category === cat) && alMatches(a, search)
+            );
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">没有匹配的动作</div>';
+                return;
+            }
+            grid.innerHTML = `<div class="al-grid">${filtered.map(a => `
+                <div class="al-card" onclick="addActionToWorkout('${a.id}')">
+                    <div class="al-card-img"><img src="${esc(a.img)}" alt="${esc(a.name_en)}" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='💪'"></div>
+                    <div class="al-card-tag">＋</div>
+                    <div class="al-card-name">${esc(a.name_en)}</div>
+                    <div class="al-card-meta">${esc(a.category)} · ${esc(a.equipment_cn)}</div>
+                </div>`).join('')}</div>`;
+        }
+
+        // 把动作加入训练草稿（textarea 追加一行，不关 modal）
+        function addActionToWorkout(id) {
+            const a = ACTION_LIBRARY.find(x => x.id === id);
+            if (!a) return;
+            const ta = document.getElementById('woExercises');
+            if (!ta) {
+                closeModal();
+                return;
+            }
+            const cur = ta.value.trim();
+            const isStrength = ['杠铃', '哑铃', '绳索', '器械', '弯杆'].includes(a.equipment_cn);
+            let line = a.name_en;
+            if (isStrength) {
+                line += ' 3组12次';
+            } else if (a.equipment_cn === '徒手') {
+                line += ' 3组';
+            }
+            ta.value = cur ? (cur + '\n' + line) : line;
+            // 视觉反馈
+            ta.style.boxShadow = '0 0 0 2px rgba(99,102,241,0.3)';
+            setTimeout(() => { ta.style.boxShadow = ''; }, 600);
         }
 
         // ----- Body Metrics -----
@@ -5325,7 +5673,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v24';
+                b.textContent = 'v25';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }

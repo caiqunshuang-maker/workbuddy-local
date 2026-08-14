@@ -1,5 +1,5 @@
 /* 御前指挥部 - Service Worker：实现离线可用 */
-const CACHE_NAME = 'workbuddy-v24';
+const CACHE_NAME = 'workbuddy-v25';
 const ASSETS = [
   './',
   './index.html',
@@ -12,6 +12,7 @@ const ASSETS = [
   './icon-192-maskable.png',
   './icon-512-maskable.png',
   './apple-touch-icon.png',
+  './action_lib/img_manifest.json',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
   'https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js',
 ];
