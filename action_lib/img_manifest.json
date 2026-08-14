@@ -16,13 +16,20 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Lie back on a flat bench. Using a medium width grip (a grip that creates a 90-degree angle in the middle of the movement between the forearms and the upper arms), lift the bar from the rack and hold it straight over you with your arms locked. This will be your starting position.",
-      "From the starting position, breathe in and begin coming down slowly until the bar touches your middle chest.",
-      "After a brief pause, push the bar back to the starting position as you breathe out. Focus on pushing the bar using your chest muscles. Lock your arms and squeeze your chest in the contracted position at the top of the motion, hold for a second and then start coming down slowly again. Tip: Ideally, lowering the weight should take about twice as long as raising it.",
-      "Repeat the movement for the prescribed amount of repetitions.",
-      "When you are done, place the bar back in the rack."
+      "仰卧在平凳上，双手采用中握距（下放时前臂与上臂呈 90 度角），将杠铃从架上取下，双臂伸直举于胸部正上方，此为起始姿势。",
+      "吸气，缓慢下放杠铃至轻触胸部中段。",
+      "稍作停顿后，呼气，用胸肌发力将杠铃推回起始位置，顶端锁定手臂并挤压胸肌，停 1 秒再缓慢下放。",
+      "按计划次数重复动作，完成后将杠铃放回架上。"
     ],
-    "name_cn": "杠铃卧推（中握距）"
+    "name_cn": "杠铃卧推（中握距）",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "胸肌"
+    ],
+    "secondary_cn": [
+      "肩部（三角肌）",
+      "肱三头肌"
+    ]
   },
   {
     "id": "Decline_Dumbbell_Bench_Press",
@@ -41,14 +48,21 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Secure your legs at the end of the decline bench and lie down with a dumbbell on each hand on top of your thighs. The palms of your hand will be facing each other.",
-      "Once you are laying down, move the dumbbells in front of you at shoulder width.",
-      "Once at shoulder width, rotate your wrists forward so that the palms of your hands are facing away from you. This will be your starting position.",
-      "Bring down the weights slowly to your side as you breathe out. Keep full control of the dumbbells at all times. Tip: Throughout the motion, the forearms should always be perpendicular to the floor.",
-      "As you breathe out, push the dumbbells up using your pectoral muscles. Lock your arms in the contracted position, squeeze your chest, hold for a second and then start coming down slowly. Tip: It should take at least twice as long to go down than to come up..",
-      "Repeat the movement for the prescribed amount of repetitions of your training program."
+      "将双腿固定在下斜凳末端，躺下，双手各握一只哑铃放在大腿上，掌心相对。",
+      "躺好后，将哑铃移到胸前与肩同宽，转腕使掌心朝前，此为起始姿势。",
+      "呼气，缓慢将哑铃下放至身体两侧，全程保持对哑铃的控制，前臂始终垂直于地面。",
+      "呼气，用胸肌发力将哑铃推起，顶端锁定手臂、挤压胸肌，停 1 秒后缓慢下放。",
+      "按训练计划次数重复。"
     ],
-    "name_cn": "下斜哑铃卧推"
+    "name_cn": "下斜哑铃卧推",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "胸肌"
+    ],
+    "secondary_cn": [
+      "肩部（三角肌）",
+      "肱三头肌"
+    ]
   },
   {
     "id": "Incline_Dumbbell_Press",
@@ -67,15 +81,21 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Lie back on an incline bench with a dumbbell in each hand atop your thighs. The palms of your hands will be facing each other.",
-      "Then, using your thighs to help push the dumbbells up, lift the dumbbells one at a time so that you can hold them at shoulder width.",
-      "Once you have the dumbbells raised to shoulder width, rotate your wrists forward so that the palms of your hands are facing away from you. This will be your starting position.",
-      "Be sure to keep full control of the dumbbells at all times. Then breathe out and push the dumbbells up with your chest.",
-      "Lock your arms at the top, hold for a second, and then start slowly lowering the weight. Tip Ideally, lowering the weights should take about twice as long as raising them.",
-      "Repeat the movement for the prescribed amount of repetitions.",
-      "When you are done, place the dumbbells back on your thighs and then on the floor. This is the safest manner to release the dumbbells."
+      "仰卧在上斜凳上，双手各握一只哑铃放在大腿上，掌心相对。",
+      "借助大腿将哑铃逐只推至肩宽位置，转腕使掌心朝前，此为起始姿势。",
+      "全程保持对哑铃的控制，呼气，用胸部发力将哑铃向上推起。",
+      "顶端锁定手臂，停 1 秒后缓慢下放，下放时间约为上推的两倍。",
+      "按计划次数重复，完成后将哑铃放回大腿再放到地面，安全卸力。"
     ],
-    "name_cn": "上斜哑铃卧推"
+    "name_cn": "上斜哑铃卧推",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "胸肌"
+    ],
+    "secondary_cn": [
+      "肩部（三角肌）",
+      "肱三头肌"
+    ]
   },
   {
     "id": "Cable_Crossover",
@@ -93,13 +113,19 @@
     ],
     "level": "beginner",
     "instructions": [
-      "To get yourself into the starting position, place the pulleys on a high position (above your head), select the resistance to be used and hold the pulleys in each hand.",
-      "Step forward in front of an imaginary straight line between both pulleys while pulling your arms together in front of you. Your torso should have a small forward bend from the waist. This will be your starting position.",
-      "With a slight bend on your elbows in order to prevent stress at the biceps tendon, extend your arms to the side (straight out at both sides) in a wide arc until you feel a stretch on your chest. Breathe in as you perform this portion of the movement. Tip: Keep in mind that throughout the movement, the arms and torso should remain stationary; the movement should only occur at the shoulder joint.",
-      "Return your arms back to the starting position as you breathe out. Make sure to use the same arc of motion used to lower the weights.",
-      "Hold for a second at the starting position and repeat the movement for the prescribed amount of repetitions."
+      "将绳索滑轮调至高位（高于头顶），选择合适的重量，双手各握一个手柄。",
+      "身体前倾一小步，双臂在身前合拢，躯干从腰部微微前倾，此为起始姿势。",
+      "肘部微屈（避免二头肌腱受力），双臂向两侧大幅张开，直到胸部有拉伸感，吸气。",
+      "呼气，沿同样弧线将双臂收回起始位置，停顿 1 秒后重复。"
     ],
-    "name_cn": "绳索夹胸"
+    "name_cn": "绳索夹胸",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "胸肌"
+    ],
+    "secondary_cn": [
+      "肩部（三角肌）"
+    ]
   },
   {
     "id": "Decline_Dumbbell_Flyes",
@@ -115,13 +141,17 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Secure your legs at the end of the decline bench and lie down with a dumbbell on each hand on top of your thighs. The palms of your hand will be facing each other.",
-      "Once you are laying down, move the dumbbells in front of you at shoulder width. The palms of the hands should be facing each other and the arms should be perpendicular to the floor and fully extended. This will be your starting position.",
-      "With a slight bend on your elbows in order to prevent stress at the biceps tendon, lower your arms out at both sides in a wide arc until you feel a stretch on your chest. Breathe in as you perform this portion of the movement. Tip: Keep in mind that throughout the movement, the arms should remain stationary; the movement should only occur at the shoulder joint.",
-      "Return your arms back to the starting position as you squeeze your chest muscles and breathe out. Tip: Make sure to use the same arc of motion used to lower the weights.",
-      "Hold for a second at the contracted position and repeat the movement for the prescribed amount of repetitions."
+      "将双腿固定在下斜凳末端，躺下，双手各握一只哑铃放在大腿上，掌心相对。",
+      "将哑铃举到胸前与肩同宽，双臂伸直垂直于地面，掌心相对，此为起始姿势。",
+      "肘部微屈，双臂向两侧大幅张开，直到胸部有拉伸感，吸气。",
+      "呼气，用胸肌发力将双臂沿同样弧线收回起始位置，顶端挤压胸肌停顿 1 秒。"
     ],
-    "name_cn": "下斜哑铃飞鸟"
+    "name_cn": "下斜哑铃飞鸟",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "胸肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Plyo_Kettlebell_Pushups",
@@ -140,11 +170,19 @@
     ],
     "level": "expert",
     "instructions": [
-      "Place a kettlebell on the floor. Place yourself in a pushup position, on your toes with one hand on the ground and one hand holding the kettlebell, with your elbows extended. This will be your starting position.",
-      "Begin by lowering yourself as low as you can, keeping your back straight.",
-      "Quickly and forcefully reverse direction, pushing yourself up to the other side of the kettlebell, switching hands as you do so. Continue the movement by descending and repeating the movement back and forth."
+      "地面放一只壶铃，呈俯卧撑姿势：脚尖着地，一手撑地，一手握住壶铃，双臂伸直，此为起始姿势。",
+      "保持背部挺直，尽可能低地下降身体。",
+      "快速有力地向壶铃另一侧推起，同时换手支撑，连续左右交替进行。"
     ],
-    "name_cn": "壶铃弹跳俯卧撑"
+    "name_cn": "壶铃弹跳俯卧撑",
+    "level_cn": "高级",
+    "muscles_cn": [
+      "胸肌"
+    ],
+    "secondary_cn": [
+      "肩部（三角肌）",
+      "肱三头肌"
+    ]
   },
   {
     "id": "Cable_Chest_Press",
@@ -163,12 +201,20 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Adjust the weight to an appropriate amount and be seated, grasping the handles. Your upper arms should be about 45 degrees to the body, with your head and chest up. The elbows should be bent to about 90 degrees. This will be your starting position.",
-      "Begin by extending through the elbow, pressing the handles together straight in front of you. Keep your shoulder blades retracted as you execute the movement.",
-      "After pausing at full extension, return to th starting position, keeping tension on the cables.",
-      "You can also execute this movement with your back off the pad, at an incline or decline, or alternate hands."
+      "坐在绳索推胸器上，握住手柄，上臂与身体约成 45 度，肘部约弯 90 度，抬头挺胸，此为起始姿势。",
+      "肘部伸直，将手柄在胸前向正前方推合，过程中保持肩胛骨后收。",
+      "完全伸展后稍作停顿，保持绳索张力，缓慢回到起始姿势。",
+      "也可将背部离开靠垫、调整斜度或左右交替手进行。"
     ],
-    "name_cn": "绳索推胸"
+    "name_cn": "绳索推胸",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "胸肌"
+    ],
+    "secondary_cn": [
+      "肩部（三角肌）",
+      "肱三头肌"
+    ]
   },
   {
     "id": "Pullups",
@@ -187,13 +233,21 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Grab the pull-up bar with the palms facing forward using the prescribed grip. Note on grips: For a wide grip, your hands need to be spaced out at a distance wider than your shoulder width. For a medium grip, your hands need to be spaced out at a distance equal to your shoulder width and for a close grip at a distance smaller than your shoulder width.",
-      "As you have both arms extended in front of you holding the bar at the chosen grip width, bring your torso back around 30 degrees or so while creating a curvature on your lower back and sticking your chest out. This is your starting position.",
-      "Pull your torso up until the bar touches your upper chest by drawing the shoulders and the upper arms down and back. Exhale as you perform this portion of the movement. Tip: Concentrate on squeezing the back muscles once you reach the full contracted position. The upper torso should remain stationary as it moves through space and only the arms should move. The forearms should do no other work other than hold the bar.",
-      "After a second on the contracted position, start to inhale and slowly lower your torso back to the starting position when your arms are fully extended and the lats are fully stretched.",
-      "Repeat this motion for the prescribed amount of repetitions."
+      "双手正握（掌心朝前）抓住单杠，握距按需要选择：宽握为大于肩宽，中握为与肩同宽，窄握为小于肩宽。",
+      "双臂伸直悬垂，躯干后倾约 30 度，挺胸、下背微弓，此为起始姿势。",
+      "呼气，将肩胛和上臂向下向后拉，把身体拉起直到上胸接近横杠，顶端用力挤压背部肌肉。",
+      "顶端停顿 1 秒后，吸气，缓慢下放身体回到起始姿势，直到手臂完全伸直、背阔肌充分伸展。",
+      "按计划次数重复。"
     ],
-    "name_cn": "引体向上"
+    "name_cn": "引体向上",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "背阔肌"
+    ],
+    "secondary_cn": [
+      "肱二头肌",
+      "中背部"
+    ]
   },
   {
     "id": "Seated_Cable_Rows",
@@ -213,13 +267,22 @@
     ],
     "level": "beginner",
     "instructions": [
-      "For this exercise you will need access to a low pulley row machine with a V-bar. Note: The V-bar will enable you to have a neutral grip where the palms of your hands face each other. To get into the starting position, first sit down on the machine and place your feet on the front platform or crossbar provided making sure that your knees are slightly bent and not locked.",
-      "Lean over as you keep the natural alignment of your back and grab the V-bar handles.",
-      "With your arms extended pull back until your torso is at a 90-degree angle from your legs. Your back should be slightly arched and your chest should be sticking out. You should be feeling a nice stretch on your lats as you hold the bar in front of you. This is the starting position of the exercise.",
-      "Keeping the torso stationary, pull the handles back towards your torso while keeping the arms close to it until you touch the abdominals. Breathe out as you perform that movement. At that point you should be squeezing your back muscles hard. Hold that contraction for a second and slowly go back to the original position while breathing in.",
-      "Repeat for the recommended amount of repetitions."
+      "坐于低位滑轮划船器前，双脚踩在前方踏板上，膝盖微屈不锁死，用 V 形把手（掌心相对握法）。",
+      "保持背部自然挺直，俯身抓住 V 形把手。",
+      "手臂伸直，将躯干拉回至与大腿呈 90 度，背部微弓、挺胸，感觉背阔肌被拉开，此为起始姿势。",
+      "躯干保持不动，呼气，将把手拉向腹部，拉到底时用力挤压背部肌肉，停顿 1 秒。",
+      "吸气，缓慢回到起始姿势，按推荐次数重复。"
     ],
-    "name_cn": "坐姿绳索划船"
+    "name_cn": "坐姿绳索划船",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "中背部"
+    ],
+    "secondary_cn": [
+      "肱二头肌",
+      "背阔肌",
+      "肩部（三角肌）"
+    ]
   },
   {
     "id": "Lying_T-Bar_Row",
@@ -238,14 +301,21 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Load up the T-bar Row Machine with the desired weight and adjust the leg height so that your upper chest is at the top of the pad. Tip: In some machines all you can do is stand on the appropriate step that allows you to be at a height that has the upper chest at the top of the pad.",
-      "Lay face down on the pad and grab the handles. You can either use a palms down, palms up, or palms in position depending on what part of your back you want to emphasize.",
-      "Lift the bar off the rack and extend your arms in front of you. This will be your starting position.",
-      "As you exhale slowly pull the weight up and squeeze your back at the top of the movement. Tip: Keep the upper arms as close to the torso as possible throughout the movement in order to better engage the back muscles. Also, do not lift your body off of the pad at any time and refrain from using the biceps to lift the weight.",
-      "After a second contraction at the top of the movement, as you inhale, slowly go back down to the starting position.",
-      "Repeat for the recommended amount of repetitions."
+      "为 T 杠划船机装载合适重量，调整踏板高度，使上胸位于垫板顶端。",
+      "俯卧在垫板上抓住把手，握法（正握/反握/对握）可按想强化的背部区域选择。",
+      "将杠从架上抬起，双臂向前伸直，此为起始姿势。",
+      "呼气，缓慢将重量拉起，顶端用力挤压背部；全程保持上臂贴近躯干、身体不离垫板，不要用二头肌借力。",
+      "顶端收缩 1 秒后，吸气，缓慢下放回起始姿势，按次数重复。"
     ],
-    "name_cn": "俯卧 T 杠划船"
+    "name_cn": "俯卧 T 杠划船",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "中背部"
+    ],
+    "secondary_cn": [
+      "肱二头肌",
+      "背阔肌"
+    ]
   },
   {
     "id": "Hyperextensions_Back_Extensions",
@@ -264,14 +334,21 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Lie face down on a hyperextension bench, tucking your ankles securely under the footpads.",
-      "Adjust the upper pad if possible so your upper thighs lie flat across the wide pad, leaving enough room for you to bend at the waist without any restriction.",
-      "With your body straight, cross your arms in front of you (my preference) or behind your head. This will be your starting position. Tip: You can also hold a weight plate for extra resistance in front of you under your crossed arms.",
-      "Start bending forward slowly at the waist as far as you can while keeping your back flat. Inhale as you perform this movement. Keep moving forward until you feel a nice stretch on the hamstrings and you can no longer keep going without a rounding of the back. Tip: Never round the back as you perform this exercise. Also, some people can go farther than others. The key thing is that you go as far as your body allows you to without rounding the back.",
-      "Slowly raise your torso back to the initial position as you inhale. Tip: Avoid the temptation to arch your back past a straight line. Also, do not swing the torso at any time in order to protect the back from injury.",
-      "Repeat for the recommended amount of repetitions."
+      "俯卧在山羊挺身凳上，脚踝固定在脚垫下方。",
+      "调整上垫位置，使大腿上部平贴宽垫，腰部能自由弯曲。",
+      "身体伸直，双臂在胸前交叉（或放在头后），可额外抱一片杠铃片增加负重，此为起始姿势。",
+      "吸气，保持背部平直，从腰部缓慢前屈至最大限度（腘绳肌有拉伸感、背部即将弓起为止），全程不要弓背。",
+      "呼气，缓慢抬起躯干回到起始位置，不要过度后仰、不要摆动身体，按次数重复。"
     ],
-    "name_cn": "山羊挺身（背部伸展）"
+    "name_cn": "山羊挺身（背部伸展）",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "下背部"
+    ],
+    "secondary_cn": [
+      "臀肌",
+      "腘绳肌"
+    ]
   },
   {
     "id": "Low_Pulley_Row_To_Neck",
@@ -291,13 +368,21 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Sit on a low pulley row machine with a rope attachment.",
-      "Grab the ends of the rope using a palms-down grip and sit with your back straight and your knees slightly bent. Tip: Keep your back almost completely vertical and your arms fully extended in front of you. This will be your starting position.",
-      "While keeping your torso stationary, lift your elbows and start bending them as you pull the rope towards your neck while exhaling. Throughout the movement your upper arms should remain parallel to the floor. Tip: Continue this motion until your hands are almost next to your ears (the forearms will not be parallel to the floor at the end of the movement as they will be angled a bit upwards) and your elbows are out away from your sides.",
-      "After holding for a second or so at the contracted position, come back slowly to the starting position as you inhale. Tip: Again, during no part of the movement should the torso move.",
-      "Repeat for the recommended amount of repetitions."
+      "坐在低位滑轮划船器前，使用绳索把手。",
+      "正握（掌心向下）抓住绳索两端，背部挺直、膝盖微屈，手臂在身前完全伸直，此为起始姿势。",
+      "躯干保持不动，呼气，抬肘并弯曲手臂，将绳索拉向颈部方向，上臂全程与地面平行。",
+      "顶端停顿 1 秒，吸气，缓慢回到起始姿势，全程躯干不动。"
     ],
-    "name_cn": "低位绳索颈后划船"
+    "name_cn": "低位绳索颈后划船",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肩部（三角肌）"
+    ],
+    "secondary_cn": [
+      "肱二头肌",
+      "中背部",
+      "斜方肌"
+    ]
   },
   {
     "id": "Barbell_Squat",
@@ -318,14 +403,23 @@
     ],
     "level": "beginner",
     "instructions": [
-      "This exercise is best performed inside a squat rack for safety purposes. To begin, first set the bar on a rack to just below shoulder level. Once the correct height is chosen and the bar is loaded, step under the bar and place the back of your shoulders (slightly below the neck) across it.",
-      "Hold on to the bar using both arms at each side and lift it off the rack by first pushing with your legs and at the same time straightening your torso.",
-      "Step away from the rack and position your legs using a shoulder width medium stance with the toes slightly pointed out. Keep your head up at all times and also maintain a straight back. This will be your starting position. (Note: For the purposes of this discussion we will use the medium stance described above which targets overall development; however you can choose any of the three stances discussed in the foot stances section).",
-      "Begin to slowly lower the bar by bending the knees and hips as you maintain a straight posture with the head up. Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees. Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
-      "Begin to raise the bar as you exhale by pushing the floor with the heel of your foot as you straighten the legs again and go back to the starting position.",
-      "Repeat for the recommended amount of repetitions."
+      "建议在深蹲架内进行以保证安全。将杠铃调至略低于肩的高度，站到杠下，让杠铃压在肩部后侧（略低于颈部）。",
+      "双手在两侧握杠，先用腿发力将杠抬起，同时挺直躯干，退出深蹲架。",
+      "双脚与肩同宽、脚尖微微外展，抬头挺直背部，此为起始姿势。",
+      "吸气，保持抬头挺背，屈膝屈髋缓慢下蹲，直到大腿与小腿夹角略小于 90 度；膝盖不要超过脚尖过多。",
+      "呼气，用脚跟蹬地，伸直双腿回到起始姿势，按次数重复。"
     ],
-    "name_cn": "杠铃深蹲"
+    "name_cn": "杠铃深蹲",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "股四头肌"
+    ],
+    "secondary_cn": [
+      "小腿",
+      "臀肌",
+      "腘绳肌",
+      "下背部"
+    ]
   },
   {
     "id": "Dumbbell_Lunges",
@@ -345,12 +439,21 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Stand with your torso upright holding two dumbbells in your hands by your sides. This will be your starting position.",
-      "Step forward with your right leg around 2 feet or so from the foot being left stationary behind and lower your upper body down, while keeping the torso upright and maintaining balance. Inhale as you go down. Note: As in the other exercises, do not allow your knee to go forward beyond your toes as you come down, as this will put undue stress on the knee joint. Make sure that you keep your front shin perpendicular to the ground.",
-      "Using mainly the heel of your foot, push up and go back to the starting position as you exhale.",
-      "Repeat the movement for the recommended amount of repetitions and then perform with the left leg."
+      "身体直立，双手各握一只哑铃自然垂于体侧，此为起始姿势。",
+      "吸气，右脚向前迈出约两尺，屈膝下蹲，保持躯干直立和平衡；前腿小腿垂直于地面，膝盖不要过度超过脚尖。",
+      "呼气，主要用前脚脚跟发力推起，回到起始姿势。",
+      "完成一侧的推荐次数后，换左腿重复。"
     ],
-    "name_cn": "哑铃箭步蹲"
+    "name_cn": "哑铃箭步蹲",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "股四头肌"
+    ],
+    "secondary_cn": [
+      "小腿",
+      "臀肌",
+      "腘绳肌"
+    ]
   },
   {
     "id": "Calf_Press_On_The_Leg_Press_Machine",
@@ -366,13 +469,17 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Using a leg press machine, sit down on the machine and place your legs on the platform directly in front of you at a medium (shoulder width) foot stance.",
-      "Lower the safety bars holding the weighted platform in place and press the platform all the way up until your legs are fully extended in front of you without locking your knees. (Note: In some leg press units you can leave the safety bars on for increased safety. If your leg press unit allows for this, then this is the preferred method of performing the exercise.) Your torso and the legs should make perfect 90-degree angle. Now carefully place your toes and balls of your feet on the lower portion of the platform with the heels extending off. Toes should be facing forward, outwards or inwards as described at the beginning of the chapter. This will be your starting position.",
-      "Press on the platform by raising your heels as you breathe out by extending your ankles as high as possible and flexing your calf. Ensure that the knee is kept stationary at all times. There should be no bending at any time. Hold the contracted position by a second before you start to go back down.",
-      "Go back slowly to the starting position as you breathe in by lowering your heels as you bend the ankles until calves are stretched.",
-      "Repeat for the recommended amount of repetitions."
+      "坐在腿举机上，双脚以肩宽站距放在踏板上。",
+      "松开安全杆，将踏板推至双腿完全伸展（膝盖不锁死），身体与大腿呈 90 度；将前脚掌放在踏板下部，脚跟悬空，此为起始姿势。",
+      "呼气，用脚踝发力尽量抬高脚跟、挤压小腿，膝盖全程保持不动。",
+      "顶端停顿 1 秒，吸气，缓慢下放脚跟回到起始姿势，直到小腿充分拉伸。"
     ],
-    "name_cn": "腿举机提踵"
+    "name_cn": "腿举机提踵",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "小腿"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Leg_Extensions",
@@ -388,12 +495,16 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "For this exercise you will need to use a leg extension machine. First choose your weight and sit on the machine with your legs under the pad (feet pointed forward) and the hands holding the side bars. This will be your starting position. Tip: You will need to adjust the pad so that it falls on top of your lower leg (just above your feet). Also, make sure that your legs form a 90-degree angle between the lower and upper leg. If the angle is less than 90-degrees then that means the knee is over the toes which in turn creates undue stress at the knee joint. If the machine is designed that way, either look for another machine or just make sure that when you start executing the exercise you stop going down once you hit the 90-degree angle.",
-      "Using your quadriceps, extend your legs to the maximum as you exhale. Ensure that the rest of the body remains stationary on the seat. Pause a second on the contracted position.",
-      "Slowly lower the weight back to the original position as you inhale, ensuring that you do not go past the 90-degree angle limit.",
-      "Repeat for the recommended amount of times."
+      "坐于腿屈伸机上，调整垫块压在小腿上方（脚踝之上），大腿与小腿呈 90 度角，双手扶住两侧把手。",
+      "呼气，用股四头肌发力将腿伸直至最大限度，身体其余部位保持不动，顶端停顿 1 秒。",
+      "吸气，缓慢下放回到起始姿势，注意不要超过 90 度角，按次数重复。"
     ],
-    "name_cn": "腿屈伸"
+    "name_cn": "腿屈伸",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "股四头肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Lying_Leg_Curls",
@@ -409,12 +520,17 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Adjust the machine lever to fit your height and lie face down on the leg curl machine with the pad of the lever on the back of your legs (just a few inches under the calves). Tip: Preferably use a leg curl machine that is angled as opposed to flat since an angled position is more favorable for hamstrings recruitment.",
-      "Keeping the torso flat on the bench, ensure your legs are fully stretched and grab the side handles of the machine. Position your toes straight (or you can also use any of the other two stances described on the foot positioning section). This will be your starting position.",
-      "As you exhale, curl your legs up as far as possible without lifting the upper legs from the pad. Once you hit the fully contracted position, hold it for a second.",
-      "As you inhale, bring the legs back to the initial position. Repeat for the recommended amount of repetitions."
+      "调整器械杠杆高度，俯卧在腿弯举机上，杠杆垫压在小腿后侧（脚踝上方几厘米），建议使用有角度的器械。",
+      "躯干贴紧凳面，双腿完全伸直，双手抓住两侧把手，脚尖指向前方，此为起始姿势。",
+      "呼气，将小腿向上弯起至最大限度，全程大腿不要离开垫板，顶端收缩停顿 1 秒。",
+      "吸气，缓慢放回起始姿势，按次数重复。"
     ],
-    "name_cn": "俯卧腿弯举"
+    "name_cn": "俯卧腿弯举",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "腘绳肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Romanian_Deadlift",
@@ -434,13 +550,22 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Put a barbell in front of you on the ground and grab it using a pronated (palms facing down) grip that a little wider than shoulder width. Tip: Depending on the weight used, you may need wrist wraps to perform the exercise and also a raised platform in order to allow for better range of motion.",
-      "Bend the knees slightly and keep the shins vertical, hips back and back straight. This will be your starting position.",
-      "Keeping your back and arms completely straight at all times, use your hips to lift the bar as you exhale. Tip: The movement should not be fast but steady and under control.",
-      "Once you are standing completely straight up, lower the bar by pushing the hips back, only slightly bending the knees, unlike when squatting. Tip: Take a deep breath at the start of the movement and keep your chest up. Hold your breath as you lower and exhale as you complete the movement.",
-      "Repeat for the recommended amount of repetitions."
+      "杠铃置于身前地面，双手正握（掌心向下），握距略宽于肩，可用助力带辅助。",
+      "膝盖微屈、小腿垂直，臀部后移，背部挺直，此为起始姿势。",
+      "全程保持背部与手臂伸直，呼气，用臀部发力将杠铃拉起，动作要平稳有控制。",
+      "站直后，臀部后移下放杠铃，膝盖只微微弯曲（与深蹲不同）；下放前深吸气、挺胸，下放时屏气，完成时呼气。",
+      "按次数重复。"
     ],
-    "name_cn": "罗马尼亚硬拉"
+    "name_cn": "罗马尼亚硬拉",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "腘绳肌"
+    ],
+    "secondary_cn": [
+      "小腿",
+      "臀肌",
+      "下背部"
+    ]
   },
   {
     "id": "Front_Squats_With_Two_Kettlebells",
@@ -459,11 +584,19 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Clean two kettlebells to your shoulders. Clean the kettlebells to your shoulders by extending through the legs and hips as you pull the kettlebells towards your shoulders. Rotate your wrists as you do so.",
-      "Looking straight ahead at all times, squat as low as you can and pause at the bottom. As you squat down, push your knees out. You should squat between your legs, keeping an upright torso, with your head and chest up.",
-      "Rise back up by driving through your heels and repeat."
+      "将两只壶铃翻举到肩上：蹬腿伸髋将壶铃拉向肩部，同时转腕。",
+      "目视前方，尽量下蹲，底部稍作停顿；下蹲时膝盖向外打开，躯干保持直立、抬头挺胸。",
+      "用脚跟发力站起，重复动作。"
     ],
-    "name_cn": "双壶铃前蹲"
+    "name_cn": "双壶铃前蹲",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "股四头肌"
+    ],
+    "secondary_cn": [
+      "小腿",
+      "臀肌"
+    ]
   },
   {
     "id": "Narrow_Stance_Hack_Squats",
@@ -483,15 +616,23 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Place the back of your torso against the back pad of the machine and hook your shoulders under the shoulder pads provided.",
-      "Position your legs in the platform using a less than shoulder width narrow stance with the toes slightly pointed out. Your feet should be around 3 inches or less apart. Tip: Keep your head up at all times and also maintain the back on the pad at all times.",
-      "Place your arms on the side handles of the machine and disengage the safety bars (which on most designs is done by moving the side handles from a facing front position to a diagonal position).",
-      "Now straighten your legs without locking the knees. This will be your starting position.",
-      "Begin to slowly lower the unit by bending the knees as you maintain a straight posture with the head up (back on the pad at all times). Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees (which is the point in which the upper legs are below parallel to the floor). Inhale as you perform this portion of the movement.",
-      "Begin to raise the unit as you exhale by pushing the floor with mainly with the heels of your feet as you straighten the legs again and go back to the starting position.",
-      "Repeat for the recommended amount of repetitions."
+      "背部贴紧哈克机背垫，双肩抵住肩垫。",
+      "双脚以窄于肩宽的站距放在踏板上（两脚相距约 7 厘米以内），脚尖微微外展，全程抬头、背部贴垫。",
+      "双手扶住侧把手，解除安全杆。",
+      "伸直双腿但不锁死膝盖，此为起始姿势。",
+      "吸气，保持挺直，屈膝缓慢下放，直到大腿与小腿夹角略小于 90 度（大腿低于平行地面）。",
+      "呼气，主要用脚跟蹬地，伸直双腿回到起始姿势，按次数重复。"
     ],
-    "name_cn": "窄距哈克深蹲"
+    "name_cn": "窄距哈克深蹲",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "股四头肌"
+    ],
+    "secondary_cn": [
+      "小腿",
+      "臀肌",
+      "腘绳肌"
+    ]
   },
   {
     "id": "One-Arm_Kettlebell_Military_Press_To_The_Side",
@@ -509,11 +650,18 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Clean a kettlebell to your shoulder. Clean the kettlebell to your shoulder by extending through the legs and hips as you pull the kettlebell towards your shoulder. Rotate your wrist as you do so, so that the palm faces inward. This will be your starting position.",
-      "Look at the kettlebell and press it up and out until it is locked out overhead.",
-      "Lower the kettlebell back to your shoulder under control and repeat. Make sure to contract your lat, butt, and stomach forcefully for added stability and strength."
+      "将壶铃翻举到肩上：蹬腿伸髋将壶铃拉向肩部，同时转腕使掌心向内，此为起始姿势。",
+      "目视壶铃，将其向上、向外推举过头顶并锁定。",
+      "有控制地将壶铃放回肩上，重复；过程中收紧背阔肌、臀部和腹部以增加稳定性。"
     ],
-    "name_cn": "单臂壶铃侧向推举"
+    "name_cn": "单臂壶铃侧向推举",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "肩部（三角肌）"
+    ],
+    "secondary_cn": [
+      "肱三头肌"
+    ]
   },
   {
     "id": "Dumbbell_Shoulder_Press",
@@ -531,14 +679,20 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "While holding a dumbbell in each hand, sit on a military press bench or utility bench that has back support. Place the dumbbells upright on top of your thighs.",
-      "Now raise the dumbbells to shoulder height one at a time using your thighs to help propel them up into position.",
-      "Make sure to rotate your wrists so that the palms of your hands are facing forward. This is your starting position.",
-      "Now, exhale and push the dumbbells upward until they touch at the top.",
-      "Then, after a brief pause at the top contracted position, slowly lower the weights back down to the starting position while inhaling.",
-      "Repeat for the recommended amount of repetitions."
+      "双手各握一只哑铃，坐在有靠背的推举凳上，先将哑铃竖立放在大腿上。",
+      "借助大腿将哑铃逐只推至肩部高度。",
+      "转腕使掌心朝前，此为起始姿势。",
+      "呼气，将哑铃向上推起，直到顶端两哑铃轻触。",
+      "顶端稍作停顿，吸气，缓慢下放回起始姿势，按次数重复。"
     ],
-    "name_cn": "哑铃肩推"
+    "name_cn": "哑铃肩推",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "肩部（三角肌）"
+    ],
+    "secondary_cn": [
+      "肱三头肌"
+    ]
   },
   {
     "id": "Seated_Side_Lateral_Raise",
@@ -554,12 +708,16 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Pick a couple of dumbbells and sit at the end of a flat bench with your feet firmly on the floor. Hold the dumbbells with your palms facing in and your arms straight down at your sides at arms' length. This will be your starting position.",
-      "While maintaining the torso stationary (no swinging), lift the dumbbells to your side with a slight bend on the elbow and the hands slightly tilted forward as if pouring water in a glass. Continue to go up until you arms are parallel to the floor. Exhale as you execute this movement and pause for a second at the top.",
-      "Lower the dumbbells back down slowly to the starting position as you inhale.",
-      "Repeat for the recommended amount of repetitions."
+      "坐在平凳末端，双脚踩实地面，双手各握一只哑铃，掌心向内，手臂自然下垂于体侧，此为起始姿势。",
+      "躯干保持不动（不摆动借力），肘部微屈、手略前倾（像往杯里倒水），呼气，将哑铃向两侧抬起至与地面平行，顶端停顿 1 秒。",
+      "吸气，缓慢下放回起始姿势，按次数重复。"
     ],
-    "name_cn": "坐姿侧平举"
+    "name_cn": "坐姿侧平举",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肩部（三角肌）"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Front_Dumbbell_Raise",
@@ -575,12 +733,17 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Pick a couple of dumbbells and stand with a straight torso and the dumbbells on front of your thighs at arms length with the palms of the hand facing your thighs. This will be your starting position.",
-      "While maintaining the torso stationary (no swinging), lift the left dumbbell to the front with a slight bend on the elbow and the palms of the hands always facing down. Continue to go up until you arm is slightly above parallel to the floor. Exhale as you execute this portion of the movement and pause for a second at the top. Inhale after the second pause.",
-      "Now lower the dumbbell back down slowly to the starting position as you simultaneously lift the right dumbbell.",
-      "Continue alternating in this fashion until all of the recommended amount of repetitions have been performed for each arm."
+      "身体直立，双手各握一只哑铃垂于大腿前侧，掌心朝向大腿，此为起始姿势。",
+      "躯干保持不动，呼气，将左臂微屈肘向前抬起至略高于水平，掌心始终朝下，顶端停顿 1 秒后吸气下放。",
+      "下放左臂的同时抬起右臂，左右交替进行。",
+      "两侧各完成推荐次数。"
     ],
-    "name_cn": "哑铃前平举"
+    "name_cn": "哑铃前平举",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肩部（三角肌）"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Barbell_Rear_Delt_Row",
@@ -600,13 +763,21 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Stand up straight while holding a barbell using a wide (higher than shoulder width) and overhand (palms facing your body) grip.",
-      "Bend knees slightly and bend over as you keep the natural arch of your back. Let the arms hang in front of you as they hold the bar. Once your torso is parallel to the floor, flare the elbows out and away from your body. Tip: Your torso and your arms should resemble the letter \"T\". Now you are ready to begin the exercise.",
-      "While keeping the upper arms perpendicular to the torso, pull the barbell up towards your upper chest as you squeeze the rear delts and you breathe out. Tip: When performed correctly, this exercise should resemble a bench press in reverse. Also, refrain from using your biceps to do the work. Focus on targeting the rear delts; the arms should only act as hooks.",
-      "Slowly go back to the initial position as you breathe in.",
-      "Repeat for the recommended amount of repetitions."
+      "身体直立，双手宽握（大于肩宽）、正握（掌心朝前）杠铃。",
+      "膝盖微屈，保持背部自然弧度向前俯身，直到躯干与地面平行，双臂自然下垂，肘部向外展开，身体呈 T 字形。",
+      "保持上臂与躯干垂直，呼气，用肩后束发力将杠铃拉向上胸方向，不要用二头肌借力。",
+      "吸气，缓慢回到起始姿势，按次数重复。"
     ],
-    "name_cn": "杠铃后束划船"
+    "name_cn": "杠铃后束划船",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肩部（三角肌）"
+    ],
+    "secondary_cn": [
+      "肱二头肌",
+      "背阔肌",
+      "中背部"
+    ]
   },
   {
     "id": "Kettlebell_Arnold_Press",
@@ -624,11 +795,18 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Clean a kettlebell to your shoulder. Clean the kettlebell to your shoulder by extending through the legs and hips as you raise the kettlebell towards your shoulder. The palm should be facing inward.",
-      "Looking straight ahead, press the kettlebell out and overhead, rotating your wrist so that your palm faces forward at the top of the motion.",
-      "Return the kettlebell to the starting position, with the palm facing in."
+      "将壶铃翻举到肩上：蹬腿伸髋将壶铃拉向肩部，掌心向内。",
+      "目视前方，将壶铃向上推举过头顶，同时转腕使掌心在顶端朝前。",
+      "有控制地放回肩上（掌心向内），重复动作。"
     ],
-    "name_cn": "壶铃阿诺德推举"
+    "name_cn": "壶铃阿诺德推举",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "肩部（三角肌）"
+    ],
+    "secondary_cn": [
+      "肱三头肌"
+    ]
   },
   {
     "id": "Upright_Barbell_Row",
@@ -646,12 +824,18 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Grasp a barbell with an overhand grip that is slightly less than shoulder width. The bar should be resting on the top of your thighs with your arms extended and a slight bend in your elbows. Your back should also be straight. This will be your starting position.",
-      "Now exhale and use the sides of your shoulders to lift the bar, raising your elbows up and to the side. Keep the bar close to your body as you raise it. Continue to lift the bar until it nearly touches your chin. Tip: Your elbows should drive the motion, and should always be higher than your forearms. Remember to keep your torso stationary and pause for a second at the top of the movement.",
-      "Lower the bar back down slowly to the starting position. Inhale as you perform this portion of the movement.",
-      "Repeat for the recommended amount of repetitions."
+      "双手正握杠铃，握距略窄于肩宽，杠铃自然垂于大腿前上方，手臂伸直、肘部微屈，背部挺直，此为起始姿势。",
+      "呼气，用肩部两侧发力将杠铃向上提起，肘部向上向外引导，杠铃贴近身体，直到接近下巴高度；肘部始终高于前臂，躯干保持不动。",
+      "吸气，缓慢下放回起始姿势，按次数重复。"
     ],
-    "name_cn": "杠铃直立划船"
+    "name_cn": "杠铃直立划船",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肩部（三角肌）"
+    ],
+    "secondary_cn": [
+      "斜方肌"
+    ]
   },
   {
     "id": "Face_Pull",
@@ -669,9 +853,16 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Facing a high pulley with a rope or dual handles attached, pull the weight directly towards your face, separating your hands as you do so. Keep your upper arms parallel to the ground."
+      "面对高位滑轮，使用绳索或双把手，将重量直接拉向面部方向，同时双手向外分开，保持上臂与地面平行。"
     ],
-    "name_cn": "面拉"
+    "name_cn": "面拉",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "肩部（三角肌）"
+    ],
+    "secondary_cn": [
+      "中背部"
+    ]
   },
   {
     "id": "Barbell_Curl",
@@ -689,13 +880,19 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Stand up with your torso upright while holding a barbell at a shoulder-width grip. The palm of your hands should be facing forward and the elbows should be close to the torso. This will be your starting position.",
-      "While holding the upper arms stationary, curl the weights forward while contracting the biceps as you breathe out. Tip: Only the forearms should move.",
-      "Continue the movement until your biceps are fully contracted and the bar is at shoulder level. Hold the contracted position for a second and squeeze the biceps hard.",
-      "Slowly begin to bring the bar back to starting position as your breathe in.",
-      "Repeat for the recommended amount of repetitions."
+      "身体直立，双手与肩同宽正握（掌心朝前）杠铃，肘部贴近躯干，此为起始姿势。",
+      "上臂保持不动，呼气，收缩二头肌将杠铃弯举向前，只有前臂移动。",
+      "弯举至二头肌完全收缩、杠铃到达肩部高度，顶端挤压二头肌停顿 1 秒。",
+      "吸气，缓慢下放回起始姿势，按次数重复。"
     ],
-    "name_cn": "杠铃弯举"
+    "name_cn": "杠铃弯举",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肱二头肌"
+    ],
+    "secondary_cn": [
+      "前臂"
+    ]
   },
   {
     "id": "Cable_Hammer_Curls_-_Rope_Attachment",
@@ -711,14 +908,18 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Attach a rope attachment to a low pulley and stand facing the machine about 12 inches away from it.",
-      "Grasp the rope with a neutral (palms-in) grip and stand straight up keeping the natural arch of the back and your torso stationary.",
-      "Put your elbows in by your side and keep them there stationary during the entire movement. Tip: Only the forearms should move; not your upper arms. This will be your starting position.",
-      "Using your biceps, pull your arms up as you exhale until your biceps touch your forearms. Tip: Remember to keep the elbows in and your upper arms stationary.",
-      "After a 1 second contraction where you squeeze your biceps, slowly start to bring the weight back to the original position.",
-      "Repeat for the recommended amount of repetitions."
+      "将绳索把手装在低位滑轮上，面对器械站立，距器械约 30 厘米。",
+      "掌心相对（中立握）抓住绳索，站直，保持背部自然弧度、躯干不动。",
+      "肘部夹在身体两侧并全程固定不动，只有前臂移动，此为起始姿势。",
+      "呼气，用二头肌发力将手臂向上弯起，直到二头肌完全收缩。",
+      "顶端挤压 1 秒后，缓慢回到起始姿势，按次数重复。"
     ],
-    "name_cn": "绳索锤式弯举"
+    "name_cn": "绳索锤式弯举",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肱二头肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Machine_Preacher_Curls",
@@ -734,13 +935,17 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Sit down on the Preacher Curl Machine and select the weight.",
-      "Place the back of your upper arms (your triceps) on the preacher pad provided and grab the handles using an underhand grip (palms facing up). Tip: Make sure that when you place the arms on the pad you keep the elbows in. This will be your starting position.",
-      "Now lift the handles as you exhale and you contract the biceps. At the top of the position make sure that you hold the contraction for a second. Tip: Only the forearms should move. The upper arms should remain stationary and on the pad at all times.",
-      "Lower the handles slowly back to the starting position as you inhale.",
-      "Repeat for the recommended amount of repetitions."
+      "坐在牧师凳弯举机上，选择合适重量。",
+      "将上臂后侧（三头肌一侧）贴在牧师凳垫上，反握（掌心朝上）抓住手柄，肘部贴紧，此为起始姿势。",
+      "呼气，收缩二头肌将手柄向上弯举，顶端停顿 1 秒；只有前臂移动，上臂始终贴垫不动。",
+      "吸气，缓慢下放回起始姿势，按次数重复。"
     ],
-    "name_cn": "器械牧师凳弯举"
+    "name_cn": "器械牧师凳弯举",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肱二头肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Concentration_Curls",
@@ -758,13 +963,20 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Sit down on a flat bench with one dumbbell in front of you between your legs. Your legs should be spread with your knees bent and feet on the floor.",
-      "Use your right arm to pick the dumbbell up. Place the back of your right upper arm on the top of your inner right thigh. Rotate the palm of your hand until it is facing forward away from your thigh. Tip: Your arm should be extended and the dumbbell should be above the floor. This will be your starting position.",
-      "While holding the upper arm stationary, curl the weights forward while contracting the biceps as you breathe out. Only the forearms should move. Continue the movement until your biceps are fully contracted and the dumbbells are at shoulder level. Tip: At the top of the movement make sure that the little finger of your arm is higher than your thumb. This guarantees a good contraction. Hold the contracted position for a second as you squeeze the biceps.",
-      "Slowly begin to bring the dumbbells back to starting position as your breathe in. Caution: Avoid swinging motions at any time.",
-      "Repeat for the recommended amount of repetitions. Then repeat the movement with the left arm."
+      "坐在平凳上，两腿分开、膝盖弯曲、双脚踩地，一只哑铃放在两腿之间的地面。",
+      "用右手拿起哑铃，右上臂后侧贴住右大腿内侧，转腕使掌心朝前，手臂伸直、哑铃离地，此为起始姿势。",
+      "上臂保持不动，呼气，收缩二头肌将哑铃弯举至肩部高度；顶端让小指高于拇指以保证充分收缩，挤压 1 秒。",
+      "吸气，缓慢下放回起始姿势，全程不要摆动。",
+      "完成一侧次数后换左手重复。"
     ],
-    "name_cn": "集中弯举"
+    "name_cn": "集中弯举",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肱二头肌"
+    ],
+    "secondary_cn": [
+      "前臂"
+    ]
   },
   {
     "id": "Seated_Dumbbell_Curl",
@@ -780,13 +992,17 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Sit on a flat bench with a dumbbell on each hand being held at arms length. The elbows should be close to the torso.",
-      "Rotate the palms of the hands so that they are facing your torso. This will be your starting position.",
-      "While holding the upper arm stationary, curl the weights and start twisting the wrists once the dumbbells pass your thighs so that the palms of your hands face forward at the end of the movement. Make sure that you contract the biceps as you breathe out and make sure that only the forearms move. Continue the movement until your biceps are fully contracted and the dumbbells are at shoulder level. Hold the contracted position for a second as you squeeze the biceps.",
-      "Slowly begin to bring the dumbbells back to the starting position as your breathe in and as you rotate the wrists back to a neutral grip.",
-      "Repeat for the recommended amount of repetitions."
+      "坐在平凳上，双手各握一只哑铃，手臂自然下垂，肘部贴近躯干。",
+      "转腕使掌心朝向身体，此为起始姿势。",
+      "上臂保持不动，呼气，弯举哑铃并在经过大腿后逐渐转腕，使顶端掌心朝前；只有前臂移动，二头肌充分收缩、哑铃至肩部高度，挤压 1 秒。",
+      "吸气，缓慢下放并转回中立握，按次数重复。"
     ],
-    "name_cn": "坐姿哑铃弯举"
+    "name_cn": "坐姿哑铃弯举",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肱二头肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Close-Grip_EZ_Bar_Curl",
@@ -804,13 +1020,19 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Stand up with your torso upright while holding an E-Z Curl Bar at the closer inner handle. The palm of your hands should be facing forward and they should be slightly tilted inwards due to the shape of the bar. The elbows should be close to the torso. This will be your starting position.",
-      "While holding the upper arms stationary, curl the weights forward while contracting the biceps as you breathe out. Tip: Only the forearms should move.",
-      "Continue the movement until your biceps are fully contracted and the bar is at shoulder level. Hold the contracted position for a second and squeeze the biceps hard.",
-      "Slowly begin to bring the bar back to starting position as your breathe in.",
-      "Repeat for the recommended amount of repetitions."
+      "身体直立，双手握住曲杆内侧窄握位（掌心朝前，因杆型微微内倾），肘部贴近躯干，此为起始姿势。",
+      "上臂保持不动，呼气，收缩二头肌将杠铃向前弯举，只有前臂移动。",
+      "弯举至二头肌完全收缩、杠铃到达肩部高度，顶端挤压二头肌停顿 1 秒。",
+      "吸气，缓慢下放回起始姿势，按次数重复。"
     ],
-    "name_cn": "窄握曲杆弯举"
+    "name_cn": "窄握曲杆弯举",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肱二头肌"
+    ],
+    "secondary_cn": [
+      "前臂"
+    ]
   },
   {
     "id": "Reverse_Grip_Triceps_Pushdown",
@@ -826,13 +1048,17 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Start by setting a bar attachment (straight or e-z) on a high pulley machine.",
-      "Facing the bar attachment, grab it with the palms facing up (supinated grip) at shoulder width. Lower the bar by using your lats until your arms are fully extended by your sides. Tip: Elbows should be in by your sides and your feet should be shoulder width apart from each other. This is the starting position.",
-      "Slowly elevate the bar attachment up as you inhale so it is aligned with your chest. Only the forearms should move and the elbows/upper arms should be stationary by your side at all times.",
-      "Then begin to lower the cable bar back down to the original staring position while exhaling and contracting the triceps hard.",
-      "Repeat for the recommended amount of repetitions."
+      "在高位滑轮上安装直杆或曲杆把手。",
+      "面对把手，双手与肩同宽反握（掌心朝上）抓住，用背阔肌将杆下压至手臂完全伸直、贴近体侧；肘部夹紧，双脚与肩同宽，此为起始姿势。",
+      "吸气，缓慢将杆抬升至胸部高度，只有前臂移动，肘部与上臂全程固定。",
+      "呼气，用力收缩三头肌将杆压回起始位置，按次数重复。"
     ],
-    "name_cn": "反握绳索下压"
+    "name_cn": "反握绳索下压",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肱三头肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Lying_Triceps_Press",
@@ -848,13 +1074,17 @@
     "secondary_muscles": [],
     "level": "intermediate",
     "instructions": [
-      "Lie on a flat bench with either an e-z bar (my preference) or a straight bar placed on the floor behind your head and your feet on the floor.",
-      "Grab the bar behind you, using a medium overhand (pronated) grip, and raise the bar in front of you at arms length. Tip: The arms should be perpendicular to the torso and the floor. The elbows should be tucked in. This is the starting position.",
-      "As you breathe in, slowly lower the weight until the bar lightly touches your forehead while keeping the upper arms and elbows stationary.",
-      "At that point, use the triceps to bring the weight back up to the starting position as you breathe out.",
-      "Repeat for the recommended amount of repetitions."
+      "仰卧在平凳上，双脚踩地，用曲杆（推荐）或直杆，杆放在头后地面。",
+      "中握正握在头后抓起杠铃，将杠铃举到胸前手臂伸直处，上臂垂直于地面、肘部内收，此为起始姿势。",
+      "吸气，保持上臂与肘部固定，缓慢下放杠铃，直到轻触前额。",
+      "呼气，用三头肌发力将杠铃推回起始位置，按次数重复。"
     ],
-    "name_cn": "仰卧臂屈伸"
+    "name_cn": "仰卧臂屈伸",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "肱三头肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "EZ-Bar_Skullcrusher",
@@ -872,12 +1102,18 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Using a close grip, lift the EZ bar and hold it with your elbows in as you lie on the bench. Your arms should be perpendicular to the floor. This will be your starting position.",
-      "Keeping the upper arms stationary, lower the bar by allowing the elbows to flex. Inhale as you perform this portion of the movement. Pause once the bar is directly above the forehead.",
-      "Lift the bar back to the starting position by extending the elbow and exhaling.",
-      "Repeat."
+      "仰卧在平凳上，窄握曲杆，肘部内收，手臂垂直于地面，此为起始姿势。",
+      "保持上臂固定不动，吸气，屈肘将杠铃下放至前额正上方。",
+      "呼气，伸肘将杠铃推回起始位置，重复动作。"
     ],
-    "name_cn": "曲杆碎颅式臂屈伸"
+    "name_cn": "曲杆碎颅式臂屈伸",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "肱三头肌"
+    ],
+    "secondary_cn": [
+      "前臂"
+    ]
   },
   {
     "id": "Neck_Press",
@@ -896,13 +1132,20 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Lie back on a flat bench. Using a medium-width grip (a grip that creates a 90-degree angle in the middle of the movement between the forearms and the upper arms), lift the bar from the rack and hold it straight over your neck with your arms locked. This will be your starting position.",
-      "As you breathe in, come down slowly until you feel the bar on your neck.",
-      "After a second pause, bring the bar back to the starting position as you breathe out and push the bar using your chest muscles. Lock your arms and squeeze your chest in the contracted position, hold for a second and then start coming down slowly again. Tip: It should take at least twice as long to go down than to come up).",
-      "Repeat the movement for the prescribed amount of repetitions.",
-      "When you are done, place the bar back in the rack."
+      "仰卧在平凳上，中握距握杠，将杠铃从架上取下，双臂伸直举于颈部正上方，此为起始姿势。",
+      "吸气，缓慢下放杠铃，直到轻触颈部（下放位置比常规卧推略低）。",
+      "停顿 1 秒后，呼气，用胸肌发力将杠铃推回起始位置，顶端挤压胸肌，再缓慢下放。",
+      "按次数重复，完成后将杠铃放回架上。"
     ],
-    "name_cn": "颈前卧推"
+    "name_cn": "颈前卧推",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "胸肌"
+    ],
+    "secondary_cn": [
+      "肩部（三角肌）",
+      "肱三头肌"
+    ]
   },
   {
     "id": "Barbell_Shrug",
@@ -918,12 +1161,16 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Stand up straight with your feet at shoulder width as you hold a barbell with both hands in front of you using a pronated grip (palms facing the thighs). Tip: Your hands should be a little wider than shoulder width apart. You can use wrist wraps for this exercise for a better grip. This will be your starting position.",
-      "Raise your shoulders up as far as you can go as you breathe out and hold the contraction for a second. Tip: Refrain from trying to lift the barbell by using your biceps.",
-      "Slowly return to the starting position as you breathe in.",
-      "Repeat for the recommended amount of repetitions."
+      "身体直立，双脚与肩同宽，双手略宽于肩正握（掌心朝向大腿）杠铃垂于身前，可用助力带，此为起始姿势。",
+      "呼气，将双肩尽量向上耸起，顶端收缩停顿 1 秒，不要用二头肌发力。",
+      "吸气，缓慢回到起始姿势，按次数重复。"
     ],
-    "name_cn": "杠铃耸肩"
+    "name_cn": "杠铃耸肩",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "斜方肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Dumbbell_Shrug",
@@ -939,12 +1186,16 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Stand erect with a dumbbell on each hand (palms facing your torso), arms extended on the sides.",
-      "Lift the dumbbells by elevating the shoulders as high as possible while you exhale. Hold the contraction at the top for a second. Tip: The arms should remain extended at all times. Refrain from using the biceps to help lift the dumbbells. Only the shoulders should be moving up and down.",
-      "Lower the dumbbells back to the original position.",
-      "Repeat for the recommended amount of repetitions."
+      "身体直立，双手各握一只哑铃垂于体侧，掌心朝向身体。",
+      "呼气，只靠肩部发力将双肩尽量向上耸起，手臂全程保持伸直，顶端收缩停顿 1 秒。",
+      "缓慢下放回起始姿势，按次数重复。"
     ],
-    "name_cn": "哑铃耸肩"
+    "name_cn": "哑铃耸肩",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "斜方肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Standing_Calf_Raises",
@@ -960,13 +1211,17 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Adjust the padded lever of the calf raise machine to fit your height.",
-      "Place your shoulders under the pads provided and position your toes facing forward (or using any of the two other positions described at the beginning of the chapter). The balls of your feet should be secured on top of the calf block with the heels extending off it. Push the lever up by extending your hips and knees until your torso is standing erect. The knees should be kept with a slight bend; never locked. Toes should be facing forward, outwards or inwards as described at the beginning of the chapter. This will be your starting position.",
-      "Raise your heels as you breathe out by extending your ankles as high as possible and flexing your calf. Ensure that the knee is kept stationary at all times. There should be no bending at any time. Hold the contracted position by a second before you start to go back down.",
-      "Go back slowly to the starting position as you breathe in by lowering your heels as you bend the ankles until calves are stretched.",
-      "Repeat for the recommended amount of repetitions."
+      "调整站姿提踵机垫杆高度。",
+      "双肩抵住肩垫，前脚掌踩在踏板边缘、脚跟悬空，脚尖朝前（或按需朝外/朝内），伸髋伸膝使身体站直，膝盖微屈不锁死，此为起始姿势。",
+      "呼气，用脚踝发力尽量抬高脚跟、挤压小腿，膝盖保持不动。",
+      "顶端停顿 1 秒，吸气，缓慢下放脚跟至小腿充分拉伸，按次数重复。"
     ],
-    "name_cn": "站姿提踵"
+    "name_cn": "站姿提踵",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "小腿"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Barbell_Seated_Calf_Raise",
@@ -982,14 +1237,18 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Place a block about 12 inches in front of a flat bench.",
-      "Sit on the bench and place the ball of your feet on the block.",
-      "Have someone place a barbell over your upper thighs about 3 inches above your knees and hold it there. This will be your starting position.",
-      "Raise up on your toes as high as possible as you squeeze the calves and as you breathe out.",
-      "After a second contraction, slowly go back to the starting position. Tip: To get maximum benefit stretch your calves as far as you can.",
-      "Repeat for the recommended amount of repetitions."
+      "在平凳前方约 30 厘米处放一块踏板。",
+      "坐在凳上，前脚掌踩在踏板上。",
+      "请人将杠铃放在大腿上（膝盖上方约 8 厘米处）并扶稳，此为起始姿势。",
+      "呼气，尽量踮起脚尖、挤压小腿。",
+      "顶端停顿 1 秒后，缓慢下放，让小腿充分拉伸，按次数重复。"
     ],
-    "name_cn": "杠铃坐姿提踵"
+    "name_cn": "杠铃坐姿提踵",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "小腿"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Donkey_Calf_Raises",
@@ -1005,13 +1264,17 @@
     "secondary_muscles": [],
     "level": "intermediate",
     "instructions": [
-      "For this exercise you will need access to a donkey calf raise machine. Start by positioning your lower back and hips under the padded lever provided. The tailbone area should be the one making contact with the pad.",
-      "Place both of your arms on the side handles and place the balls of your feet on the calf block with the heels extending off. Align the toes forward, inward or outward, depending on the area you wish to target, and straighten the knees without locking them. This will be your starting position.",
-      "Raise your heels as you breathe out by extending your ankles as high as possible and flexing your calf. Ensure that the knee is kept stationary at all times. There should be no bending at any time. Hold the contracted position by a second before you start to go back down.",
-      "Go back slowly to the starting position as you breathe in by lowering your heels as you bend the ankles until calves are stretched.",
-      "Repeat for the recommended amount of repetitions."
+      "使用驴式提踵机：将下背部和髋部置于垫杆下方，尾骨区域贴垫。",
+      "双手扶住侧把手，前脚掌踩在踏板上、脚跟悬空，脚尖按目标部位朝前/朝内/朝外，伸直膝盖但不锁死，此为起始姿势。",
+      "呼气，用脚踝发力尽量抬高脚跟、挤压小腿，膝盖保持不动。",
+      "顶端停顿 1 秒，吸气，缓慢下放脚跟至小腿充分拉伸，按次数重复。"
     ],
-    "name_cn": "驴式提踵"
+    "name_cn": "驴式提踵",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "小腿"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Palms-Up_Barbell_Wrist_Curl_Over_A_Bench",
@@ -1027,15 +1290,19 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Start out by placing a barbell on one side of a flat bench.",
-      "Kneel down on both of your knees so that your body is facing the flat bench.",
-      "Use your arms to grab the barbell with a supinated grip (palms up) and bring them up so that your forearms are resting against the flat bench. Your wrists should be hanging over the edge.",
-      "Start out by curling your wrist upwards and exhaling.",
-      "Slowly lower your wrists back down to the starting position while inhaling.",
-      "Your forearms should be stationary as your wrist is the only movement needed to perform this exercise.",
-      "Repeat for the recommended amount of repetitions."
+      "将杠铃放在平凳一侧。",
+      "双膝跪地，面向平凳。",
+      "反握（掌心朝上）抓起杠铃，前臂平放在凳面上，手腕悬出凳边。",
+      "呼气，手腕向上弯举。",
+      "吸气，缓慢下放手腕回到起始姿势。",
+      "前臂全程贴凳不动，只有手腕活动，按次数重复。"
     ],
-    "name_cn": "杠铃腕弯举（反握）"
+    "name_cn": "杠铃腕弯举（反握）",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "前臂"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Wrist_Roller",
@@ -1053,13 +1320,19 @@
     ],
     "level": "beginner",
     "instructions": [
-      "To begin, stand straight up grabbing a wrist roller using a pronated grip (palms facing down). Your feet should be shoulder width apart.",
-      "Slowly lift both arms until they are fully extended and parallel to the floor in front of you. Note: Make sure the rope is not wrapped around the roller. Your entire body should be stationary except for the forearms. This is the starting position.",
-      "Rotate one wrist at a time in an upward motion to bring the weight up to the bar by rolling the rope around the roller.",
-      "Once the weight has reached the bar, slowly begin to lower the weight back down by rotating the wrist in a downward motion until the weight reaches the starting position.",
-      "Repeat for the prescribed amount of repetitions in your program."
+      "身体直立，正握（掌心朝下）抓住腕滚轮，双脚与肩同宽。",
+      "双臂缓慢前伸至完全伸直、与地面平行；确保绳子没有缠在滚轮上，身体除前臂外保持不动，此为起始姿势。",
+      "双手交替向上转动腕部，将绳子绕上滚轮，把重量拉起。",
+      "重量到达顶端后，反向转动腕部缓慢下放，按计划次数重复。"
     ],
-    "name_cn": "腕滚轮"
+    "name_cn": "腕滚轮",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "前臂"
+    ],
+    "secondary_cn": [
+      "肩部（三角肌）"
+    ]
   },
   {
     "id": "Crunches",
@@ -1075,14 +1348,18 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Lie flat on your back with your feet flat on the ground, or resting on a bench with your knees bent at a 90 degree angle. If you are resting your feet on a bench, place them three to four inches apart and point your toes inward so they touch.",
-      "Now place your hands lightly on either side of your head keeping your elbows in. Tip: Don't lock your fingers behind your head.",
-      "While pushing the small of your back down in the floor to better isolate your abdominal muscles, begin to roll your shoulders off the floor.",
-      "Continue to push down as hard as you can with your lower back as you contract your abdominals and exhale. Your shoulders should come up off the floor only about four inches, and your lower back should remain on the floor. At the top of the movement, contract your abdominals hard and keep the contraction for a second. Tip: Focus on slow, controlled movement - don't cheat yourself by using momentum.",
-      "After the one second contraction, begin to come down slowly again to the starting position as you inhale.",
-      "Repeat for the recommended amount of repetitions."
+      "仰卧，双脚踩地，或屈膝 90 度搭在凳上（双脚分开 8-10 厘米、脚尖相触）。",
+      "双手轻扶头部两侧，肘部打开，手指不要交叉扣在脑后。",
+      "下背部压紧地面以更好孤立腹肌，呼气，收缩腹肌将肩胛抬起离地约 10 厘米，下背不离地。",
+      "顶端用力收缩腹肌停顿 1 秒，吸气，缓慢下放回到起始姿势。",
+      "动作缓慢有控制，不要用惯性借力，按次数重复。"
     ],
-    "name_cn": "卷腹"
+    "name_cn": "卷腹",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "腹肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Hanging_Leg_Raise",
@@ -1098,12 +1375,16 @@
     "secondary_muscles": [],
     "level": "expert",
     "instructions": [
-      "Hang from a chin-up bar with both arms extended at arms length in top of you using either a wide grip or a medium grip. The legs should be straight down with the pelvis rolled slightly backwards. This will be your starting position.",
-      "Raise your legs until the torso makes a 90-degree angle with the legs. Exhale as you perform this movement and hold the contraction for a second or so.",
-      "Go back slowly to the starting position as you breathe in.",
-      "Repeat for the recommended amount of repetitions."
+      "宽握或中握悬垂在单杠上，双臂伸直，双腿自然下垂，骨盆微微后卷，此为起始姿势。",
+      "呼气，将双腿抬起，直到躯干与双腿约成 90 度，顶端收缩停顿 1 秒。",
+      "吸气，缓慢下放回起始姿势，按次数重复。"
     ],
-    "name_cn": "悬垂举腿"
+    "name_cn": "悬垂举腿",
+    "level_cn": "高级",
+    "muscles_cn": [
+      "腹肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Plank",
@@ -1119,10 +1400,15 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Get into a prone position on the floor, supporting your weight on your toes and your forearms. Your arms are bent and directly below the shoulder.",
-      "Keep your body straight at all times, and hold this position as long as possible. To increase difficulty, an arm or leg can be raised."
+      "俯身撑地，用脚尖和前臂支撑体重，手臂弯曲、肘部位于肩部正下方。",
+      "身体全程保持一条直线，尽可能长时间维持该姿势；如需增加难度，可抬起一只手臂或一条腿。"
     ],
-    "name_cn": "平板支撑"
+    "name_cn": "平板支撑",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "腹肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Cable_Russian_Twists",
@@ -1138,15 +1424,19 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Connect a standard handle attachment, and position the cable to a middle pulley position.",
-      "Lie on a stability ball perpendicular to the cable and grab the handle with one hand. You should be approximately arm's length away from the pulley, with the tension of the weight on the cable.",
-      "Grab the handle with both hands and fully extend your arms above your chest. You hands should be directly in-line with the pulley. If not, adjust the pulley up or down until they are.",
-      "Keep your hips elevated and abs engaged. Rotate your torso away from the pulley for a full-quarter rotation. Your body should be flat from head to knees.",
-      "Pause for a moment and in a slow and controlled manner reset to the starting position. You should still have side tension on the cable in the resting position.",
-      "Repeat the same movement to failure.",
-      "Then, reposition and repeat the same series of movements on the opposite side."
+      "将普通把手装在中位滑轮上。",
+      "身体垂直于绳索躺在健身球上，单手抓住把手，与滑轮保持一臂距离，绳索保持张力。",
+      "双手握住把手，双臂完全伸直举于胸前，双手与滑轮对齐（如不对齐则调整滑轮高度）。",
+      "保持髋部抬高、腹部收紧，躯干向远离滑轮的方向转体四分之一圈，身体从头到膝保持平直。",
+      "稍作停顿，缓慢有控制地转回起始位置（保持绳索侧向张力），重复至力竭。",
+      "换另一侧重复同样动作。"
     ],
-    "name_cn": "绳索俄罗斯转体"
+    "name_cn": "绳索俄罗斯转体",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "腹肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Ab_Roller",
@@ -1164,12 +1454,19 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Hold the Ab Roller with both hands and kneel on the floor.",
-      "Now place the ab roller on the floor in front of you so that you are on all your hands and knees (as in a kneeling push up position). This will be your starting position.",
-      "Slowly roll the ab roller straight forward, stretching your body into a straight position. Tip: Go down as far as you can without touching the floor with your body. Breathe in during this portion of the movement.",
-      "After a pause at the stretched position, start pulling yourself back to the starting position as you breathe out. Tip: Go slowly and keep your abs tight at all times."
+      "双膝跪地，双手握住健腹轮。",
+      "将健腹轮放在身前地面，呈跪姿俯身撑地姿势，此为起始姿势。",
+      "吸气，缓慢将健腹轮向前滚出，身体伸展成一条直线；在身体不触地的限度内尽量滚远。",
+      "停顿后，呼气，腹部收紧，缓慢将身体拉回起始姿势。"
     ],
-    "name_cn": "健腹轮"
+    "name_cn": "健腹轮",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "腹肌"
+    ],
+    "secondary_cn": [
+      "肩部（三角肌）"
+    ]
   },
   {
     "id": "Front_Leg_Raises",
@@ -1185,10 +1482,16 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Stand next to a chair or other support, holding on with one hand.",
-      "Swing your leg forward, keeping the leg straight. Continue with a downward swing, bringing the leg as far back as your flexibility allows. Repeat 5-10 times, and then switch legs."
+      "站直，单手扶住椅子或支撑物。",
+      "保持腿部伸直，向前摆动，再顺势向后摆到柔韧性允许的幅度。",
+      "每条腿重复 5-10 次后换腿。"
     ],
-    "name_cn": "前抬腿"
+    "name_cn": "前抬腿",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "腘绳肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Side_Bridge",
@@ -1205,8 +1508,18 @@
       "shoulders"
     ],
     "level": "beginner",
-    "instructions": [],
-    "name_cn": "侧桥"
+    "instructions": [
+      "侧卧，用前臂支撑身体，肘部位于肩部正下方，双腿伸直叠放。",
+      "抬起髋部，使身体从头到脚呈一条直线，保持该姿势，再缓慢放下。"
+    ],
+    "name_cn": "侧桥",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "腹肌"
+    ],
+    "secondary_cn": [
+      "肩部（三角肌）"
+    ]
   },
   {
     "id": "Cable_Reverse_Crunch",
@@ -1222,14 +1535,18 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Connect an ankle strap attachment to a low pulley cable and position a mat on the floor in front of it.",
-      "Sit down with your feet toward the pulley and attach the cable to your ankles.",
-      "Lie down, elevate your legs and bend your knees at a 90-degree angle. Your legs and the cable should be aligned. If not, adjust the pulley up or down until they are.",
-      "With your hands behind your head, bring your knees inward to your torso and elevate your hips off the floor.",
-      "Pause for a moment and in a slow and controlled manner drop your hips and bring your legs back to the starting 90-degree angle. You should still have tension on your abs in the resting position.",
-      "Repeat the same movement to failure."
+      "将脚踝带装到低位滑轮上，在器械前放好垫子。",
+      "坐下，双脚朝向滑轮，将脚踝带固定在脚踝上。",
+      "躺下，抬起双腿，屈膝 90 度，让腿与绳索对齐（不对齐则调整滑轮高度）。",
+      "双手置于头后，将膝盖向躯干收拢，同时将髋部抬离地面。",
+      "稍作停顿，缓慢有控制地放下髋部、双腿回到 90 度起始位（保持腹部张力），重复至力竭。"
     ],
-    "name_cn": "绳索反向卷腹"
+    "name_cn": "绳索反向卷腹",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "腹肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Bosu_Ball_Cable_Crunch_With_Side_Bends",
@@ -1245,18 +1562,19 @@
     "secondary_muscles": [],
     "level": "beginner",
     "instructions": [
-      "Connect a standard handle to each arm of a cable machine, and position them in the most downward position.",
-      "Grab a Bosu Ball and position it in front and center of the cable machine.",
-      "Lie down on the Bosu Ball with the small of your back arched around the ball. Your rear end should be close to the floor without touching it.",
-      "With both hands, reach back and grab the handle of each cable.",
-      "With your feet positioned in a wide stance, extend your arms straight out in front of you and in between your knees. Your hands should be at knee level.",
-      "Keep your arms straight and in-line with the upward angle of the cable. Elevate your torso in a crunching motion without dropping or bending your arms.",
-      "Maintain the rigid position with your arms. Slowly descend back to the starting position with your back arched around the Bosu Ball and your abdominals elongated.",
-      "Repeat the same series of movements to failure.",
-      "Once you reach failure, keep your abs tight and raise your torso into plank position so your back is elevated off the Bosu Ball.",
-      "Lower your arms down to your side; keep them straight. Start doing alternating side bends; reach for your heels! This finishing movement will focus on your obliques."
+      "在绳索机两侧各装一个把手，并调到最低位置。",
+      "将波速球放在绳索机前方正中，仰卧在球上，下背部贴着球面，臀部接近地面但不触地。",
+      "双手向后抓住两侧绳索把手，双脚宽距站稳。",
+      "保持手臂伸直、与绳索向上的角度一致，呼气，用卷腹动作抬起躯干，手臂不下降不弯曲。",
+      "保持手臂绷直，缓慢下放回到起始姿势，重复至力竭。",
+      "力竭后收紧腹部，抬身转为平板支撑姿势，然后手臂伸直垂于体侧，开始交替侧屈，伸手够向脚跟，重点锻炼腹斜肌。"
     ],
-    "name_cn": "波速球绳索卷腹加侧屈"
+    "name_cn": "波速球绳索卷腹加侧屈",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "腹肌"
+    ],
+    "secondary_cn": []
   },
   {
     "id": "Glute_Kickback",
@@ -1274,12 +1592,19 @@
     ],
     "level": "beginner",
     "instructions": [
-      "Kneel on the floor or an exercise mat and bend at the waist with your arms extended in front of you (perpendicular to the torso) in order to get into a kneeling push-up position but with the arms spaced at shoulder width. Your head should be looking forward and the bend of the knees should create a 90-degree angle between the hamstrings and the calves. This will be your starting position.",
-      "As you exhale, lift up your right leg until the hamstrings are in line with the back while maintaining the 90-degree angle bend. Contract the glutes throughout this movement and hold the contraction at the top for a second. Tip: At the end of the movement the upper leg should be parallel to the floor while the calf should be perpendicular to it.",
-      "Go back to the initial position as you inhale and now repeat with the left leg.",
-      "Continue to alternate legs until all of the recommended repetitions have been performed."
+      "跪在垫上，弯腰，双臂在身前伸直撑地（与躯干垂直），呈跪姿俯卧撑姿势，手臂与肩同宽，目视前方，大腿与小腿约成 90 度，此为起始姿势。",
+      "呼气，将右腿向后上方抬起，直到大腿与背部齐平，保持 90 度屈膝；全程收紧臀肌，顶端停顿 1 秒（大腿平行地面、小腿垂直）。",
+      "吸气，回到起始姿势，换左腿。",
+      "左右交替，完成推荐次数。"
     ],
-    "name_cn": "臀后踢"
+    "name_cn": "臀后踢",
+    "level_cn": "初级",
+    "muscles_cn": [
+      "臀肌"
+    ],
+    "secondary_cn": [
+      "腘绳肌"
+    ]
   },
   {
     "id": "One-Legged_Cable_Kickback",
@@ -1297,14 +1622,20 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Hook a leather ankle cuff to a low cable pulley and then attach the cuff to your ankle.",
-      "Face the weight stack from a distance of about two feet, grasping the steel frame for support.",
-      "While keeping your knees and hips bent slightly and your abs tight, contract your glutes to slowly \"kick\" the working leg back in a semicircular arc as high as it will comfortably go as you breathe out. Tip: At full extension, squeeze your glutes for a second in order to achieve a peak contraction.",
-      "Now slowly bring your working leg forward, resisting the pull of the cable until you reach the starting position.",
-      "Repeat for the recommended amount of repetitions.",
-      "Switch legs and repeat the movement for the other side."
+      "将脚踝套连接到低位滑轮上，套在脚踝上。",
+      "面向配重块，距离约 60 厘米，双手扶住机架保持稳定。",
+      "膝盖和髋部微屈、腹部收紧，呼气，用臀肌发力将工作腿向后上方踢出，沿半圆弧线尽可能抬高；顶端挤压臀肌 1 秒。",
+      "吸气，对抗绳索拉力缓慢收回起始位，按次数重复。",
+      "换另一条腿重复。"
     ],
-    "name_cn": "单腿绳索后踢"
+    "name_cn": "单腿绳索后踢",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "臀肌"
+    ],
+    "secondary_cn": [
+      "腘绳肌"
+    ]
   },
   {
     "id": "Barbell_Hip_Thrust",
@@ -1323,10 +1654,18 @@
     ],
     "level": "intermediate",
     "instructions": [
-      "Begin seated on the ground with a bench directly behind you. Have a loaded barbell over your legs. Using a fat bar or having a pad on the bar can greatly reduce the discomfort caused by this exercise.",
-      "Roll the bar so that it is directly above your hips, and lean back against the bench so that your shoulder blades are near the top of it.",
-      "Begin the movement by driving through your feet, extending your hips vertically through the bar. Your weight should be supported by your shoulder blades and your feet. Extend as far as possible, then reverse the motion to return to the starting position."
+      "坐在地上，身后放一张平凳，将装好配重的杠铃置于腿上（用粗杆或加垫减少压迫感）。",
+      "将杠铃滚到髋部正上方，背部靠向凳面，使肩胛骨靠近凳边。",
+      "脚跟发力蹬地，垂直向上伸髋顶起杠铃，身体由肩胛和双脚支撑；尽量伸到最高点，再反向回到起始姿势。"
     ],
-    "name_cn": "杠铃臀桥"
+    "name_cn": "杠铃臀桥",
+    "level_cn": "中级",
+    "muscles_cn": [
+      "臀肌"
+    ],
+    "secondary_cn": [
+      "小腿",
+      "腘绳肌"
+    ]
   }
 ]
