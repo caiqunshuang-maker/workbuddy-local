@@ -27,7 +27,11 @@
           if (!Array.isArray(d.images)) d.images = [];
           d.images = d.images.map(u => {
             if (u && typeof u === 'object') u = u.url || '';
-            return typeof u === 'string' && u.includes('.') ? u.replace(/\.(jpg|jpeg|png|webp)$/i, '_thumb.jpg') : u;
+            if (typeof u !== 'string') return u;
+            // 统一指向缩略图名：原图 xxx.jpg → xxx_thumb.jpg；
+            // 历史数据可能被反复归一化叠加成 _thumb_thumb_thumb.jpg，这里合并去重，避免引用无限膨胀后失效
+            let s = u.replace(/\.(jpg|jpeg|png|webp)$/i, '_thumb.jpg');
+            return s.replace(/(_thumb)+\.jpg$/i, '_thumb.jpg');
           });
         });
       }
@@ -629,22 +633,29 @@
   }
 
   // ---------- 图片 URL → dataURL（渲染用） ----------
+  // 说明：日记引用可能是 _thumb.jpg（新图缩略名）或历史叠加的 _thumb_thumb.jpg，
+  // IndexedDB 里可能存的是原图 key 或种子图 key(_thumb.jpg)。
+  // 因此逐层回退尝试：原 key → 去一层 _thumb → ... 直到命中或没有 _thumb。
   async function resolveImg(url) {
     if (!url || !url.startsWith('/uploads/')) return url;
-    const key = url.replace('/uploads/', '');
-    const d = await imgGet(key);
-    return d || '';
+    let key = url.replace('/uploads/', '');
+    while (key) {
+      const d = await imgGet(key);
+      if (d) return d;
+      if (key.endsWith('_thumb.jpg')) key = key.replace('_thumb.jpg', '.jpg');
+      else break;
+    }
+    return '';
   }
   // 同步版：从内存缓存取（预加载后可用）；未命中返回透明占位图避免破图
   const PLACEHOLDER = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
   function resolveImgSync(url) {
     if (!url || !url.startsWith('/uploads/')) return url;
-    const key = url.replace('/uploads/', '');
-    if (IMG_CACHE[key]) return IMG_CACHE[key];
-    // thumb 未单独存储时，回退到原图
-    if (key.endsWith('_thumb.jpg')) {
-      const orig = key.replace('_thumb.jpg', '.jpg');
-      if (IMG_CACHE[orig]) return IMG_CACHE[orig];
+    let key = url.replace('/uploads/', '');
+    while (key) {
+      if (IMG_CACHE[key]) return IMG_CACHE[key];
+      if (key.endsWith('_thumb.jpg')) key = key.replace('_thumb.jpg', '.jpg');
+      else break;
     }
     return PLACEHOLDER;
   }
@@ -773,11 +784,50 @@
     localStorage.setItem(LS_PREFIX + '_seeded', '1');
   }
 
+  // ---------- 图片健康检查 ----------
+  // 统计日记里引用了但 IndexedDB 中已无数据的照片张数（浏览器清理缓存会导致丢失）
+  // 判定规则与 resolveImg 一致：逐层去掉 _thumb 回退，所有候选 key 都没有才算缺失
+  async function countMissingImages() {
+    try {
+      const diaries = loadTable('diaries');
+      const refs = [];
+      diaries.forEach(d => {
+        (d.images || []).forEach(u => {
+          const s = (typeof u === 'object' && u) ? (u.url || '') : u;
+          if (typeof s === 'string' && s.startsWith('/uploads/')) refs.push(s.replace('/uploads/', ''));
+        });
+      });
+      if (!refs.length) return 0;
+      const db = await openDB();
+      return await new Promise((resolve, reject) => {
+        const tx = db.transaction('images', 'readonly');
+        const req = tx.objectStore('images').getAll();
+        req.onsuccess = () => {
+          const have = new Set((req.result || []).map(r => r.key));
+          let missing = 0;
+          refs.forEach(r => {
+            let k = r, ok = false;
+            while (k) {
+              if (have.has(k)) { ok = true; break; }
+              if (k.endsWith('_thumb.jpg')) k = k.replace('_thumb.jpg', '.jpg');
+              else break;
+            }
+            if (!ok) missing++;
+          });
+          resolve(missing);
+        };
+        req.onerror = reject;
+      });
+    } catch (e) {
+      return 0;
+    }
+  }
+
   // ---------- 导出 ----------
   window.LocalDB = {
     resolveImg, resolveImgSync, loadAllImagesToCache, imgPut, imgGet,
     handle, loadTable, saveTable, expandRepeatInMonth, seedIfNeeded,
-    exportBackupData, importBackupData,
+    exportBackupData, importBackupData, countMissingImages,
   };
 
   // 启动时：先导入 seed，再预加载图片

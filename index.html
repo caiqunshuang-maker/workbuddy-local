@@ -1883,6 +1883,7 @@
 
             <!-- ===== Page: Diary ===== -->
             <div class="page" id="page-diary">
+                <div class="diary-health-tip" id="diaryHealthTip" style="display:none;background:#fff3cd;color:#856404;border:1px solid #ffeeba;border-radius:8px;padding:8px 12px;font-size:0.8rem;margin-bottom:10px;"></div>
                 <div class="diary-layout">
                     <!-- Calendar side -->
                     <div class="diary-calendar">
@@ -3150,6 +3151,24 @@
         async function loadDiary() {
             await renderDiaryCalendar();
             await showDiaryEntry(diaryState.selectedDate);
+            checkDiaryImagesHealth();
+        }
+
+        // 一次性健康检查：统计已丢失的日记照片数并提示（不阻塞）
+        let _diaryHealthChecked = false;
+        async function checkDiaryImagesHealth() {
+            if (_diaryHealthChecked) return;
+            _diaryHealthChecked = true;
+            try {
+                const n = await LocalDB.countMissingImages();
+                if (n > 0) {
+                    const tip = document.getElementById('diaryHealthTip');
+                    if (tip) {
+                        tip.style.display = 'block';
+                        tip.textContent = `⚠️ 检测到 ${n} 张日记照片数据已丢失（通常是被浏览器清理缓存）。以后请定期点「💾 一键备份」保存，遇到丢失可用备份恢复。`;
+                    }
+                }
+            } catch (e) { /* 忽略 */ }
         }
 
         async function renderDiaryCalendar() {
@@ -3200,7 +3219,7 @@
                             const url = (typeof it === 'object' && it) ? (it.url || '') : it;
                             const thumb = (typeof it === 'object' && it) ? (it.thumb || url) : null;
                             const src = thumb || url;
-                            return `<img src="${LocalDB.resolveImgSync(src)}" loading="lazy" onclick="event.stopPropagation();viewImage('${url}')" alt="日记照片">`;
+                            return `<img src="${LocalDB.resolveImgSync(src)}" data-url="${esc(src)}" class="diary-img" loading="lazy" onclick="event.stopPropagation();viewImage('${url}')" alt="日记照片">`;
                         }).join('')}
                         ${extra > 0 ? `<span class="photo-more">📷+${extra}</span>` : ''}
                     </div>`;
@@ -3221,6 +3240,22 @@
                 html += `<div class="day-cell other-month"><div class="day-num">${d}</div></div>`;
             }
             document.getElementById('diaryCalGrid').innerHTML = html;
+            fillDiaryImages(document.getElementById('diaryCalGrid'));
+        }
+
+        // 异步补齐日记图片：同步渲染时若缓存未就绪（显示占位图），
+        // 这里从 IndexedDB 取真图并更新 src，保证有图一定能显示
+        function fillDiaryImages(root) {
+            if (!root) return;
+            root.querySelectorAll('img.diary-img').forEach(img => {
+                const url = img.getAttribute('data-url');
+                if (!url) return;
+                if (img.src && img.src.startsWith('data:image/gif')) { // 占位图 → 需异步取真图
+                    LocalDB.resolveImg(url).then(d => {
+                        if (d && d.startsWith('data:') && img.isConnected) img.src = d;
+                    }).catch(() => {});
+                }
+            });
         }
 
         function changeDiaryMonth(delta) {
@@ -3268,10 +3303,11 @@
                     <div class="diary-images">
                         ${diary.images.map(it => {
                             const url = (typeof it === 'object' && it) ? (it.url || '') : it;
-                            return `<img src="${LocalDB.resolveImgSync(url)}" loading="lazy" onclick="viewImage('${url}')" alt="日记照片">`;
+                            return `<img src="${LocalDB.resolveImgSync(url)}" data-url="${esc(url)}" class="diary-img" loading="lazy" onclick="viewImage('${url}')" alt="日记照片">`;
                         }).join('')}
                     </div>` : ''}
             `;
+            fillDiaryImages(view);
         }
 
         function viewImage(url) {
@@ -3390,24 +3426,27 @@
             const preview = document.getElementById('dImagePreview');
             preview.innerHTML = diaryImages.map(u => `
                 <div class="img-thumb">
-                    <img src="${LocalDB.resolveImgSync(u)}" onclick="viewImage('${u}')">
+                    <img src="${LocalDB.resolveImgSync(u)}" data-url="${esc(u)}" class="diary-img" onclick="viewImage('${u}')">
                     <button onclick="removeDiaryImage('${u}')">✕</button>
                 </div>`).join('');
+            fillDiaryImages(preview);
         }
 
         function compressImage(file) {
             return new Promise((resolve, reject) => {
-                // If it's already small (or not an image we can decode), upload as-is
-                if (file.size < 300 * 1024) { resolve(file); return; }
+                const t = (file.type || '').toLowerCase();
+                // 小体积的常规格式图片直接上传（省一次解码耗时）；HEIC 等一律走压缩转 JPG
+                const isCommon = t === 'image/jpeg' || t === 'image/png' || t === 'image/webp' || t === 'image/gif';
+                if (isCommon && file.size < 120 * 1024) { resolve(file); return; }
                 // Timeout guard: if compression hangs (old phones), upload original
-                const timer = setTimeout(() => resolve(file), 8000);
+                const timer = setTimeout(() => { console.warn('[compress] 压缩超时，上传原文件'); resolve(file); }, 8000);
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const img = new Image();
                     img.onload = () => {
                         try {
-                            // Max dimension 1600px keeps quality good but file small
-                            const MAX = 1600;
+                            // 最长边 1000px + 质量 0.62 —— 手机上够看就行，省内存省存储
+                            const MAX = 1000;
                             let { width, height } = img;
                             if (width > MAX || height > MAX) {
                                 const ratio = Math.min(MAX / width, MAX / height);
@@ -3418,27 +3457,36 @@
                             canvas.width = width;
                             canvas.height = height;
                             const ctx = canvas.getContext('2d');
+                            // PNG/WebP 透明背景转 JPEG 会变黑，先铺白底
+                            if (t === 'image/png' || t === 'image/webp') {
+                                ctx.fillStyle = '#ffffff';
+                                ctx.fillRect(0, 0, width, height);
+                            }
                             ctx.drawImage(img, 0, 0, width, height);
                             clearTimeout(timer);
+                            const finish = (blob) => {
+                                if (blob) resolve(blob);
+                                else reject(new Error('图片转换失败'));
+                            };
                             if (typeof canvas.toBlob === 'function') {
-                                canvas.toBlob((blob) => {
-                                    if (blob) resolve(blob);
-                                    else resolve(file); // fallback: upload original
-                                }, 'image/jpeg', 0.82);
+                                canvas.toBlob(finish, 'image/jpeg', 0.62);
                             } else {
                                 // Old browsers (OPPO ColorOS etc.) may lack toBlob
-                                const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                                const dataUrl = canvas.toDataURL('image/jpeg', 0.62);
                                 const bin = atob(dataUrl.split(',')[1]);
                                 const arr = new Uint8Array(bin.length);
                                 for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-                                resolve(new Blob([arr], { type: 'image/jpeg' }));
+                                finish(new Blob([arr], { type: 'image/jpeg' }));
                             }
                         } catch (err) {
                             clearTimeout(timer);
                             resolve(file); // compression failed, upload original
                         }
                     };
-                    img.onerror = () => { clearTimeout(timer); resolve(file); }; // fallback: upload original
+                    img.onerror = () => {
+                        clearTimeout(timer);
+                        reject(new Error('这张图片格式无法读取（可能是不支持的格式），已跳过'));
+                    };
                     img.src = e.target.result;
                 };
                 reader.onerror = () => { clearTimeout(timer); resolve(file); };
@@ -3448,11 +3496,7 @@
 
         function removeDiaryImage(url) {
             diaryImages = diaryImages.filter(u => u !== url);
-            document.getElementById('dImagePreview').innerHTML = diaryImages.map(u => `
-                <div class="img-thumb">
-                    <img src="${LocalDB.resolveImgSync(u)}" onclick="viewImage('${u}')">
-                    <button onclick="removeDiaryImage('${u}')">✕</button>
-                </div>`).join('');
+            renderImagePreview();
         }
 
         async function saveDiary(id) {
@@ -5674,7 +5718,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v27';
+                b.textContent = 'v28';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
