@@ -4410,7 +4410,8 @@
         function alMatches(action, query) {
             if (!query) return true;
             const q = query.toLowerCase().trim();
-            return action.name_en.toLowerCase().includes(q) ||
+            return (action.name_cn || '').includes(query.trim()) ||
+                   (action.name_en || '').toLowerCase().includes(q) ||
                    action.category.includes(q) ||
                    (action.equipment_cn || '').includes(q) ||
                    (action.main_muscle || '').includes(q);
@@ -4452,9 +4453,9 @@
 
             const cardsHtml = filtered.map(a => `
                 <div class="al-card" onclick="showActionDetail('${a.id}')">
-                    <div class="al-card-img"><img src="${esc(a.img)}" alt="${esc(a.name_en)}" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='💪'"></div>
+                    <div class="al-card-img"><img src="${esc(a.img)}" alt="${esc(a.name_cn || a.name_en)}" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='💪'"></div>
                     <div class="al-card-tag">讲解</div>
-                    <div class="al-card-name">${esc(a.name_en)}</div>
+                    <div class="al-card-name">${esc(a.name_cn || a.name_en)}</div>
                     <div class="al-card-meta">${esc(a.category)} · ${esc(a.equipment_cn)}</div>
                 </div>
             `).join('');
@@ -4479,8 +4480,9 @@
                 <div style="display:flex;gap:14px;align-items:center;margin-bottom:14px;">
                     <img src="${esc(a.img)}" style="width:120px;height:120px;object-fit:contain;background:#f3f4f6;border-radius:8px;" onerror="this.style.display='none'">
                     <div>
-                        <h3 style="margin:0 0 4px;">${esc(a.name_en)}</h3>
-                        <div style="font-size:0.85rem;color:var(--text-muted);">${esc(a.category)} · ${esc(a.equipment_cn)} · ${esc(a.level || '')}</div>
+                        <h3 style="margin:0 0 4px;">${esc(a.name_cn || a.name_en)}</h3>
+                        <div style="font-size:0.85rem;color:var(--text-muted);">${esc(a.name_en || '')}</div>
+                        <div style="font-size:0.85rem;color:var(--text-muted);margin-top:4px;">${esc(a.category)} · ${esc(a.equipment_cn)} · ${esc(a.level || '')}</div>
                         <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;">主肌群：${esc((a.primary_muscles || []).join(' / '))}</div>
                     </div>
                 </div>
@@ -4540,9 +4542,9 @@
             }
             grid.innerHTML = `<div class="al-grid">${filtered.map(a => `
                 <div class="al-card" onclick="addActionToWorkout('${a.id}')">
-                    <div class="al-card-img"><img src="${esc(a.img)}" alt="${esc(a.name_en)}" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='💪'"></div>
+                    <div class="al-card-img"><img src="${esc(a.img)}" alt="${esc(a.name_cn || a.name_en)}" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='💪'"></div>
                     <div class="al-card-tag">＋</div>
-                    <div class="al-card-name">${esc(a.name_en)}</div>
+                    <div class="al-card-name">${esc(a.name_cn || a.name_en)}</div>
                     <div class="al-card-meta">${esc(a.category)} · ${esc(a.equipment_cn)}</div>
                 </div>`).join('')}</div>`;
         }
@@ -4558,7 +4560,7 @@
             }
             const cur = ta.value.trim();
             const isStrength = ['杠铃', '哑铃', '绳索', '器械', '弯杆'].includes(a.equipment_cn);
-            let line = a.name_en;
+            let line = a.name_cn || a.name_en;
             if (isStrength) {
                 line += ' 3组12次';
             } else if (a.equipment_cn === '徒手') {
@@ -5673,7 +5675,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v25';
+                b.textContent = 'v26';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }

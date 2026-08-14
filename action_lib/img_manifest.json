@@ -21,7 +21,8 @@
       "After a brief pause, push the bar back to the starting position as you breathe out. Focus on pushing the bar using your chest muscles. Lock your arms and squeeze your chest in the contracted position at the top of the motion, hold for a second and then start coming down slowly again. Tip: Ideally, lowering the weight should take about twice as long as raising it.",
       "Repeat the movement for the prescribed amount of repetitions.",
       "When you are done, place the bar back in the rack."
-    ]
+    ],
+    "name_cn": "杠铃卧推（中握距）"
   },
   {
     "id": "Decline_Dumbbell_Bench_Press",
@@ -46,7 +47,8 @@
       "Bring down the weights slowly to your side as you breathe out. Keep full control of the dumbbells at all times. Tip: Throughout the motion, the forearms should always be perpendicular to the floor.",
       "As you breathe out, push the dumbbells up using your pectoral muscles. Lock your arms in the contracted position, squeeze your chest, hold for a second and then start coming down slowly. Tip: It should take at least twice as long to go down than to come up..",
       "Repeat the movement for the prescribed amount of repetitions of your training program."
-    ]
+    ],
+    "name_cn": "下斜哑铃卧推"
   },
   {
     "id": "Incline_Dumbbell_Press",
@@ -72,7 +74,8 @@
       "Lock your arms at the top, hold for a second, and then start slowly lowering the weight. Tip Ideally, lowering the weights should take about twice as long as raising them.",
       "Repeat the movement for the prescribed amount of repetitions.",
       "When you are done, place the dumbbells back on your thighs and then on the floor. This is the safest manner to release the dumbbells."
-    ]
+    ],
+    "name_cn": "上斜哑铃卧推"
   },
   {
     "id": "Cable_Crossover",
@@ -95,7 +98,8 @@
       "With a slight bend on your elbows in order to prevent stress at the biceps tendon, extend your arms to the side (straight out at both sides) in a wide arc until you feel a stretch on your chest. Breathe in as you perform this portion of the movement. Tip: Keep in mind that throughout the movement, the arms and torso should remain stationary; the movement should only occur at the shoulder joint.",
       "Return your arms back to the starting position as you breathe out. Make sure to use the same arc of motion used to lower the weights.",
       "Hold for a second at the starting position and repeat the movement for the prescribed amount of repetitions."
-    ]
+    ],
+    "name_cn": "绳索夹胸"
   },
   {
     "id": "Decline_Dumbbell_Flyes",
@@ -116,7 +120,8 @@
       "With a slight bend on your elbows in order to prevent stress at the biceps tendon, lower your arms out at both sides in a wide arc until you feel a stretch on your chest. Breathe in as you perform this portion of the movement. Tip: Keep in mind that throughout the movement, the arms should remain stationary; the movement should only occur at the shoulder joint.",
       "Return your arms back to the starting position as you squeeze your chest muscles and breathe out. Tip: Make sure to use the same arc of motion used to lower the weights.",
       "Hold for a second at the contracted position and repeat the movement for the prescribed amount of repetitions."
-    ]
+    ],
+    "name_cn": "下斜哑铃飞鸟"
   },
   {
     "id": "Plyo_Kettlebell_Pushups",
@@ -138,7 +143,8 @@
       "Place a kettlebell on the floor. Place yourself in a pushup position, on your toes with one hand on the ground and one hand holding the kettlebell, with your elbows extended. This will be your starting position.",
       "Begin by lowering yourself as low as you can, keeping your back straight.",
       "Quickly and forcefully reverse direction, pushing yourself up to the other side of the kettlebell, switching hands as you do so. Continue the movement by descending and repeating the movement back and forth."
-    ]
+    ],
+    "name_cn": "壶铃弹跳俯卧撑"
   },
   {
     "id": "Cable_Chest_Press",
@@ -161,7 +167,8 @@
       "Begin by extending through the elbow, pressing the handles together straight in front of you. Keep your shoulder blades retracted as you execute the movement.",
       "After pausing at full extension, return to th starting position, keeping tension on the cables.",
       "You can also execute this movement with your back off the pad, at an incline or decline, or alternate hands."
-    ]
+    ],
+    "name_cn": "绳索推胸"
   },
   {
     "id": "Pullups",
@@ -185,7 +192,8 @@
       "Pull your torso up until the bar touches your upper chest by drawing the shoulders and the upper arms down and back. Exhale as you perform this portion of the movement. Tip: Concentrate on squeezing the back muscles once you reach the full contracted position. The upper torso should remain stationary as it moves through space and only the arms should move. The forearms should do no other work other than hold the bar.",
       "After a second on the contracted position, start to inhale and slowly lower your torso back to the starting position when your arms are fully extended and the lats are fully stretched.",
       "Repeat this motion for the prescribed amount of repetitions."
-    ]
+    ],
+    "name_cn": "引体向上"
   },
   {
     "id": "Seated_Cable_Rows",
@@ -210,7 +218,8 @@
       "With your arms extended pull back until your torso is at a 90-degree angle from your legs. Your back should be slightly arched and your chest should be sticking out. You should be feeling a nice stretch on your lats as you hold the bar in front of you. This is the starting position of the exercise.",
       "Keeping the torso stationary, pull the handles back towards your torso while keeping the arms close to it until you touch the abdominals. Breathe out as you perform that movement. At that point you should be squeezing your back muscles hard. Hold that contraction for a second and slowly go back to the original position while breathing in.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "坐姿绳索划船"
   },
   {
     "id": "Lying_T-Bar_Row",
@@ -235,7 +244,8 @@
       "As you exhale slowly pull the weight up and squeeze your back at the top of the movement. Tip: Keep the upper arms as close to the torso as possible throughout the movement in order to better engage the back muscles. Also, do not lift your body off of the pad at any time and refrain from using the biceps to lift the weight.",
       "After a second contraction at the top of the movement, as you inhale, slowly go back down to the starting position.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "俯卧 T 杠划船"
   },
   {
     "id": "Hyperextensions_Back_Extensions",
@@ -260,7 +270,8 @@
       "Start bending forward slowly at the waist as far as you can while keeping your back flat. Inhale as you perform this movement. Keep moving forward until you feel a nice stretch on the hamstrings and you can no longer keep going without a rounding of the back. Tip: Never round the back as you perform this exercise. Also, some people can go farther than others. The key thing is that you go as far as your body allows you to without rounding the back.",
       "Slowly raise your torso back to the initial position as you inhale. Tip: Avoid the temptation to arch your back past a straight line. Also, do not swing the torso at any time in order to protect the back from injury.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "山羊挺身（背部伸展）"
   },
   {
     "id": "Low_Pulley_Row_To_Neck",
@@ -285,7 +296,8 @@
       "While keeping your torso stationary, lift your elbows and start bending them as you pull the rope towards your neck while exhaling. Throughout the movement your upper arms should remain parallel to the floor. Tip: Continue this motion until your hands are almost next to your ears (the forearms will not be parallel to the floor at the end of the movement as they will be angled a bit upwards) and your elbows are out away from your sides.",
       "After holding for a second or so at the contracted position, come back slowly to the starting position as you inhale. Tip: Again, during no part of the movement should the torso move.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "低位绳索颈后划船"
   },
   {
     "id": "Barbell_Squat",
@@ -312,7 +324,8 @@
       "Begin to slowly lower the bar by bending the knees and hips as you maintain a straight posture with the head up. Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees. Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
       "Begin to raise the bar as you exhale by pushing the floor with the heel of your foot as you straighten the legs again and go back to the starting position.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "杠铃深蹲"
   },
   {
     "id": "Dumbbell_Lunges",
@@ -336,7 +349,8 @@
       "Step forward with your right leg around 2 feet or so from the foot being left stationary behind and lower your upper body down, while keeping the torso upright and maintaining balance. Inhale as you go down. Note: As in the other exercises, do not allow your knee to go forward beyond your toes as you come down, as this will put undue stress on the knee joint. Make sure that you keep your front shin perpendicular to the ground.",
       "Using mainly the heel of your foot, push up and go back to the starting position as you exhale.",
       "Repeat the movement for the recommended amount of repetitions and then perform with the left leg."
-    ]
+    ],
+    "name_cn": "哑铃箭步蹲"
   },
   {
     "id": "Calf_Press_On_The_Leg_Press_Machine",
@@ -357,7 +371,8 @@
       "Press on the platform by raising your heels as you breathe out by extending your ankles as high as possible and flexing your calf. Ensure that the knee is kept stationary at all times. There should be no bending at any time. Hold the contracted position by a second before you start to go back down.",
       "Go back slowly to the starting position as you breathe in by lowering your heels as you bend the ankles until calves are stretched.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "腿举机提踵"
   },
   {
     "id": "Leg_Extensions",
@@ -377,7 +392,8 @@
       "Using your quadriceps, extend your legs to the maximum as you exhale. Ensure that the rest of the body remains stationary on the seat. Pause a second on the contracted position.",
       "Slowly lower the weight back to the original position as you inhale, ensuring that you do not go past the 90-degree angle limit.",
       "Repeat for the recommended amount of times."
-    ]
+    ],
+    "name_cn": "腿屈伸"
   },
   {
     "id": "Lying_Leg_Curls",
@@ -397,7 +413,8 @@
       "Keeping the torso flat on the bench, ensure your legs are fully stretched and grab the side handles of the machine. Position your toes straight (or you can also use any of the other two stances described on the foot positioning section). This will be your starting position.",
       "As you exhale, curl your legs up as far as possible without lifting the upper legs from the pad. Once you hit the fully contracted position, hold it for a second.",
       "As you inhale, bring the legs back to the initial position. Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "俯卧腿弯举"
   },
   {
     "id": "Romanian_Deadlift",
@@ -422,7 +439,8 @@
       "Keeping your back and arms completely straight at all times, use your hips to lift the bar as you exhale. Tip: The movement should not be fast but steady and under control.",
       "Once you are standing completely straight up, lower the bar by pushing the hips back, only slightly bending the knees, unlike when squatting. Tip: Take a deep breath at the start of the movement and keep your chest up. Hold your breath as you lower and exhale as you complete the movement.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "罗马尼亚硬拉"
   },
   {
     "id": "Front_Squats_With_Two_Kettlebells",
@@ -444,7 +462,8 @@
       "Clean two kettlebells to your shoulders. Clean the kettlebells to your shoulders by extending through the legs and hips as you pull the kettlebells towards your shoulders. Rotate your wrists as you do so.",
       "Looking straight ahead at all times, squat as low as you can and pause at the bottom. As you squat down, push your knees out. You should squat between your legs, keeping an upright torso, with your head and chest up.",
       "Rise back up by driving through your heels and repeat."
-    ]
+    ],
+    "name_cn": "双壶铃前蹲"
   },
   {
     "id": "Narrow_Stance_Hack_Squats",
@@ -471,7 +490,8 @@
       "Begin to slowly lower the unit by bending the knees as you maintain a straight posture with the head up (back on the pad at all times). Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees (which is the point in which the upper legs are below parallel to the floor). Inhale as you perform this portion of the movement.",
       "Begin to raise the unit as you exhale by pushing the floor with mainly with the heels of your feet as you straighten the legs again and go back to the starting position.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "窄距哈克深蹲"
   },
   {
     "id": "One-Arm_Kettlebell_Military_Press_To_The_Side",
@@ -492,7 +512,8 @@
       "Clean a kettlebell to your shoulder. Clean the kettlebell to your shoulder by extending through the legs and hips as you pull the kettlebell towards your shoulder. Rotate your wrist as you do so, so that the palm faces inward. This will be your starting position.",
       "Look at the kettlebell and press it up and out until it is locked out overhead.",
       "Lower the kettlebell back to your shoulder under control and repeat. Make sure to contract your lat, butt, and stomach forcefully for added stability and strength."
-    ]
+    ],
+    "name_cn": "单臂壶铃侧向推举"
   },
   {
     "id": "Dumbbell_Shoulder_Press",
@@ -516,7 +537,8 @@
       "Now, exhale and push the dumbbells upward until they touch at the top.",
       "Then, after a brief pause at the top contracted position, slowly lower the weights back down to the starting position while inhaling.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "哑铃肩推"
   },
   {
     "id": "Seated_Side_Lateral_Raise",
@@ -536,7 +558,8 @@
       "While maintaining the torso stationary (no swinging), lift the dumbbells to your side with a slight bend on the elbow and the hands slightly tilted forward as if pouring water in a glass. Continue to go up until you arms are parallel to the floor. Exhale as you execute this movement and pause for a second at the top.",
       "Lower the dumbbells back down slowly to the starting position as you inhale.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "坐姿侧平举"
   },
   {
     "id": "Front_Dumbbell_Raise",
@@ -556,7 +579,8 @@
       "While maintaining the torso stationary (no swinging), lift the left dumbbell to the front with a slight bend on the elbow and the palms of the hands always facing down. Continue to go up until you arm is slightly above parallel to the floor. Exhale as you execute this portion of the movement and pause for a second at the top. Inhale after the second pause.",
       "Now lower the dumbbell back down slowly to the starting position as you simultaneously lift the right dumbbell.",
       "Continue alternating in this fashion until all of the recommended amount of repetitions have been performed for each arm."
-    ]
+    ],
+    "name_cn": "哑铃前平举"
   },
   {
     "id": "Barbell_Rear_Delt_Row",
@@ -581,7 +605,8 @@
       "While keeping the upper arms perpendicular to the torso, pull the barbell up towards your upper chest as you squeeze the rear delts and you breathe out. Tip: When performed correctly, this exercise should resemble a bench press in reverse. Also, refrain from using your biceps to do the work. Focus on targeting the rear delts; the arms should only act as hooks.",
       "Slowly go back to the initial position as you breathe in.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "杠铃后束划船"
   },
   {
     "id": "Kettlebell_Arnold_Press",
@@ -602,7 +627,8 @@
       "Clean a kettlebell to your shoulder. Clean the kettlebell to your shoulder by extending through the legs and hips as you raise the kettlebell towards your shoulder. The palm should be facing inward.",
       "Looking straight ahead, press the kettlebell out and overhead, rotating your wrist so that your palm faces forward at the top of the motion.",
       "Return the kettlebell to the starting position, with the palm facing in."
-    ]
+    ],
+    "name_cn": "壶铃阿诺德推举"
   },
   {
     "id": "Upright_Barbell_Row",
@@ -624,7 +650,8 @@
       "Now exhale and use the sides of your shoulders to lift the bar, raising your elbows up and to the side. Keep the bar close to your body as you raise it. Continue to lift the bar until it nearly touches your chin. Tip: Your elbows should drive the motion, and should always be higher than your forearms. Remember to keep your torso stationary and pause for a second at the top of the movement.",
       "Lower the bar back down slowly to the starting position. Inhale as you perform this portion of the movement.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "杠铃直立划船"
   },
   {
     "id": "Face_Pull",
@@ -643,7 +670,8 @@
     "level": "intermediate",
     "instructions": [
       "Facing a high pulley with a rope or dual handles attached, pull the weight directly towards your face, separating your hands as you do so. Keep your upper arms parallel to the ground."
-    ]
+    ],
+    "name_cn": "面拉"
   },
   {
     "id": "Barbell_Curl",
@@ -666,7 +694,8 @@
       "Continue the movement until your biceps are fully contracted and the bar is at shoulder level. Hold the contracted position for a second and squeeze the biceps hard.",
       "Slowly begin to bring the bar back to starting position as your breathe in.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "杠铃弯举"
   },
   {
     "id": "Cable_Hammer_Curls_-_Rope_Attachment",
@@ -688,7 +717,8 @@
       "Using your biceps, pull your arms up as you exhale until your biceps touch your forearms. Tip: Remember to keep the elbows in and your upper arms stationary.",
       "After a 1 second contraction where you squeeze your biceps, slowly start to bring the weight back to the original position.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "绳索锤式弯举"
   },
   {
     "id": "Machine_Preacher_Curls",
@@ -709,7 +739,8 @@
       "Now lift the handles as you exhale and you contract the biceps. At the top of the position make sure that you hold the contraction for a second. Tip: Only the forearms should move. The upper arms should remain stationary and on the pad at all times.",
       "Lower the handles slowly back to the starting position as you inhale.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "器械牧师凳弯举"
   },
   {
     "id": "Concentration_Curls",
@@ -732,7 +763,8 @@
       "While holding the upper arm stationary, curl the weights forward while contracting the biceps as you breathe out. Only the forearms should move. Continue the movement until your biceps are fully contracted and the dumbbells are at shoulder level. Tip: At the top of the movement make sure that the little finger of your arm is higher than your thumb. This guarantees a good contraction. Hold the contracted position for a second as you squeeze the biceps.",
       "Slowly begin to bring the dumbbells back to starting position as your breathe in. Caution: Avoid swinging motions at any time.",
       "Repeat for the recommended amount of repetitions. Then repeat the movement with the left arm."
-    ]
+    ],
+    "name_cn": "集中弯举"
   },
   {
     "id": "Seated_Dumbbell_Curl",
@@ -753,7 +785,8 @@
       "While holding the upper arm stationary, curl the weights and start twisting the wrists once the dumbbells pass your thighs so that the palms of your hands face forward at the end of the movement. Make sure that you contract the biceps as you breathe out and make sure that only the forearms move. Continue the movement until your biceps are fully contracted and the dumbbells are at shoulder level. Hold the contracted position for a second as you squeeze the biceps.",
       "Slowly begin to bring the dumbbells back to the starting position as your breathe in and as you rotate the wrists back to a neutral grip.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "坐姿哑铃弯举"
   },
   {
     "id": "Close-Grip_EZ_Bar_Curl",
@@ -776,7 +809,8 @@
       "Continue the movement until your biceps are fully contracted and the bar is at shoulder level. Hold the contracted position for a second and squeeze the biceps hard.",
       "Slowly begin to bring the bar back to starting position as your breathe in.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "窄握曲杆弯举"
   },
   {
     "id": "Reverse_Grip_Triceps_Pushdown",
@@ -797,7 +831,8 @@
       "Slowly elevate the bar attachment up as you inhale so it is aligned with your chest. Only the forearms should move and the elbows/upper arms should be stationary by your side at all times.",
       "Then begin to lower the cable bar back down to the original staring position while exhaling and contracting the triceps hard.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "反握绳索下压"
   },
   {
     "id": "Lying_Triceps_Press",
@@ -818,7 +853,8 @@
       "As you breathe in, slowly lower the weight until the bar lightly touches your forehead while keeping the upper arms and elbows stationary.",
       "At that point, use the triceps to bring the weight back up to the starting position as you breathe out.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "仰卧臂屈伸"
   },
   {
     "id": "EZ-Bar_Skullcrusher",
@@ -840,7 +876,8 @@
       "Keeping the upper arms stationary, lower the bar by allowing the elbows to flex. Inhale as you perform this portion of the movement. Pause once the bar is directly above the forehead.",
       "Lift the bar back to the starting position by extending the elbow and exhaling.",
       "Repeat."
-    ]
+    ],
+    "name_cn": "曲杆碎颅式臂屈伸"
   },
   {
     "id": "Neck_Press",
@@ -864,7 +901,8 @@
       "After a second pause, bring the bar back to the starting position as you breathe out and push the bar using your chest muscles. Lock your arms and squeeze your chest in the contracted position, hold for a second and then start coming down slowly again. Tip: It should take at least twice as long to go down than to come up).",
       "Repeat the movement for the prescribed amount of repetitions.",
       "When you are done, place the bar back in the rack."
-    ]
+    ],
+    "name_cn": "颈前卧推"
   },
   {
     "id": "Barbell_Shrug",
@@ -884,7 +922,8 @@
       "Raise your shoulders up as far as you can go as you breathe out and hold the contraction for a second. Tip: Refrain from trying to lift the barbell by using your biceps.",
       "Slowly return to the starting position as you breathe in.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "杠铃耸肩"
   },
   {
     "id": "Dumbbell_Shrug",
@@ -904,7 +943,8 @@
       "Lift the dumbbells by elevating the shoulders as high as possible while you exhale. Hold the contraction at the top for a second. Tip: The arms should remain extended at all times. Refrain from using the biceps to help lift the dumbbells. Only the shoulders should be moving up and down.",
       "Lower the dumbbells back to the original position.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "哑铃耸肩"
   },
   {
     "id": "Standing_Calf_Raises",
@@ -925,7 +965,8 @@
       "Raise your heels as you breathe out by extending your ankles as high as possible and flexing your calf. Ensure that the knee is kept stationary at all times. There should be no bending at any time. Hold the contracted position by a second before you start to go back down.",
       "Go back slowly to the starting position as you breathe in by lowering your heels as you bend the ankles until calves are stretched.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "站姿提踵"
   },
   {
     "id": "Barbell_Seated_Calf_Raise",
@@ -947,7 +988,8 @@
       "Raise up on your toes as high as possible as you squeeze the calves and as you breathe out.",
       "After a second contraction, slowly go back to the starting position. Tip: To get maximum benefit stretch your calves as far as you can.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "杠铃坐姿提踵"
   },
   {
     "id": "Donkey_Calf_Raises",
@@ -968,7 +1010,8 @@
       "Raise your heels as you breathe out by extending your ankles as high as possible and flexing your calf. Ensure that the knee is kept stationary at all times. There should be no bending at any time. Hold the contracted position by a second before you start to go back down.",
       "Go back slowly to the starting position as you breathe in by lowering your heels as you bend the ankles until calves are stretched.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "驴式提踵"
   },
   {
     "id": "Palms-Up_Barbell_Wrist_Curl_Over_A_Bench",
@@ -991,7 +1034,8 @@
       "Slowly lower your wrists back down to the starting position while inhaling.",
       "Your forearms should be stationary as your wrist is the only movement needed to perform this exercise.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "杠铃腕弯举（反握）"
   },
   {
     "id": "Wrist_Roller",
@@ -1014,7 +1058,8 @@
       "Rotate one wrist at a time in an upward motion to bring the weight up to the bar by rolling the rope around the roller.",
       "Once the weight has reached the bar, slowly begin to lower the weight back down by rotating the wrist in a downward motion until the weight reaches the starting position.",
       "Repeat for the prescribed amount of repetitions in your program."
-    ]
+    ],
+    "name_cn": "腕滚轮"
   },
   {
     "id": "Crunches",
@@ -1036,7 +1081,8 @@
       "Continue to push down as hard as you can with your lower back as you contract your abdominals and exhale. Your shoulders should come up off the floor only about four inches, and your lower back should remain on the floor. At the top of the movement, contract your abdominals hard and keep the contraction for a second. Tip: Focus on slow, controlled movement - don't cheat yourself by using momentum.",
       "After the one second contraction, begin to come down slowly again to the starting position as you inhale.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "卷腹"
   },
   {
     "id": "Hanging_Leg_Raise",
@@ -1056,7 +1102,8 @@
       "Raise your legs until the torso makes a 90-degree angle with the legs. Exhale as you perform this movement and hold the contraction for a second or so.",
       "Go back slowly to the starting position as you breathe in.",
       "Repeat for the recommended amount of repetitions."
-    ]
+    ],
+    "name_cn": "悬垂举腿"
   },
   {
     "id": "Plank",
@@ -1074,7 +1121,8 @@
     "instructions": [
       "Get into a prone position on the floor, supporting your weight on your toes and your forearms. Your arms are bent and directly below the shoulder.",
       "Keep your body straight at all times, and hold this position as long as possible. To increase difficulty, an arm or leg can be raised."
-    ]
+    ],
+    "name_cn": "平板支撑"
   },
   {
     "id": "Cable_Russian_Twists",
@@ -1097,7 +1145,8 @@
       "Pause for a moment and in a slow and controlled manner reset to the starting position. You should still have side tension on the cable in the resting position.",
       "Repeat the same movement to failure.",
       "Then, reposition and repeat the same series of movements on the opposite side."
-    ]
+    ],
+    "name_cn": "绳索俄罗斯转体"
   },
   {
     "id": "Ab_Roller",
@@ -1119,7 +1168,8 @@
       "Now place the ab roller on the floor in front of you so that you are on all your hands and knees (as in a kneeling push up position). This will be your starting position.",
       "Slowly roll the ab roller straight forward, stretching your body into a straight position. Tip: Go down as far as you can without touching the floor with your body. Breathe in during this portion of the movement.",
       "After a pause at the stretched position, start pulling yourself back to the starting position as you breathe out. Tip: Go slowly and keep your abs tight at all times."
-    ]
+    ],
+    "name_cn": "健腹轮"
   },
   {
     "id": "Front_Leg_Raises",
@@ -1137,7 +1187,8 @@
     "instructions": [
       "Stand next to a chair or other support, holding on with one hand.",
       "Swing your leg forward, keeping the leg straight. Continue with a downward swing, bringing the leg as far back as your flexibility allows. Repeat 5-10 times, and then switch legs."
-    ]
+    ],
+    "name_cn": "前抬腿"
   },
   {
     "id": "Side_Bridge",
@@ -1154,7 +1205,8 @@
       "shoulders"
     ],
     "level": "beginner",
-    "instructions": []
+    "instructions": [],
+    "name_cn": "侧桥"
   },
   {
     "id": "Cable_Reverse_Crunch",
@@ -1176,7 +1228,8 @@
       "With your hands behind your head, bring your knees inward to your torso and elevate your hips off the floor.",
       "Pause for a moment and in a slow and controlled manner drop your hips and bring your legs back to the starting 90-degree angle. You should still have tension on your abs in the resting position.",
       "Repeat the same movement to failure."
-    ]
+    ],
+    "name_cn": "绳索反向卷腹"
   },
   {
     "id": "Bosu_Ball_Cable_Crunch_With_Side_Bends",
@@ -1202,7 +1255,8 @@
       "Repeat the same series of movements to failure.",
       "Once you reach failure, keep your abs tight and raise your torso into plank position so your back is elevated off the Bosu Ball.",
       "Lower your arms down to your side; keep them straight. Start doing alternating side bends; reach for your heels! This finishing movement will focus on your obliques."
-    ]
+    ],
+    "name_cn": "波速球绳索卷腹加侧屈"
   },
   {
     "id": "Glute_Kickback",
@@ -1224,7 +1278,8 @@
       "As you exhale, lift up your right leg until the hamstrings are in line with the back while maintaining the 90-degree angle bend. Contract the glutes throughout this movement and hold the contraction at the top for a second. Tip: At the end of the movement the upper leg should be parallel to the floor while the calf should be perpendicular to it.",
       "Go back to the initial position as you inhale and now repeat with the left leg.",
       "Continue to alternate legs until all of the recommended repetitions have been performed."
-    ]
+    ],
+    "name_cn": "臀后踢"
   },
   {
     "id": "One-Legged_Cable_Kickback",
@@ -1248,7 +1303,8 @@
       "Now slowly bring your working leg forward, resisting the pull of the cable until you reach the starting position.",
       "Repeat for the recommended amount of repetitions.",
       "Switch legs and repeat the movement for the other side."
-    ]
+    ],
+    "name_cn": "单腿绳索后踢"
   },
   {
     "id": "Barbell_Hip_Thrust",
@@ -1270,6 +1326,7 @@
       "Begin seated on the ground with a bench directly behind you. Have a loaded barbell over your legs. Using a fat bar or having a pad on the bar can greatly reduce the discomfort caused by this exercise.",
       "Roll the bar so that it is directly above your hips, and lean back against the bench so that your shoulder blades are near the top of it.",
       "Begin the movement by driving through your feet, extending your hips vertically through the bar. Your weight should be supported by your shoulder blades and your feet. Extend as far as possible, then reverse the motion to return to the starting position."
-    ]
+    ],
+    "name_cn": "杠铃臀桥"
   }
 ]
