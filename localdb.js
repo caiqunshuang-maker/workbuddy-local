@@ -70,6 +70,33 @@
   // ---------- IndexedDB 图片存储 ----------
   let _imgDB = null;
   const IMG_CACHE = {}; // key -> dataURL
+  // LRU 上限：防止把所有图片 dataURL 全塞内存，OPPO 等低内存手机会因内存压力
+  // 被系统杀掉 WebView（表现为"用着用着闪退回概览"）。超出上限自动淘汰最久未用的。
+  const IMG_CACHE_MAX = 60;
+  const IMG_CACHE_ORDER = []; // 最近使用顺序，末尾最新
+  function cachePut(key, dataURL) {
+    if (!key) return;
+    if (IMG_CACHE[key] === dataURL) return;
+    const i = IMG_CACHE_ORDER.indexOf(key);
+    if (i >= 0) IMG_CACHE_ORDER.splice(i, 1);
+    IMG_CACHE[key] = dataURL;
+    IMG_CACHE_ORDER.push(key);
+    while (IMG_CACHE_ORDER.length > IMG_CACHE_MAX) {
+      const old = IMG_CACHE_ORDER.shift();
+      delete IMG_CACHE[old];
+    }
+  }
+  function cacheTouch(key) {
+    const i = IMG_CACHE_ORDER.indexOf(key);
+    if (i >= 0 && i !== IMG_CACHE_ORDER.length - 1) {
+      IMG_CACHE_ORDER.splice(i, 1);
+      IMG_CACHE_ORDER.push(key);
+    }
+  }
+  function cacheClear() {
+    Object.keys(IMG_CACHE).forEach(k => delete IMG_CACHE[k]);
+    IMG_CACHE_ORDER.length = 0;
+  }
   function openDB() {
     return new Promise((resolve, reject) => {
       if (_imgDB) return resolve(_imgDB);
@@ -86,7 +113,7 @@
   }
   async function imgPut(key, dataURL) {
     const db = await openDB();
-    IMG_CACHE[key] = dataURL;
+    cachePut(key, dataURL);
     return new Promise((resolve, reject) => {
       const tx = db.transaction('images', 'readwrite');
       tx.objectStore('images').put({ key, data: dataURL });
@@ -95,13 +122,13 @@
     });
   }
   async function imgGet(key) {
-    if (IMG_CACHE[key]) return IMG_CACHE[key];
+    if (IMG_CACHE[key]) { cacheTouch(key); return IMG_CACHE[key]; }
     const db = await openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction('images', 'readonly');
       const req = tx.objectStore('images').get(key);
       req.onsuccess = () => {
-        if (req.result) { IMG_CACHE[key] = req.result.data; resolve(req.result.data); }
+        if (req.result) { cachePut(key, req.result.data); resolve(req.result.data); }
         else resolve(null);
       };
       req.onerror = reject;
@@ -114,7 +141,8 @@
         const tx = db.transaction('images', 'readonly');
         const req = tx.objectStore('images').getAll();
         req.onsuccess = () => {
-          (req.result || []).forEach(r => { IMG_CACHE[r.key] = r.data; });
+          // 按 LRU 上限缓存，多余的等实际用到时再从 IndexedDB 懒加载
+          (req.result || []).forEach(r => { if (IMG_CACHE_ORDER.length < IMG_CACHE_MAX) cachePut(r.key, r.data); });
           resolve();
         };
         req.onerror = reject;
@@ -617,7 +645,7 @@
       // 只存一份原图；thumb 直接复用（避免体积翻倍）
       await imgPut(key, dataURL);
       const thumb = key.replace('.jpg', '_thumb.jpg');
-      IMG_CACHE[thumb] = dataURL;
+      cachePut(thumb, dataURL);
       return { url: '/uploads/' + key, thumb: '/uploads/' + thumb };
     } catch (e) {
       return { error: '图片处理失败: ' + e.message };
@@ -778,7 +806,7 @@
         await imgPut(key, payload.images[key]);
       }
       // 刷新内存缓存
-      Object.keys(IMG_CACHE).forEach(k => delete IMG_CACHE[k]);
+      cacheClear();
       await loadAllImagesToCache();
     }
     localStorage.setItem(LS_PREFIX + '_seeded', '1');

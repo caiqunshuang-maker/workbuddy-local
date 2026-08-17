@@ -9,6 +9,7 @@
     <title>御前指挥部</title>
     <meta name="theme-color" content="#5b6af0">
     <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="./icon-192.png">
     <link rel="apple-touch-icon" href="./apple-touch-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -2072,7 +2073,29 @@
             calendarMonth: new Date().getMonth() + 1,
         };
 
+        // ===== 错误日志（诊断"闪退"用）：记录到 localStorage，最多 30 条 =====
+        function logErr(msg) {
+            try {
+                const arr = JSON.parse(localStorage.getItem('wb_errlog') || '[]');
+                arr.push(new Date().toLocaleString('zh-CN') + ' ' + String(msg).slice(0, 300));
+                if (arr.length > 30) arr.splice(0, arr.length - 30);
+                localStorage.setItem('wb_errlog', JSON.stringify(arr));
+            } catch (e) { /* ignore */ }
+        }
+        window.addEventListener('error', (e) => {
+            logErr('JS: ' + (e.message || '') + ' @' + (e.filename || '').split('/').pop() + ':' + (e.lineno || ''));
+        });
+        window.addEventListener('unhandledrejection', (e) => {
+            const r = e.reason;
+            logErr('Promise: ' + (r && r.message ? r.message : String(r)).slice(0, 300));
+        });
+
         // ===== Navigation =====
+        const ALL_PAGES = ['dashboard', 'tasks', 'calendar', 'notes', 'habits', 'review', 'fitness', 'diary', 'money', 'storage'];
+        // 记住当前页面：闪退/系统杀后台/刷新后能回到原页面，而不是强制回概览
+        function rememberPage(page) {
+            try { localStorage.setItem('wb_last_page', page); } catch (e) { /* ignore */ }
+        }
         function goToPage(page, title) {
             document.querySelectorAll('.nav-item, .bn-item').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -2081,16 +2104,22 @@
             document.querySelectorAll(`.nav-item[data-page="${page}"], .bn-item[data-page="${page}"]`).forEach(b => b.classList.add('active'));
             document.getElementById(`page-${page}`).classList.add('active');
             document.getElementById('pageTitle').textContent = title;
-            if (page === 'dashboard') loadDashboard();
-            if (page === 'tasks') renderTasks();
-            if (page === 'calendar') renderCalendar();
-            if (page === 'notes') renderNotes();
-            if (page === 'fitness') loadFitness();
-            if (page === 'diary') loadDiary();
-            if (page === 'money') loadMoney();
-            if (page === 'storage') renderStorage();
-            if (page === 'habits') renderHabits();
-            if (page === 'review') renderReview();
+            rememberPage(page);
+            try {
+                if (page === 'dashboard') loadDashboard();
+                if (page === 'tasks') renderTasks();
+                if (page === 'calendar') renderCalendar();
+                if (page === 'notes') renderNotes();
+                if (page === 'fitness') loadFitness();
+                if (page === 'diary') loadDiary();
+                if (page === 'money') loadMoney();
+                if (page === 'storage') renderStorage();
+                if (page === 'habits') renderHabits();
+                if (page === 'review') renderReview();
+            } catch (e) {
+                // 页面渲染出错时不白屏：记录错误并给提示，而不是让页面卡死
+                logErr('goToPage ' + page + ': ' + (e && e.message ? e.message : e));
+            }
         }
         document.querySelectorAll('.nav-item, .bn-item').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -5757,25 +5786,39 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v29';
+                b.textContent = 'v30';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
         })();
 
-        loadDashboard();
+        // 启动：恢复上次所在页面（防止闪退/刷新后被强制拉回概览）
+        (function bootPage() {
+            let page = 'dashboard';
+            try {
+                const p = localStorage.getItem('wb_last_page');
+                if (p && ALL_PAGES.includes(p)) page = p;
+            } catch (e) { /* ignore */ }
+            if (page === 'dashboard') loadDashboard();
+            else {
+                const btn = document.querySelector(`.nav-item[data-page="${page}"], .bn-item[data-page="${page}"]`);
+                const title = btn ? (btn.dataset.title || btn.textContent.trim()) : '📊 概览';
+                goToPage(page, title);
+            }
+        })();
         // 注册 Service Worker（离线可用）
+        // 更新策略：静默更新。发现新版只预取缓存，绝不自动 reload，
+        // 避免用户正在使用时被突然刷新打断（表现为"闪退回概览"）。
+        // 下次自然打开页面时（导航 network-first）会自动加载最新版。
         try {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((reg) => {
-                    // 检测到新版本安装完成 → 自动刷新一次，立即加载最新页面
                     reg.addEventListener('updatefound', () => {
                         const nw = reg.installing;
                         if (!nw) return;
                         nw.addEventListener('statechange', () => {
                             if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-                                try { localStorage.setItem('wb_updated', '1'); } catch (e) {}
-                                setTimeout(() => location.reload(), 500);
+                                console.log('[sw] 新版本已就绪，下次打开自动生效');
                             }
                         });
                     });
