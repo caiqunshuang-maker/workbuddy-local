@@ -832,6 +832,10 @@
         .md-content pre code { background: transparent; padding: 0; }
         .md-content a { color: var(--primary); }
         .md-content img { max-width: 100%; border-radius: 6px; }
+        .md-content .task-item { display: flex; align-items: flex-start; gap: 6px; list-style: none; margin: 4px 0; }
+        .md-content .task-item .note-check { width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; cursor: pointer; accent-color: var(--primary); }
+        .md-content .task-item span { flex: 1; }
+        .md-content ul:has(.task-item) { padding-left: 0; }
 
         /* ===== Storage ===== */
         .storage-summary {
@@ -4219,17 +4223,17 @@
                         <button onclick="deleteNote(${n.id})" title="删除">🗑</button>
                     </div>
                     <div class="note-title">${esc(n.title || '无标题')}</div>
-                    <div class="md-content">${renderMarkdown(n.content)}</div>
+                    <div class="md-content">${renderMarkdown(n.content, n.id)}</div>
                     <div class="note-meta">${formatDate(n.updated_at)} ${n.pinned ? '· 📌 已置顶' : ''}</div>
                 </div>
             `).join('');
         }
 
-        function renderMarkdown(text) {
+        function renderMarkdown(text, noteId) {
             if (!text) return '<span style="color:var(--text-muted);">（空白笔记）</span>';
             try {
                 if (window.marked) {
-                    let html = marked.parse(esc(text));
+                    let html = marked.parse(text);
                     // 净化链接：仅允许 http/https/mailto/tel，防 javascript: XSS
                     html = html.replace(/<a\s+href=["']([^"']*)["']/gi, (match, href) => {
                         const h = (href || '').trim().toLowerCase();
@@ -4237,6 +4241,22 @@
                             return match;
                         }
                         return '<a href="#" onclick="return false;"';
+                    });
+                    // 任务列表：marked 已生成 <input disabled type="checkbox">，去掉 disabled 变成可点击
+                    // 用占位符保证顺序与原文一致（先标记全部，再按序替换）
+                    const checkItems = [];
+                    html = html.replace(/<li><input([^>]*)type="checkbox"([^>]*)>(.*?)<\/li>/gi, (m, before, after, content) => {
+                        const isChecked = m.includes('checked=""');
+                        checkItems.push({ content, isChecked });
+                        return `<!--CHK_${checkItems.length - 1}-->`;
+                    });
+                    let idx = 0;
+                    html = html.replace(/<!--CHK_(\d+)-->/g, (m, n) => {
+                        const item = checkItems[parseInt(n, 10)];
+                        if (noteId) {
+                            return `<li class="task-item"><input type="checkbox" class="note-check"${item.isChecked ? ' checked' : ''} data-note-id="${noteId}" data-check-idx="${idx++}" onchange="toggleNoteCheck(this)">${item.content}</li>`;
+                        }
+                        return `<li class="task-item"><input type="checkbox" class="note-check"${item.isChecked ? ' checked' : ''} disabled>${item.content}</li>`;
                     });
                     return html;
                 }
@@ -4269,6 +4289,7 @@
                         <button onclick="insertToNote('**加粗**')">B</button>
                         <button onclick="insertToNote('*斜体*')"><i>I</i></button>
                         <button onclick="insertToNote('- 列表项\n- 列表项')">• 列表</button>
+                        <button onclick="insertToNote('- [ ] ')" title="可勾选清单">☑ 清单</button>
                         <button onclick="insertToNote('# 标题')">H1</button>
                         <button onclick="insertToNote('## 副标题')">H2</button>
                         <button onclick="insertToNote(MD_TABLE_TEMPLATE)">▦ 表格</button>
@@ -4331,6 +4352,34 @@
                 body: JSON.stringify({ pinned: !note.pinned }),
             });
             renderNotes();
+        }
+
+        async function toggleNoteCheck(el) {
+            const noteId = el.dataset.noteId;
+            const targetIdx = parseInt(el.dataset.checkIdx, 10);
+            if (!noteId || isNaN(targetIdx)) return;
+            try {
+                const note = await api(`/api/notes/${noteId}`);
+                const lines = note.content.split('\n');
+                let found = -1;
+                for (let i = 0; i < lines.length; i++) {
+                    if (/^\s*-\s*\[[ xX]\]/.test(lines[i])) {
+                        found++;
+                        if (found === targetIdx) {
+                            lines[i] = el.checked
+                                ? lines[i].replace(/\[ \]/, '[x]')
+                                : lines[i].replace(/\[[xX]\]/, '[ ]');
+                            break;
+                        }
+                    }
+                }
+                if (found === targetIdx) {
+                    await api(`/api/notes/${noteId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({ content: lines.join('\n') })
+                    });
+                }
+            } catch (e) { console.error('toggleNoteCheck failed', e); }
         }
 
         // ===== Fitness =====
@@ -5786,7 +5835,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v30';
+                b.textContent = 'v31';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
