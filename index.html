@@ -865,11 +865,14 @@
             width: 100%;
             margin: 6px 0;
             font-size: 0.8rem;
+            word-break: break-all; /* 手机窄屏防横向溢出 */
+            table-layout: fixed;
         }
         .md-content th, .md-content td {
             border: 1px solid var(--border);
             padding: 5px 8px;
             text-align: left;
+            word-break: break-all;
         }
         .md-content th {
             background: var(--surface-hover);
@@ -4360,11 +4363,38 @@
             overlay.classList.add('open');
         }
 
+        // 表格纠错：GFM 表格后紧跟的非空行会被吞进表格最后一行（无空行时）。
+        // 检测到表格块后跟非表格文字，自动补一个空行，让文字回到表格外。
+        function isTableLine(t) {
+            if (!t.startsWith('|')) return false;
+            return t.slice(1).includes('|'); // 除开头管道外还有管道 → 表格行（含分隔行/省略尾管道）
+        }
+        function fixTableEndings(text) {
+            if (!text || text.indexOf('|') === -1) return text;
+            const lines = text.split('\n');
+            const out = [];
+            let inCode = false;
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                out.push(line);
+                const t = line.trim();
+                if (t.startsWith('```')) { inCode = !inCode; continue; }
+                if (inCode) continue;
+                if (isTableLine(t)) {
+                    const next = (i + 1 < lines.length ? lines[i + 1] : '').trim();
+                    if (next && !isTableLine(next) && !next.startsWith('```')) {
+                        out.push(''); // 表格块后补空行，防止后面文字被吞
+                    }
+                }
+            }
+            return out.join('\n');
+        }
+
         function renderMarkdown(text, noteId) {
             if (!text) return '<span style="color:var(--text-muted);">（空白笔记）</span>';
             try {
                 if (window.marked) {
-                    let html = marked.parse(text);
+                    let html = marked.parse(fixTableEndings(text));
                     // 净化链接：仅允许 http/https/mailto/tel，防 javascript: XSS
                     html = html.replace(/<a\s+href=["']([^"']*)["']/gi, (match, href) => {
                         const h = (href || '').trim().toLowerCase();
@@ -4398,11 +4428,20 @@
         function insertToNote(template) {
             const ta = document.getElementById('noteContent');
             const start = ta.selectionStart || ta.value.length;
-            ta.value = ta.value.slice(0, start) + template + ta.value.slice(ta.selectionEnd || start);
+            const end = ta.selectionEnd || start;
+            let before = ta.value.slice(0, start);
+            let after = ta.value.slice(end);
+            // 多行块（表格/列表等）自动补前后换行，避免与相邻文字粘连
+            if (template.includes('\n')) {
+                if (before && !before.endsWith('\n')) template = '\n' + template;
+                if (after && !after.startsWith('\n')) template = template + '\n';
+            }
+            ta.value = before + template + after;
             ta.focus();
         }
 
-        const MD_TABLE_TEMPLATE = '\n| 项目 | 数值 | 备注 |\n| ---- | ---- | ---- |\n|  |  |  |\n|  |  |  |\n';
+        // 表格模板：带示例值，直接改成自己的数据即可
+        const MD_TABLE_TEMPLATE = '| 项目 | 数值 | 备注 |\n| ---- | ---- | ---- |\n| 体重 | 65kg | 早上空腹 |\n| 身高 | 165cm | 光脚 |';
 
         function openNoteModal(note) {
             const overlay = document.getElementById('modalOverlay');
@@ -5968,7 +6007,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v32';
+                b.textContent = 'v33';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
