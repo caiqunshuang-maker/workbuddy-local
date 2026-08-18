@@ -774,6 +774,72 @@
             transition: all 0.15s;
         }
         .note-card .note-actions button:hover { background: var(--border); }
+        .note-card { cursor: pointer; }
+        .note-card:hover { transform: translateY(-1px); }
+        .note-card:active { transform: scale(0.98); }
+        .note-snippet {
+            font-size: 0.83rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+            min-height: 2.6em;
+        }
+        .note-progress {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--surface-hover);
+            padding: 2px 9px;
+            border-radius: 999px;
+            margin-top: 8px;
+        }
+        .note-open-hint {
+            position: absolute;
+            bottom: 12px;
+            right: 14px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .note-detail-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            word-break: break-word;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .note-detail-color {
+            width: 10px; height: 10px; border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .note-detail-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin: 6px 0 14px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .note-detail-content {
+            border-top: 1px solid var(--border);
+            padding-top: 14px;
+            max-height: 55vh;
+            overflow-y: auto;
+        }
+        .note-detail-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
 
         /* ===== Markdown in notes ===== */
         .md-content {
@@ -4207,6 +4273,8 @@
         }
 
         // ===== Notes =====
+        let _noteDetailId = null; // 当前打开的笔记详情 id（用于勾选后局部刷新）
+
         async function renderNotes() {
             const notes = await api('/api/notes');
             const grid = document.getElementById('notesGrid');
@@ -4215,18 +4283,81 @@
                 return;
             }
             const colors = { default: 'var(--primary)', yellow: '#f59e0b', green: '#10b981', pink: '#ec4899', purple: '#8b5cf6' };
-            grid.innerHTML = notes.map(n => `
-                <div class="note-card ${n.pinned ? 'pinned' : ''}" style="border-left-color:${colors[n.color] || colors.default}">
+            grid.innerHTML = notes.map(n => {
+                const sum = noteSummary(n.content);
+                const progressHtml = sum.total > 0
+                    ? `<div class="note-progress">☑ ${sum.done}/${sum.total}${sum.done === sum.total && sum.total > 1 ? ' 完成' : ''}</div>`
+                    : '';
+                return `
+                <div class="note-card ${n.pinned ? 'pinned' : ''}" style="border-left-color:${colors[n.color] || colors.default}" onclick="openNoteDetail(${n.id})">
                     <div class="note-actions">
-                        <button onclick="togglePinNote(${n.id})" title="${n.pinned ? '取消置顶' : '置顶'}">${n.pinned ? '📌' : '📍'}</button>
-                        <button onclick="editNote(${n.id})" title="编辑">✏️</button>
-                        <button onclick="deleteNote(${n.id})" title="删除">🗑</button>
+                        <button onclick="event.stopPropagation();togglePinNote(${n.id})" title="${n.pinned ? '取消置顶' : '置顶'}">${n.pinned ? '📌' : '📍'}</button>
+                        <button onclick="event.stopPropagation();editNote(${n.id})" title="编辑">✏️</button>
+                        <button onclick="event.stopPropagation();deleteNote(${n.id})" title="删除">🗑</button>
                     </div>
                     <div class="note-title">${esc(n.title || '无标题')}</div>
-                    <div class="md-content">${renderMarkdown(n.content, n.id)}</div>
+                    <div class="note-snippet">${esc(sum.text || '（空白笔记）')}</div>
+                    ${progressHtml}
                     <div class="note-meta">${formatDate(n.updated_at)} ${n.pinned ? '· 📌 已置顶' : ''}</div>
+                    <div class="note-open-hint">点开查看 ›</div>
                 </div>
-            `).join('');
+            `}).join('');
+        }
+
+        // 提取纯文本摘要 + 统计清单进度（供卡片缩略显示）
+        function noteSummary(text) {
+            if (!text) return { text: '', total: 0, done: 0 };
+            let total = 0, done = 0;
+            const parts = [];
+            for (const raw of text.split('\n')) {
+                const line = raw.trim();
+                if (!line) continue;
+                const chk = line.match(/^[-*]\s+\[([ xX])\]\s*(.*)$/);
+                if (chk) {
+                    total++;
+                    if (chk[1].toLowerCase() === 'x') done++;
+                    if (chk[2].trim()) parts.push(chk[2].trim());
+                    continue;
+                }
+                let t = line
+                    .replace(/^#{1,6}\s+/, '')               // 标题
+                    .replace(/^\s*>\s*/, '')                 // 引用
+                    .replace(/^\s*[-*+]\s+/, '')             // 无序列表
+                    .replace(/^\s*\d+\.\s+/, '')             // 有序列表
+                    .replace(/^\s*\|.*\|\s*$/, mm => mm.replace(/\|/g, ' ').replace(/\s+/g, ' ').trim()) // 表格行
+                    .replace(/^[-=|:]{3,}$/, '')             // 分隔线/表头
+                    .replace(/```/g, '')
+                    .replace(/\*\*|__|~~/g, '')              // 加粗/斜体标记
+                    .replace(/\*([^*]+)\*/g, '$1')
+                    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1') // 图片
+                    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')  // 链接
+                    .replace(/`/g, '');
+                if (t.trim()) parts.push(t.trim());
+            }
+            let summary = parts.join(' ').replace(/\s+/g, ' ');
+            if (summary.length > 80) summary = summary.slice(0, 80) + '…';
+            return { text: summary, total, done };
+        }
+
+        async function openNoteDetail(id) {
+            const note = await api(`/api/notes/${id}`);
+            _noteDetailId = id;
+            const colors = { default: 'var(--primary)', yellow: '#f59e0b', green: '#10b981', pink: '#ec4899', purple: '#8b5cf6' };
+            const colorNames = { default: '蓝色', yellow: '黄色', green: '绿色', pink: '粉色', purple: '紫色' };
+            const overlay = document.getElementById('modalOverlay');
+            overlay.innerHTML = `
+            <div class="modal" style="width:600px;">
+                <div class="note-detail-title">${esc(note.title || '无标题')}<span class="note-detail-color" style="background:${colors[note.color] || colors.default}"></span></div>
+                <div class="note-detail-meta">${formatDate(note.updated_at)}${note.pinned ? ' · 📌 已置顶' : ''}${note.color && note.color !== 'default' ? ' · ' + (colorNames[note.color] || note.color) : ''}</div>
+                <div class="note-detail-content md-content">${renderMarkdown(note.content, note.id)}</div>
+                <div class="note-detail-actions">
+                    <button class="btn btn-outline" onclick="closeModal();_noteDetailId=null">关闭</button>
+                    <button class="btn btn-outline" onclick="_noteDetailId=null;closeModal();togglePinNote(${id})">${note.pinned ? '取消置顶' : '置顶'}</button>
+                    <button class="btn btn-outline" onclick="_noteDetailId=null;editNote(${id})">✏️ 编辑</button>
+                    <button class="btn btn-danger" onclick="_noteDetailId=null;deleteNote(${id})">🗑 删除</button>
+                </div>
+            </div>`;
+            overlay.classList.add('open');
         }
 
         function renderMarkdown(text, noteId) {
@@ -4378,6 +4509,8 @@
                         method: 'PUT',
                         body: JSON.stringify({ content: lines.join('\n') })
                     });
+                    // 若详情弹窗开着，刷新弹窗内容同步勾选状态
+                    if (_noteDetailId !== null) { await openNoteDetail(_noteDetailId); }
                 }
             } catch (e) { console.error('toggleNoteCheck failed', e); }
         }
@@ -5203,7 +5336,7 @@
             document.getElementById('modalOverlay').classList.remove('open');
         }
         document.getElementById('modalOverlay').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) closeModal();
+            if (e.target === e.currentTarget) { _noteDetailId = null; closeModal(); }
         });
 
         // ===== 一键备份 / 恢复 =====
@@ -5835,7 +5968,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v31';
+                b.textContent = 'v32';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
