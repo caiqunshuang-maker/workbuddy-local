@@ -1,0 +1,16 @@
+{
+  "name": "塔罗学习工作台",
+  "short_name": "塔罗学习",
+  "description": "又又宝贝的韦特塔罗学习工作台：课程进度、牌义掌握、每日一牌、牌阵练习、抽牌测验与学习笔记",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf7f2",
+  "theme_color": "#2d1b4e",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,4845 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>塔罗学习工作台 · 又又宝贝</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="塔罗学习">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#2d1b4e">
+<meta name="application-name" content="塔罗学习">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d1b4e'/><text x='50' y='65' text-anchor='middle' font-size='50'>🃏</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d1b4e'/><text x='50' y='65' text-anchor='middle' font-size='50'>🃏</text></svg>">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-hover: #f5f0e8;
+  --text: #2c2c2c; --text-secondary: #6b6b6b; --text-muted: #999;
+  --border: #e0d8cc; --border-light: #ede6db;
+  --accent: #5b2d8e; --accent-light: #ede3f5; --accent-glow: rgba(91,45,142,0.1);
+  --gold: #c9a84c; --gold-light: #faf3dc; --gold-dark: #a88a38;
+  --red: #c0392b; --green: #27ae60; --blue: #2980b9; --orange: #e67e22;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06); --shadow-lg: 0 4px 24px rgba(0,0,0,0.1);
+  --radius: 12px; --radius-sm: 8px; --transition: 0.2s ease;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh;
+  overflow-x: hidden;
+}
+.header {
+  background: linear-gradient(135deg, #2d1b4e, #5b2d8e, #3d1f66); color: #fff;
+  padding: 28px 40px; display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px; box-shadow: 0 2px 16px rgba(91,45,142,0.15);
+}
+.header-left { display: flex; align-items: center; gap: 16px; }
+.header-logo {
+  width: 48px; height: 48px;   background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; box-shadow: 0 2px 8px rgba(201,168,76,0.3);
+}
+.header h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+.header-sub { font-size: 13px; opacity: 0.75; margin-top: 2px; }
+.header-right { display: flex; gap: 8px; }
+.btn {
+  padding: 8px 18px; border: none; border-radius: 8px; cursor: pointer;
+  font-size: 14px; font-weight: 500; transition: var(--transition);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--gold); color: #3d1f66; }
+.btn-primary:hover { background: var(--gold-dark); color: #fff; }
+.btn-secondary { background: rgba(255,255,255,0.15); color: #fff; }
+.btn-secondary:hover { background: rgba(255,255,255,0.25); }
+.btn-sm { padding: 5px 12px; font-size: 13px; }
+.btn-text { background: none; color: var(--accent); padding: 4px 8px; }
+.btn-text:hover { background: var(--accent-light); }
+.btn-danger { background: #fff0f0; color: var(--red); }
+.btn-danger:hover { background: #fdd; }
+.btn-big { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
+
+.tabs {
+  display: flex; padding: 0 40px; background: var(--bg-card);
+  border-bottom: 1px solid var(--border); overflow-x: auto; gap: 4px;
+  position: sticky; top: 0; z-index: 10;
+}
+.tab {
+  padding: 14px 22px; border: none; background: none; cursor: pointer;
+  font-size: 14px; color: var(--text-secondary); font-weight: 500;
+  border-bottom: 3px solid transparent; transition: var(--transition);
+  white-space: nowrap; display: flex; align-items: center; gap: 6px;
+}
+.tab:hover { color: var(--accent); background: var(--accent-light); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+.tab-icon { font-size: 17px; }
+.main { max-width: 1200px; margin: 0 auto; padding: 28px 40px; }
+
+.card {
+  background: var(--bg-card); border-radius: var(--radius);
+  border: 1px solid var(--border); padding: 24px;
+  box-shadow: var(--shadow); transition: var(--transition);
+}
+.card:hover { box-shadow: var(--shadow-lg); }
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-light);
+}
+.card-header h2 { font-size: 18px; color: var(--accent); font-weight: 700; }
+.card-header h3 { font-size: 16px; color: var(--text); font-weight: 600; }
+
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  border: 1px solid var(--border); box-shadow: var(--shadow); text-align: center;
+}
+.stat-value { font-size: 36px; font-weight: 800; color: var(--accent); }
+.stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+.stat-icon { font-size: 28px; display: block; margin-bottom: 8px; }
+
+.progress-bar { height: 10px; background: var(--border-light); border-radius: 5px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 5px; transition: width 0.5s ease; }
+.progress-fill.purple { background: linear-gradient(90deg, #5b2d8e, #8b5cf6); }
+.progress-fill.gold { background: linear-gradient(90deg, #c9a84c, #f0d060); }
+.progress-fill.green { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+.progress-fill.blue { background: linear-gradient(90deg, #2980b9, #5dade2); }
+
+/* Course */
+.course-list { display: flex; flex-direction: column; gap: 10px; }
+.course-item {
+  display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+  background: var(--bg-hover); border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light); transition: var(--transition);
+}
+.course-item:hover { border-color: var(--accent); }
+.course-num {
+  width: 38px; height: 38px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0;
+}
+.course-num.active { background: var(--accent); color: #fff; }
+.course-num.done { background: var(--green); color: #fff; }
+.course-num.todo { background: var(--border-light); color: var(--text-muted); }
+.course-info { flex: 1; min-width: 0; }
+.course-info h4 { font-size: 15px; font-weight: 600; }
+.course-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.course-status { font-size: 12px; padding: 3px 10px; border-radius: 12px; font-weight: 500; }
+.status-done { background: #e8f5e9; color: var(--green); }
+.status-active { background: var(--accent-light); color: var(--accent); }
+.status-todo { background: #f5f5f5; color: var(--text-muted); }
+.course-actions { display: flex; gap: 6px; }
+
+/* Mastery */
+.mastery-controls { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.filter-btn {
+  padding: 6px 14px; border: 1px solid var(--border); border-radius: 20px;
+  background: var(--bg-card); cursor: pointer; font-size: 13px; transition: var(--transition);
+}
+.filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+.filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.mastery-tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+.mastery-tab {
+  padding: 6px 16px; border: 1px solid var(--border); border-radius: 20px;
+  background: var(--bg-card); cursor: pointer; font-size: 12px; transition: var(--transition);
+}
+.mastery-tab:hover { border-color: var(--accent); }
+.mastery-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 8px; }
+.card-cell {
+  padding: 8px 4px; border-radius: var(--radius-sm); cursor: pointer;
+  text-align: center; border: 2px solid transparent; transition: var(--transition);
+  font-size: 11px; line-height: 1.3; position: relative;
+}
+.card-cell:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.card-cell.mastery-0 { background: #f9f9f9; border-color: #e0e0e0; color: #aaa; }
+.card-cell.mastery-1 { background: #fff0f0; border-color: #fcc; }
+.card-cell.mastery-2 { background: #fff8e8; border-color: #ffe0a0; }
+.card-cell.mastery-3 { background: #e8f5e9; border-color: #a5d6a7; }
+.card-cell.mastery-4 { background: #e3f2fd; border-color: #90caf9; }
+.card-cell.mastery-5 { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.card-cell-name { font-weight: 600; }
+.card-cell-en { font-size: 9px; color: var(--text-muted); }
+.card-upright-dots, .card-reversed-dots { display: flex; justify-content: center; gap: 1px; margin-top: 2px; }
+.dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+.dot.filled { background: var(--accent); }
+.dot.empty { background: #ddd; }
+.orient-label { font-size: 9px; color: var(--text-muted); }
+.section-label { font-size: 14px; font-weight: 700; color: var(--accent); margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--accent-light); }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+}
+.modal {
+  background: var(--bg-card); border-radius: var(--radius); padding: 28px;
+  max-width: 480px; width: 90%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+.modal h3 { font-size: 18px; margin-bottom: 16px; color: var(--accent); }
+.modal label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text-secondary); }
+.modal select, .modal textarea, .modal input {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 14px; font-family: inherit; margin-bottom: 14px; background: var(--bg);
+}
+.modal textarea { min-height: 80px; resize: vertical; }
+.star-rating { display: flex; gap: 6px; margin-bottom: 14px; }
+.star { font-size: 28px; cursor: pointer; color: #ddd; transition: var(--transition); }
+.star.active { color: var(--gold); }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+.orient-switch { display: flex; gap: 6px; margin-bottom: 16px; }
+.orient-btn {
+  flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg); cursor: pointer; text-align: center; font-size: 13px;
+  transition: var(--transition);
+}
+.orient-btn:hover { border-color: var(--accent); }
+.orient-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Daily */
+.daily-history { display: flex; flex-direction: column; gap: 12px; }
+.daily-entry { padding: 16px; background: var(--bg-hover); border-radius: var(--radius-sm); border: 1px solid var(--border-light); }
+.daily-entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.daily-card-badge {
+  display: inline-block; padding: 4px 12px; border-radius: 20px;
+  font-weight: 600; font-size: 13px; background: var(--accent-light); color: var(--accent);
+}
+.daily-entry p { font-size: 13px; color: var(--text-secondary); margin: 4px 0; }
+.daily-entry .label { font-weight: 600; color: var(--text); font-size: 12px; }
+.orient-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px;
+  font-weight: 500; margin-left: 6px;
+}
+.orient-badge.upright { background: #e8f5e9; color: #2e7d32; }
+.orient-badge.reversed { background: #fce4ec; color: #c62828; }
+
+/* Spread */
+.spread-list { display: flex; flex-direction: column; gap: 14px; }
+.spread-entry { padding: 18px; background: var(--bg-hover); border-radius: var(--radius-sm); border: 1px solid var(--border-light); }
+.spread-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.spread-positions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.position-tag {
+  padding: 4px 10px; border-radius: 14px; font-size: 12px;
+  background: var(--accent-light); color: var(--accent); font-weight: 500;
+}
+
+/* Notes */
+.notes-toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.search-input {
+  padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px;
+  font-size: 14px; width: 240px; font-family: inherit;
+}
+.notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.note-card { padding: 18px; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.note-card h4 { font-size: 15px; margin-bottom: 6px; }
+.note-card .note-date { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+.note-card .note-body { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.note-card .note-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 10px; }
+.tag { padding: 2px 8px; border-radius: 10px; font-size: 11px; background: var(--accent-light); color: var(--accent); }
+.note-actions { display: flex; gap: 6px; margin-top: 10px; }
+
+/* Heatmap */
+.heatmap { display: flex; gap: 3px; flex-wrap: wrap; justify-content: center; }
+.heatmap-cell {
+  width: 14px; height: 14px; border-radius: 3px; cursor: default;
+  transition: var(--transition); position: relative;
+}
+.heatmap-cell:hover { transform: scale(1.3); z-index: 2; }
+.heatmap-cell[data-level="0"] { background: #ececec; }
+.heatmap-cell[data-level="1"] { background: #d5c4e8; }
+.heatmap-cell[data-level="2"] { background: #b39ddb; }
+.heatmap-cell[data-level="3"] { background: #7e57c2; }
+.heatmap-cell[data-level="4"] { background: #5b2d8e; }
+.heatmap-cell[data-level="5"] { background: #3d1f66; }
+.heatmap-legend { display: flex; align-items: center; gap: 4px; margin-top: 10px; justify-content: center; font-size: 12px; color: var(--text-muted); }
+.heatmap-month { margin-bottom: 8px; }
+.heatmap-month-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
+
+/* Quiz */
+.quiz-container { text-align: center; max-width: 600px; margin: 0 auto; }
+.quiz-card-display {
+  font-size: 72px; margin: 20px 0;
+}
+.quiz-question { font-size: 20px; color: var(--accent); font-weight: 700; margin-bottom: 24px; }
+.quiz-input {
+  width: 100%; max-width: 400px; padding: 14px 18px; border: 2px solid var(--border);
+  border-radius: 12px; font-size: 16px; font-family: inherit; text-align: center;
+  transition: var(--transition); margin-bottom: 16px;
+}
+.quiz-input:focus { outline: none; border-color: var(--accent); }
+.quiz-hint { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; min-height: 20px; }
+.quiz-feedback { padding: 12px 20px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 15px; }
+.quiz-feedback.correct { background: #e8f5e9; color: #2e7d32; }
+.quiz-feedback.incorrect { background: #fff0f0; color: #c62828; }
+.quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 400px; margin: 0 auto 16px; }
+.quiz-option {
+  padding: 12px; border: 2px solid var(--border); border-radius: 10px;
+  background: var(--bg-card); cursor: pointer; transition: var(--transition);
+  font-size: 14px; text-align: center;
+}
+.quiz-option:hover { border-color: var(--accent); background: var(--accent-light); }
+.quiz-option.correct-answer { border-color: var(--green); background: #e8f5e9; }
+.quiz-option.wrong-answer { border-color: var(--red); background: #fff0f0; }
+.quiz-stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 24px; }
+.quiz-stat { text-align: center; }
+.quiz-stat-val { font-size: 28px; font-weight: 800; }
+.quiz-stat-val.green { color: var(--green); }
+.quiz-stat-val.red { color: var(--red); }
+.quiz-stat-lbl { font-size: 12px; color: var(--text-muted); }
+.quiz-mode-select { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; }
+.quiz-mode-btn {
+  padding: 8px 18px; border: 1px solid var(--border); border-radius: 20px;
+  background: var(--bg-card); cursor: pointer; font-size: 13px; transition: var(--transition);
+}
+.quiz-mode-btn:hover { border-color: var(--accent); }
+.quiz-mode-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Form */
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 14px; font-family: inherit; background: var(--bg);
+}
+.form-group textarea { min-height: 70px; resize: vertical; }
+
+.welcome { text-align: center; padding: 60px 20px; }
+.welcome-icon { font-size: 64px; display: block; margin-bottom: 20px; }
+.welcome h2 { font-size: 24px; color: var(--accent); margin-bottom: 10px; }
+.welcome p { color: var(--text-secondary); max-width: 500px; margin: 0 auto; line-height: 1.8; }
+
+.setup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.add-row { display: flex; gap: 8px; margin-bottom: 6px; }
+.add-row input { flex: 1; }
+
+.hidden { display: none !important; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.mt-16 { margin-top: 16px; } .mb-16 { margin-bottom: 16px; }
+.gap-8 { gap: 8px; }
+.text-center { text-align: center; }
+.text-muted { color: var(--text-muted); font-size: 13px; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+
+/* ============ Analysis Modal ============ */
+.analysis-modal { max-width: 640px; }
+.analysis-tabs { display: flex; gap: 4px; margin-bottom: 18px; border-bottom: 1px solid var(--border-light); }
+.analysis-tab {
+  padding: 9px 16px; border: none; background: none; cursor: pointer;
+  font-size: 13px; color: var(--text-secondary); font-weight: 500;
+  border-bottom: 3px solid transparent; transition: var(--transition);
+}
+.analysis-tab:hover { color: var(--accent); }
+.analysis-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+.analysis-body { min-height: 200px; }
+.analysis-section { margin-bottom: 18px; }
+.analysis-section-title {
+  font-size: 13px; font-weight: 700; color: var(--accent);
+  padding-bottom: 6px; margin-bottom: 10px;
+  border-bottom: 2px solid var(--accent-light);
+  display: flex; align-items: center; gap: 6px;
+}
+.analysis-overview { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 4px; }
+.analysis-chip {
+  padding: 6px 12px; border-radius: 16px; font-size: 12px;
+  background: var(--bg-hover); border: 1px solid var(--border-light);
+}
+.analysis-chip b { color: var(--accent); }
+.analysis-pos {
+  padding: 12px 14px; background: var(--bg-hover);
+  border-radius: var(--radius-sm); border: 1px solid var(--border-light);
+  margin-bottom: 10px;
+}
+.analysis-pos-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.analysis-pos-name { font-weight: 700; font-size: 13px; color: var(--accent); }
+.analysis-pos-card { font-size: 12px; color: var(--text); }
+.analysis-pos-card .rev { color: var(--red); font-weight: 600; }
+.analysis-pos-card .up { color: var(--green); font-weight: 600; }
+.analysis-pos-txt { font-size: 12.5px; color: var(--text-secondary); line-height: 1.7; }
+.analysis-kw { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin: 2px 2px 0 0; background: var(--accent-light); color: var(--accent); }
+.analysis-note { font-size: 12px; color: var(--text-muted); background: var(--gold-light); border: 1px solid #f0e6c8; border-radius: var(--radius-sm); padding: 10px 14px; margin-top: 8px; line-height: 1.6; }
+.analysis-ai-result { font-size: 13px; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
+.analysis-ai-loading { text-align: center; padding: 30px; color: var(--text-muted); }
+.analysis-ai-loading .spin { display: inline-block; animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.analysis-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+.ai-key-input { font-family: monospace; }
+.analysis-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+.analysis-divider { border: none; border-top: 1px dashed var(--border); margin: 16px 0; }
+
+/* 今日复习 + 薄弱牌组 */
+.review-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border-light); border-radius:8px; margin-bottom:8px; cursor:pointer; transition:var(--transition); }
+.review-item:hover { border-color:var(--accent); background:var(--accent-light); }
+.weakness-tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+.weakness-tag { display:inline-block; padding:4px 12px; border-radius:16px; font-size:12px; font-weight:600; background:#fff0f0; color:var(--red); border:1px solid #fcc; }
+.weakness-bars { display:flex; flex-direction:column; gap:10px; }
+.weakness-row { display:flex; align-items:center; gap:10px; }
+.weakness-name { width:76px; font-size:13px; color:var(--text-secondary); text-align:right; flex-shrink:0; }
+.weakness-bar-wrap { flex:1; height:10px; background:var(--border-light); border-radius:5px; overflow:hidden; }
+.weakness-bar { height:100%; border-radius:5px; transition:width 0.5s ease; }
+.weakness-val { width:46px; font-size:13px; font-weight:700; color:var(--text); text-align:left; flex-shrink:0; }
+
+/* 晚间复盘 */
+.daily-review { margin-top:10px; padding:8px 12px; border-radius:8px; font-size:12px; line-height:1.5; }
+.review-opts { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+.review-opt { padding:6px 16px; border:1px solid var(--border); border-radius:20px; background:#fff; font-size:13px; cursor:pointer; transition:var(--transition); }
+.review-opt.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* 错题本 */
+.wrong-mode-btn { padding:6px 16px; border:1px solid var(--border); border-radius:20px; background:#fff; font-size:13px; cursor:pointer; transition:var(--transition); color:var(--text-secondary); }
+.wrong-mode-btn.active { background:#fff0f0; color:var(--red); border-color:var(--red); }
+.wrong-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border-light); border-radius:8px; margin-bottom:8px; }
+
+@media (max-width: 768px) {
+  .analysis-modal { padding: 16px; }
+  .analysis-pos { padding: 10px 12px; }
+  .analysis-tab { padding: 8px 10px; font-size: 12px; }
+}
+
+
+@media (max-width: 768px) {
+  /* Header: compact, buttons become scrollable pill row */
+  .header { padding: 14px 16px; gap: 10px; }
+  .header-logo { width: 40px; height: 40px; font-size: 20px; }
+  .header h1 { font-size: 17px; }
+  .header-sub { font-size: 11px; line-height: 1.4; }
+  .header-right {
+    width: 100%; display: flex; gap: 6px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .header-right::-webkit-scrollbar { display: none; }
+  .header-right .btn { flex-shrink: 0; font-size: 12px; padding: 6px 12px; border-radius: 20px; }
+
+  /* Tabs: tighter, scrollable */
+  .tabs { padding: 0 4px; gap: 0; }
+  .tab { padding: 12px 11px; font-size: 13px; flex: 0 0 auto; }
+  .tab-icon { font-size: 15px; }
+
+  /* Main */
+  .main { padding: 16px; }
+  .card { padding: 16px; }
+  .card-header { margin-bottom: 14px; padding-bottom: 10px; }
+  .card-header h2 { font-size: 16px; }
+
+  /* Stats */
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-card { padding: 14px 10px; }
+  .stat-value { font-size: 28px; }
+  .stat-icon { font-size: 22px; margin-bottom: 4px; }
+  .stat-label { font-size: 12px; }
+
+  /* Dashboard dual-column blocks -> single column */
+  div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; gap: 12px !important; }
+
+  .progress-bar { height: 8px; }
+
+  /* Course list: info on row 1, status+actions on row 2 */
+  .course-item { flex-wrap: wrap; gap: 8px; padding: 12px; }
+  .course-num { width: 32px; height: 32px; font-size: 13px; }
+  .course-info { flex: 1 1 calc(100% - 50px); }
+  .course-status { order: 2; }
+  .course-actions { order: 3; margin-left: auto; }
+  .course-actions .btn-text { font-size: 12px; }
+
+  /* Card mastery grid */
+  .card-grid { grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 6px; }
+  .card-cell { padding: 8px 2px; }
+  .card-cell-name { font-size: 12px; }
+  .card-cell-en { font-size: 9px; }
+  .section-label { font-size: 13px; margin: 14px 0 8px; }
+
+  /* Filters */
+  .mastery-controls { gap: 8px; margin-bottom: 14px; }
+  .filter-btn { padding: 5px 10px; font-size: 12px; }
+  .mastery-tab { padding: 5px 12px; font-size: 11px; }
+
+  /* Modal */
+  .modal { padding: 20px; max-height: 90vh; }
+  .modal h3 { font-size: 16px; margin-bottom: 12px; }
+  .modal table td { padding: 4px 3px !important; font-size: 11px; }
+  .modal-actions { flex-wrap: wrap; }
+  .modal-actions .btn { flex: 1; justify-content: center; }
+
+  /* Daily */
+  .daily-entry { padding: 12px; }
+  .daily-card-badge { font-size: 12px; }
+  .daily-entry p { font-size: 12px; }
+
+  /* Spread */
+  .spread-entry { padding: 14px; }
+
+  /* Notes */
+  .search-input { width: 100%; }
+  .notes-grid { grid-template-columns: 1fr; }
+  .note-card { padding: 14px; }
+
+  /* Quiz */
+  .quiz-card-display { font-size: 56px; margin: 12px 0; }
+  .quiz-question { font-size: 17px; margin-bottom: 18px; }
+  .quiz-stats { gap: 12px; }
+  .quiz-stat-val { font-size: 24px; }
+  .quiz-options { grid-template-columns: 1fr; gap: 8px; }
+
+  /* Heatmap */
+  .heatmap-cell { width: 12px; height: 12px; }
+  .heatmap { gap: 2px; }
+
+  /* Share modal */
+  #share-link { font-size: 11px; }
+
+  /* Welcome */
+  .welcome { padding: 40px 16px; }
+  .welcome-icon { font-size: 48px; }
+
+  /* Section titles */
+  .panel > .flex-between h2 { font-size: 17px; }
+  .quiz-mode-select { flex-wrap: wrap; gap: 6px; }
+
+  /* iOS safe area (PWA fullscreen) */
+  .main { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+  .tabs { padding-top: env(safe-area-inset-top); }
+
+  /* Comparison table in modal: allow horizontal scroll */
+  .modal table { display: table; }
+
+  /* Enhanced mobile UX */
+  .tab { min-height: 44px; align-items: center; }
+  .filter-btn { min-height: 34px; }
+  .mastery-controls { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; scrollbar-width: none; }
+  .mastery-controls::-webkit-scrollbar { display: none; }
+  .modal { width: 94vw; max-width: 94vw; }
+  .header-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 56vw; }
+  .modal input, .modal select, .modal textarea, .form-group input, .form-group select, .form-group textarea, .quiz-input { font-size: 16px; }
+  .add-row { flex-wrap: wrap; }
+  .add-row input { flex: 1 1 100%; }
+  .add-row .btn { flex: 1; }
+  .btn-big { width: 100%; justify-content: center; }
+  .quiz-mode-select { overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .quiz-mode-select::-webkit-scrollbar { display: none; }
+  .quiz-mode-btn { flex-shrink: 0; }
+  .spread-positions { gap: 6px; }
+  .analysis-overview { gap: 6px; }
+  .analysis-chip { padding: 4px 10px; font-size: 11px; }
+}
+
+@media (max-width: 400px) {
+  .header h1 { font-size: 15px; }
+  .tab { padding: 10px 9px; font-size: 12px; }
+  .stat-card { padding: 12px 8px; }
+  .stat-value { font-size: 24px; }
+  .card-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
+  .course-info h4 { font-size: 14px; }
+}
+</style>
+<script src="https://beacon.cdn.qq.com/sdk/4.5.9/beacon_web.min.js"></script>
+<script>
+(function(){
+  try{
+    var beacon=new BeaconAction({
+      appkey:'0WEB06U85YBSLJNL',
+      versionCode:'1.0.0',
+      channelID:'share',
+      delay:1000,
+      sessionDuration:30*60*1000,
+      isOversea:false,
+      needReportRqdEvent:false
+    });
+    beacon.onDirectUserAction('preview_page_view',{
+      'url':location.href,
+      'referrer':document.referrer,
+      'title':document.title,
+      'sandbox_id':'112cd0455dae4217b43684197523b04b'
+    });
+  }catch(e){}
+})();
+</script></head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="header-logo">🃏</div>
+    <div>
+      <h1>塔罗学习工作台</h1>
+      <div class="header-sub">韦特塔罗 · Rider-Waite-Smith · 又又宝贝的学习空间</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-secondary btn-sm" onclick="openShareModal()" id="btn-share">📱 分享同步</button>
+    <button class="btn btn-secondary btn-sm" onclick="openImportModal()">📥 扫码导入</button>
+    <button class="btn btn-secondary btn-sm" onclick="exportData()">📤 导出</button>
+    <button class="btn btn-secondary btn-sm" onclick="importDataPrompt()">📥 导入文件</button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-panel="dashboard"><span class="tab-icon">📊</span> 总览面板</button>
+  <button class="tab" data-panel="course"><span class="tab-icon">📚</span> 课程进度</button>
+  <button class="tab" data-panel="mastery"><span class="tab-icon">🃏</span> 牌义掌握</button>
+  <button class="tab" data-panel="daily"><span class="tab-icon">🌅</span> 每日一牌</button>
+  <button class="tab" data-panel="spread"><span class="tab-icon">✨</span> 牌阵练习</button>
+  <button class="tab" data-panel="quiz"><span class="tab-icon">🎴</span> 抽牌测验</button>
+  <button class="tab" data-panel="notes"><span class="tab-icon">📝</span> 学习笔记</button>
+</nav>
+
+<main class="main">
+
+  <!-- DASHBOARD -->
+  <section id="panel-dashboard" class="panel">
+    <div class="stats-row">
+      <div class="stat-card"><span class="stat-icon">📚</span><div class="stat-value" id="stat-course-pct">0%</div><div class="stat-label">课程完成度</div></div>
+      <div class="stat-card"><span class="stat-icon">🃏</span><div class="stat-value" id="stat-card-avg">0</div><div class="stat-label">牌义平均掌握度</div></div>
+      <div class="stat-card"><span class="stat-icon">🌅</span><div class="stat-value" id="stat-daily-count">0</div><div class="stat-label">每日一牌记录</div></div>
+      <div class="stat-card"><span class="stat-icon">✨</span><div class="stat-value" id="stat-spread-count">0</div><div class="stat-label">牌阵练习次数</div></div>
+    </div>
+
+    <div class="card mb-16">
+      <div class="card-header"><h2>🔥 学习热力图（近3个月）</h2></div>
+      <div id="heatmap-container" class="empty-state"><div class="icon">📅</div><p>开始学习后这里会出现你的学习热力记录。</p></div>
+    </div>
+
+    <div class="card mb-16">
+      <div class="card-header"><h2>🧠 今日复习 <span style="font-size:12px;font-weight:400;color:var(--text-muted);">（记忆曲线自动提醒）</span></h2></div>
+      <div id="review-due" class="empty-state"><div class="icon">🧠</div><p>加载中…</p></div>
+    </div>
+
+    <div class="card mb-16">
+      <div class="card-header"><h2>🎯 学习总览</h2></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+        <div>
+          <div class="flex-between mb-16"><span style="font-weight:600">课程进度</span><span id="dash-course-label">0/0</span></div>
+          <div class="progress-bar"><div class="progress-fill purple" id="dash-course-bar" style="width:0%"></div></div>
+        </div>
+        <div>
+          <div class="flex-between mb-16"><span style="font-weight:600">牌义总掌握</span><span id="dash-card-label">平均 0/5</span></div>
+          <div class="progress-bar"><div class="progress-fill gold" id="dash-card-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
+        <div style="padding:10px;background:var(--bg-hover);border-radius:8px;text-align:center;">
+          <div style="font-size:12px;color:var(--text-muted);">正位掌握</div>
+          <div style="font-size:22px;font-weight:700;color:var(--green);" id="dash-upright-avg">-</div>
+        </div>
+        <div style="padding:10px;background:var(--bg-hover);border-radius:8px;text-align:center;">
+          <div style="font-size:12px;color:var(--text-muted);">逆位掌握</div>
+          <div style="font-size:22px;font-weight:700;color:var(--red);" id="dash-reversed-avg">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-16">
+      <div class="card-header"><h2>📉 薄弱牌组 <span style="font-size:12px;font-weight:400;color:var(--text-muted);">（一眼看出该补哪里）</span></h2></div>
+      <div id="weakness-box" class="empty-state"><div class="icon">📉</div><p>加载中…</p></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h2>🔮 最近活动</h2></div>
+      <div id="recent-activity" class="empty-state"><div class="icon">🔮</div><p>开始你的塔罗学习之旅吧！</p></div>
+    </div>
+  </section>
+
+  <!-- COURSE -->
+  <section id="panel-course" class="panel hidden">
+    <div class="flex-between mb-16">
+      <h2 style="font-size:20px;color:var(--accent);">📚 课程进度</h2>
+      <button class="btn btn-primary btn-sm" onclick="openAddCourse()">+ 添加章节</button>
+    </div>
+    <div class="card mb-16">
+      <div class="card-header"><h3>整体进度</h3></div>
+      <div class="progress-bar mb-16"><div class="progress-fill purple" id="course-progress-bar" style="width:0%"></div></div>
+      <div class="text-muted" id="course-progress-text">-</div>
+    </div>
+    <div class="card"><div class="card-header"><h3>章节列表</h3></div>
+      <div class="course-list" id="course-list"><div class="empty-state"><div class="icon">📚</div><p>还没有添加课程章节。</p></div></div>
+    </div>
+  </section>
+
+  <!-- MASTERY -->
+  <section id="panel-mastery" class="panel hidden">
+    <div class="flex-between mb-16">
+      <h2 style="font-size:20px;color:var(--accent);">🃏 78张牌掌握度</h2>
+      <span class="text-muted" id="mastery-overview">-</span>
+    </div>
+    <div class="mastery-controls">
+      <span style="font-weight:600;font-size:13px;color:var(--text-secondary)">牌组：</span>
+      <button class="filter-btn active" onclick="filterMastery('all')">全部</button>
+      <button class="filter-btn" onclick="filterMastery('major')">大阿尔卡纳</button>
+      <button class="filter-btn" onclick="filterMastery('wands')">权杖</button>
+      <button class="filter-btn" onclick="filterMastery('cups')">圣杯</button>
+      <button class="filter-btn" onclick="filterMastery('swords')">宝剑</button>
+      <button class="filter-btn" onclick="filterMastery('pentacles')">星币</button>
+    </div>
+    <div style="margin-bottom:16px;">
+      <div class="mastery-tabs">
+        <button class="mastery-tab active" onclick="setMasteryOrient('both')">正逆合并</button>
+        <button class="mastery-tab" onclick="setMasteryOrient('upright')">仅正位</button>
+        <button class="mastery-tab" onclick="setMasteryOrient('reversed')">仅逆位</button>
+      </div>
+      <div class="mastery-controls" style="margin-bottom:0;">
+        <span style="font-weight:600;font-size:13px;color:var(--text-secondary)">掌握度：</span>
+        <button class="filter-btn" style="background:#f9f9f9;border-color:#e0e0e0;" onclick="filterByLevel(-1)">全部</button>
+        <button class="filter-btn" style="background:#fff0f0;border-color:#fcc;" onclick="filterByLevel(1)">⭐</button>
+        <button class="filter-btn" style="background:#fff8e8;border-color:#ffe0a0;" onclick="filterByLevel(2)">⭐⭐</button>
+        <button class="filter-btn" style="background:#e8f5e9;border-color:#a5d6a7;" onclick="filterByLevel(3)">⭐⭐⭐</button>
+        <button class="filter-btn" style="background:#e3f2fd;border-color:#90caf9;" onclick="filterByLevel(4)">⭐⭐⭐⭐</button>
+        <button class="filter-btn" style="background:var(--accent-light);border-color:var(--accent);" onclick="filterByLevel(5)">⭐⭐⭐⭐⭐</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="progress-bar mb-16"><div class="progress-fill gold" id="mastery-progress-bar" style="width:0%"></div></div>
+      <div class="text-muted mb-16" id="mastery-progress-text">-</div>
+      <div id="card-grid" class="card-grid"></div>
+    </div>
+  </section>
+
+  <!-- DAILY -->
+  <section id="panel-daily" class="panel hidden">
+    <div class="flex-between mb-16">
+      <h2 style="font-size:20px;color:var(--accent);">🌅 每日一牌</h2>
+      <button class="btn btn-primary btn-sm" onclick="openAddDaily()">+ 今日抽牌</button>
+    </div>
+    <div class="card mb-16"><div class="card-header"><h3>今日记录</h3></div>
+      <div id="today-draw" class="empty-state"><div class="icon">🌅</div><p>今天还没抽牌。</p></div>
+    </div>
+    <div class="card"><div class="card-header"><h3>历史记录</h3></div>
+      <div class="daily-history" id="daily-history"><div class="empty-state"><div class="icon">📖</div><p>暂无历史记录。</p></div></div>
+    </div>
+  </section>
+
+  <!-- SPREAD -->
+  <section id="panel-spread" class="panel hidden">
+    <div class="flex-between mb-16">
+      <h2 style="font-size:20px;color:var(--accent);">✨ 牌阵练习</h2>
+      <button class="btn btn-primary btn-sm" onclick="openAddSpread()">+ 记录牌阵</button>
+    </div>
+    <div class="card"><div class="card-header"><h3>练习记录</h3></div>
+      <div class="spread-list" id="spread-list"><div class="empty-state"><div class="icon">✨</div><p>还没有牌阵练习记录。</p></div></div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="panel-quiz" class="panel hidden">
+    <h2 style="font-size:20px;color:var(--accent);margin-bottom:20px;">🎴 抽牌测验</h2>
+    <div class="quiz-mode-select">
+      <button class="quiz-mode-btn active" onclick="setQuizMode('name2meaning')">牌名 → 含义</button>
+      <button class="quiz-mode-btn" onclick="setQuizMode('meaning2name')">含义 → 牌名</button>
+      <button class="quiz-mode-btn" onclick="setQuizMode('multiple')">四选一</button>
+    </div>
+    <div style="margin:8px 0 16px;">
+      <button class="wrong-mode-btn" id="wrong-mode-btn" onclick="toggleWrongOnly()">📕 重刷错题</button>
+    </div>
+    <div class="quiz-container">
+      <div class="quiz-stats">
+        <div class="quiz-stat"><div class="quiz-stat-val green" id="quiz-correct">0</div><div class="quiz-stat-lbl">正确</div></div>
+        <div class="quiz-stat"><div class="quiz-stat-val red" id="quiz-wrong">0</div><div class="quiz-stat-lbl">错误</div></div>
+        <div class="quiz-stat"><div class="quiz-stat-val" id="quiz-streak" style="color:var(--gold);">0</div><div class="quiz-stat-lbl">连胜</div></div>
+      </div>
+      <div class="card" id="quiz-card">
+        <div class="quiz-card-display" id="quiz-icon">🃏</div>
+        <div class="quiz-question" id="quiz-question">准备好了吗？</div>
+        <div id="quiz-answer-area"></div>
+        <div id="quiz-feedback"></div>
+        <button class="btn btn-primary btn-big" id="quiz-action-btn" onclick="quizAction()">开始测验</button>
+      </div>
+    </div>
+    <div class="card mt-16">
+      <div class="card-header"><h3>📕 错题本 <span style="font-size:12px;font-weight:400;color:var(--text-muted);">（答错的牌自动收进来）</span></h3></div>
+      <div id="wrong-book" class="empty-state"><div class="icon">📕</div><p>加载中…</p></div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
+  <section id="panel-notes" class="panel hidden">
+    <div class="flex-between mb-16">
+      <h2 style="font-size:20px;color:var(--accent);">📝 学习笔记</h2>
+      <button class="btn btn-primary btn-sm" onclick="openAddNote()">+ 新建笔记</button>
+    </div>
+    <div class="notes-toolbar"><input class="search-input" placeholder="🔍 搜索笔记..." oninput="renderNotes()" id="note-search"></div>
+    <div class="notes-grid" id="notes-grid"><div class="empty-state" style="grid-column:1/-1"><div class="icon">📝</div><p>还没有笔记。</p></div></div>
+  </section>
+
+</main>
+
+<div class="modal-overlay hidden" id="modal-overlay"><div class="modal" id="modal-content"></div></div>
+
+<!-- Share Modal -->
+<div class="modal-overlay hidden" id="share-modal-overlay">
+  <div class="modal" style="max-width:440px;text-align:center;">
+    <h3>📱 分享同步数据</h3>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;">
+      用另一台设备扫描二维码即可同步数据
+    </p>
+    <div id="qr-container" style="display:flex;justify-content:center;margin-bottom:20px;">
+      <div id="qr-loading" style="padding:40px;color:var(--text-muted);">⏳ 生成中...</div>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">
+      或复制以下链接发送给另一台设备：
+    </p>
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <input id="share-link" readonly style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--bg);">
+      <button class="btn btn-primary btn-sm" onclick="copyShareLink()">📋 复制</button>
+    </div>
+    <button class="btn btn-text" onclick="document.getElementById('share-modal-overlay').classList.add('hidden')">关闭</button>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal-overlay hidden" id="import-modal-overlay">
+  <div class="modal" style="max-width:500px;">
+    <h3>📥 导入同步数据</h3>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">
+      方式一：用相机扫描另一台设备的二维码<br>
+      方式二：粘贴对方分享的同步链接
+    </p>
+    <label>粘贴同步链接或数据</label>
+    <textarea id="import-data" style="min-height:100px;font-family:monospace;font-size:12px;" placeholder="粘贴从另一台设备复制的链接..."></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+      <button class="btn btn-text" onclick="document.getElementById('import-modal-overlay').classList.add('hidden')">取消</button>
+      <button class="btn btn-primary" onclick="doImport()">导入</button>
+    </div>
+  </div>
+</div>
+
+<!-- Analysis Modal -->
+<div class="modal-overlay hidden" id="analysis-modal-overlay">
+  <div class="modal analysis-modal" id="analysis-modal">
+    <h3>🔮 牌阵分析 <span id="analysis-spread-name" style="font-size:14px;color:var(--text-muted);font-weight:400;"></span></h3>
+    <div class="analysis-tabs">
+      <button class="analysis-tab active" id="atab-knowledge" onclick="switchAnalysisTab('knowledge')">📖 知识库解读</button>
+      <button class="analysis-tab" id="atab-ai" onclick="switchAnalysisTab('ai')">🤖 AI 深度解读</button>
+    </div>
+    <div class="analysis-body">
+      <div id="analysis-knowledge-body"></div>
+      <div id="analysis-ai-body" class="hidden"></div>
+    </div>
+    <div class="analysis-actions">
+      <button class="btn btn-text" onclick="closeAnalysisModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI Settings Modal -->
+<div class="modal-overlay hidden" id="ai-settings-overlay">
+  <div class="modal" style="max-width:460px;">
+    <h3>🤖 AI 深度解读设置</h3>
+    <p class="analysis-desc">
+      填写你的 AI 服务商 API Key（支持 OpenAI 兼容接口）。<br>
+      <b>DeepSeek</b>（国内可直连，推荐）：去 <a href="https://platform.deepseek.com" target="_blank" style="color:var(--blue);">platform.deepseek.com</a> 注册并创建 API Key。<br>
+      Key 仅保存在本设备浏览器中，不会上传到任何服务器。
+    </p>
+    <label>API 地址（Base URL）</label>
+    <input id="ai-base-url" placeholder="https://api.deepseek.com" style="margin-bottom:12px;">
+    <label>API Key</label>
+    <input id="ai-api-key" type="password" class="ai-key-input" placeholder="sk-..." style="margin-bottom:12px;">
+    <label>模型名称</label>
+    <input id="ai-model" placeholder="deepseek-chat" style="margin-bottom:16px;">
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn btn-text" onclick="document.getElementById('ai-settings-overlay').classList.add('hidden')">取消</button>
+      <button class="btn btn-primary" onclick="saveAiSettings()">保存设置</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="sync-toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:20px;font-size:14px;font-weight:500;z-index:200;transition:opacity 0.3s;opacity:0;pointer-events:none;"></div>
+
+<script>
+// ============ TAROT CARDS DATA ============
+const MAJOR_ARCANA = [
+  {cn:"愚人", en:"The Fool", num:"0", kw:"新的开始 自由 冒险 天真  spontaneity"},
+  {cn:"魔术师", en:"The Magician", num:"I", kw:"创造力 意志力 技能 显化"},
+  {cn:"女祭司", en:"The High Priestess", num:"II", kw:"直觉 潜意识 神秘 内在智慧"},
+  {cn:"皇后", en:"The Empress", num:"III", kw:"丰饶 母性 自然 感官"},
+  {cn:"皇帝", en:"The Emperor", num:"IV", kw:"权威 结构 稳定 父性"},
+  {cn:"教皇", en:"The Hierophant", num:"V", kw:"传统 信仰 教育 精神指引"},
+  {cn:"恋人", en:"The Lovers", num:"VI", kw:"爱 和谐 选择 价值观"},
+  {cn:"战车", en:"The Chariot", num:"VII", kw:"意志 胜利 掌控 前进"},
+  {cn:"力量", en:"Strength", num:"VIII", kw:"勇气 耐心 内在力量 驯服"},
+  {cn:"隐士", en:"The Hermit", num:"IX", kw:"内省 孤独 寻求真理 指引"},
+  {cn:"命运之轮", en:"Wheel of Fortune", num:"X", kw:"命运 转折 周期 机遇"},
+  {cn:"正义", en:"Justice", num:"XI", kw:"公平 真相 因果 法律"},
+  {cn:"倒吊人", en:"The Hanged Man", num:"XII", kw:"牺牲 换个角度 等待 放手"},
+  {cn:"死神", en:"Death", num:"XIII", kw:"结束 转变 重生 放下"},
+  {cn:"节制", en:"Temperance", num:"XIV", kw:"平衡 中庸 调和 耐心"},
+  {cn:"恶魔", en:"The Devil", num:"XV", kw:"束缚 物质主义 欲望 阴影"},
+  {cn:"高塔", en:"The Tower", num:"XVI", kw:"突变 崩塌 启示 觉醒"},
+  {cn:"星星", en:"The Star", num:"XVII", kw:"希望 信念 疗愈 灵感"},
+  {cn:"月亮", en:"The Moon", num:"XVIII", kw:"幻觉 恐惧 潜意识 迷惘"},
+  {cn:"太阳", en:"The Sun", num:"XIX", kw:"快乐 成功 活力 真相"},
+  {cn:"审判", en:"Judgement", num:"XX", kw:"重生 召唤 评估 觉醒"},
+  {cn:"世界", en:"The World", num:"XXI", kw:"完成 整合 成就 旅程"},
+];
+
+const SUITS = [
+  {id:"wands", cn:"权杖", en:"Wands", icon:"🔥", element:"火", kw:"行动 热情 创造 事业"},
+  {id:"cups", cn:"圣杯", en:"Cups", icon:"💧", element:"水", kw:"情感 关系 直觉 爱"},
+  {id:"swords", cn:"宝剑", en:"Swords", icon:"🌬️", element:"风", kw:"思想 冲突 真理 沟通"},
+  {id:"pentacles", cn:"星币", en:"Pentacles", icon:"🪨", element:"土", kw:"物质 工作 财务 身体"},
+];
+
+const RANKS = [
+  {cn:"王牌", en:"Ace"}, {cn:"二", en:"Two"}, {cn:"三", en:"Three"}, {cn:"四", en:"Four"},
+  {cn:"五", en:"Five"}, {cn:"六", en:"Six"}, {cn:"七", en:"Seven"}, {cn:"八", en:"Eight"},
+  {cn:"九", en:"Nine"}, {cn:"十", en:"Ten"}, {cn:"侍从", en:"Page"}, {cn:"骑士", en:"Knight"},
+  {cn:"皇后", en:"Queen"}, {cn:"国王", en:"King"},
+];
+
+function buildCards() {
+  const cards = [];
+  MAJOR_ARCANA.forEach(c => cards.push({...c, group:"major", groupLabel:"大阿尔卡纳"}));
+  SUITS.forEach(suit => {
+    RANKS.forEach(rank => {
+      cards.push({cn:`${suit.cn}${rank.cn}`, en:`${rank.en} of ${suit.en}`,
+        group:suit.id, groupLabel:suit.cn, suit:suit.id, icon:suit.icon,
+        kw:`${suit.kw}`});
+    });
+  });
+  return cards;
+}
+const ALL_CARDS = buildCards();
+
+// ============ SPREAD TEMPLATES ============
+const SPREAD_TEMPLATES = {
+  "three-card": {
+    name:"三张牌阵（时间流）",
+    positions:["过去","现在","未来"],
+    description:"最基础也最常用的牌阵，从左到右代表过去的影响、当前状态、未来趋势。"
+  },
+  "celtic-cross": {
+    name:"凯尔特十字",
+    positions:["现状","阻碍","基础","过去","目标","未来","自我","环境","希望/恐惧","结果"],
+    description:"经典十张牌阵，全面深入地分析一个问题的各个方面。"
+  },
+  "relationship": {
+    name:"关系牌阵",
+    positions:["你的状态","对方的状态","关系现状","你的需求","对方的需求","共同未来","建议"],
+    description:"七张牌阵，用于探索两性关系、合作关系或任何人际互动。"
+  },
+  "choice": {
+    name:"二择一牌阵",
+    positions:["现状","选择A的发展","选择A的结果","选择B的发展","选择B的结果","关键因素"],
+    description:"面临两难抉择时使用，帮助看清不同选择的走向。"
+  },
+  "four-elements": {
+    name:"四元素牌阵",
+    positions:["火·行动/热情","水·情感/直觉","风·思维/沟通","土·物质/现实","整合指引"],
+    description:"从火水风土四个维度分析问题，最后一张为整合指引。"
+  },
+  "yes-no": {
+    name:"是否牌阵",
+    positions:["当前能量","肯定因素","否定因素","关键建议","最终指引"],
+    description:"适用于简单的「是/否」类问题，更关注能量走向而非直接答案。"
+  },
+  "star": {
+    name:"七芒星牌阵",
+    positions:["中心·你","1·过去","2·现在","3·隐藏","4·挑战","5·助力","6·结果"],
+    description:"以你为中心的七张牌，适合需要全面审视的个人问题。"
+  },
+  "chakra": {
+    name:"脉轮牌阵",
+    positions:["顶轮·灵性","眉心轮·直觉","喉轮·表达","心轮·爱","太阳轮·力量","脐轮·情感","海底轮·根基"],
+    description:"对应七大脉轮的七张牌阵，适合灵性层面的自我探索。"
+  }
+};
+
+// ============ DATA STORE ============
+const STORAGE_KEY = "tarot_workspace_data";
+
+function getDefaultData() {
+  return {
+    courses: [
+      {id:1, title:"塔罗基础入门", status:"done", notes:"了解了塔罗的历史和基本概念", videoLink:"", pdfLink:""},
+      {id:2, title:"大阿尔卡纳详解（上）0-10", status:"done", notes:"愚人到命运之轮，重点记了每张牌的核心关键词", videoLink:"", pdfLink:""},
+      {id:3, title:"大阿尔卡纳详解（下）11-21", status:"active", notes:"正在学正义到世界", videoLink:"", pdfLink:""},
+      {id:4, title:"小阿尔卡纳·权杖组", status:"todo", notes:"", videoLink:"", pdfLink:""},
+      {id:5, title:"小阿尔卡纳·圣杯组", status:"todo", notes:"", videoLink:"", pdfLink:""},
+      {id:6, title:"小阿尔卡纳·宝剑组", status:"todo", notes:"", videoLink:"", pdfLink:""},
+      {id:7, title:"小阿尔卡纳·星币组", status:"todo", notes:"", videoLink:"", pdfLink:""},
+      {id:8, title:"宫廷牌详解", status:"todo", notes:"", videoLink:"", pdfLink:""},
+      {id:9, title:"基础牌阵入门", status:"todo", notes:"", videoLink:"", pdfLink:""},
+      {id:10, title:"进阶牌阵与综合解读", status:"todo", notes:"", videoLink:"", pdfLink:""},
+      {id:11, title:"逆位解读专题", status:"todo", notes:"", videoLink:"", pdfLink:""},
+      {id:12, title:"实战演练与复盘", status:"todo", notes:"", videoLink:"", pdfLink:""},
+    ],
+    cardMastery: {},
+    dailyDraws: [],
+    spreadPractices: [],
+    notes: [],
+    quizStats: {correct:0, wrong:0, streak:0},
+    quizWrong: {},
+    version: 3
+  };
+}
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      let data = JSON.parse(raw);
+      // Migrate from v2 (single level) to v3 (upright/reversed)
+      if (!data.version || data.version < 3) {
+        const newMastery = {};
+        if (data.cardMastery) {
+          for (const [key, val] of Object.entries(data.cardMastery)) {
+            if (typeof val.level !== 'undefined') {
+              newMastery[key] = {upright:{level:val.level, notes:val.notes||""}, reversed:{level:0, notes:""}};
+            } else {
+              newMastery[key] = val;
+            }
+          }
+        }
+        data.cardMastery = newMastery;
+        data.version = 3;
+      }
+      if (!data.quizStats) data.quizStats = {correct:0, wrong:0, streak:0};
+      if (!data.quizWrong) data.quizWrong = {};
+      return data;
+    }
+  } catch(e) {}
+  return getDefaultData();
+}
+
+function saveData(data) {
+  data.lastSaved = new Date().toISOString();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  renderAll();
+}
+
+let appData = loadData();
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(appData, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `tarot-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+
+function importDataPrompt() {
+  const input = document.createElement("input");
+  input.type = "file"; input.accept = ".json";
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (confirm("导入数据将覆盖当前所有数据，确定继续吗？")) {
+          appData = data;
+          saveData(appData);
+          alert("导入成功！");
+        }
+      } catch(e) { alert("文件解析失败。"); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// ============ RENDER ALL ============
+function renderAll() {
+  renderDashboard();
+  renderCourses();
+  renderMastery();
+  renderDaily();
+  renderSpreads();
+  renderQuizStats();
+  renderWrongBook();
+  renderNotes();
+}
+
+// ============ TABS ============
+document.getElementById("tabs").addEventListener("click", (e) => {
+  const tab = e.target.closest(".tab");
+  if (!tab) return;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  tab.classList.add("active");
+  document.querySelectorAll(".panel").forEach(p => p.classList.add("hidden"));
+  document.getElementById("panel-" + tab.dataset.panel).classList.remove("hidden");
+  renderAll();
+});
+
+// ============ HEATMAP ============
+function renderHeatmap() {
+  const container = document.getElementById("heatmap-container");
+  const today = new Date();
+  const dates = new Set();
+
+  // Collect all activity dates
+  appData.dailyDraws.forEach(d => dates.add(d.date));
+  appData.spreadPractices.forEach(s => dates.add(s.date));
+  appData.notes.forEach(n => dates.add(n.date));
+
+  // Build date->count map
+  const dateCount = {};
+  dates.forEach(d => {
+    dateCount[d] = (appData.dailyDraws.filter(x=>x.date===d).length) +
+                   (appData.spreadPractices.filter(x=>x.date===d).length) +
+                   (appData.notes.filter(x=>x.date===d).length);
+  });
+
+  // Generate last 12 weeks
+  const weeks = [];
+  for (let w = 11; w >= 0; w--) {
+    const week = [];
+    for (let d = 6; d >= 0; d--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - (w*7 + d));
+      week.push(date);
+    }
+    weeks.push(week);
+  }
+
+  const monthNames = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+  let html = '<div style="overflow-x:auto;padding:8px 0;">';
+  weeks.forEach((week, wi) => {
+    const midDate = week[3];
+    html += `<div class="heatmap-month"><div class="heatmap-month-label">${monthNames[midDate.getMonth()]}</div><div class="heatmap">`;
+    week.forEach(date => {
+      const ds = date.toISOString().slice(0,10);
+      const count = dateCount[ds] || 0;
+      let level = 0;
+      if (count >= 4) level = 5;
+      else if (count >= 3) level = 4;
+      else if (count >= 2) level = 3;
+      else if (count >= 1) level = 2;
+      if (count > 0 && level === 0) level = 1;
+      html += `<div class="heatmap-cell" data-level="${level}" title="${ds}: ${count}次活动"></div>`;
+    });
+    html += `</div></div>`;
+  });
+  html += '<div class="heatmap-legend">少 <span class="heatmap-cell" data-level="0"></span> <span class="heatmap-cell" data-level="1"></span> <span class="heatmap-cell" data-level="2"></span> <span class="heatmap-cell" data-level="3"></span> <span class="heatmap-cell" data-level="4"></span> <span class="heatmap-cell" data-level="5"></span> 多</div>';
+  html += '</div>';
+
+  if (dates.size === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">📅</div><p>开始学习后这里会出现你的学习热力记录。</p></div>';
+  } else {
+    container.innerHTML = html;
+  }
+}
+
+// ============ DASHBOARD ============
+function renderDashboard() {
+  renderHeatmap();
+  const courses = appData.courses;
+  const done = courses.filter(c => c.status === "done").length;
+  const total = courses.length;
+  const coursePct = total > 0 ? Math.round(done/total*100) : 0;
+  document.getElementById("stat-course-pct").textContent = coursePct + "%";
+  document.getElementById("dash-course-label").textContent = `${done}/${total} 章节`;
+  document.getElementById("dash-course-bar").style.width = coursePct + "%";
+
+  const mastery = appData.cardMastery;
+  let sumU=0, sumR=0, countU=0, countR=0;
+  ALL_CARDS.forEach((_, i) => {
+    if (mastery[i]) {
+      if (mastery[i].upright && mastery[i].upright.level>0) { sumU += mastery[i].upright.level; countU++; }
+      if (mastery[i].reversed && mastery[i].reversed.level>0) { sumR += mastery[i].reversed.level; countR++; }
+    }
+  });
+  const avgU = countU>0 ? (sumU/countU).toFixed(1) : "—";
+  const avgR = countR>0 ? (sumR/countR).toFixed(1) : "—";
+  const totalAvg = (countU+countR)>0 ? ((sumU+sumR)/(countU+countR)).toFixed(1) : 0;
+  document.getElementById("stat-card-avg").textContent = totalAvg;
+  document.getElementById("dash-card-bar").style.width = (totalAvg/5*100) + "%";
+  document.getElementById("dash-card-label").textContent = `平均 ${totalAvg}/5`;
+  document.getElementById("dash-upright-avg").textContent = avgU;
+  document.getElementById("dash-reversed-avg").textContent = avgR;
+  document.getElementById("stat-daily-count").textContent = appData.dailyDraws.length;
+  document.getElementById("stat-spread-count").textContent = appData.spreadPractices.length;
+
+  const activities = [];
+  [...appData.dailyDraws].reverse().slice(0,3).forEach(d => activities.push({date:d.date, icon:"🌅", text:`每日一牌：${d.cardName}`}));
+  [...appData.spreadPractices].reverse().slice(0,3).forEach(s => activities.push({date:s.date, icon:"✨", text:`牌阵：${s.spreadName}`}));
+  [...appData.notes].reverse().slice(0,3).forEach(n => activities.push({date:n.date, icon:"📝", text:`笔记：${n.title}`}));
+  activities.sort((a,b)=>b.date.localeCompare(a.date));
+
+  const actDiv = document.getElementById("recent-activity");
+  if (activities.length===0) {
+    actDiv.innerHTML = '<div class="empty-state"><div class="icon">🔮</div><p>开始你的塔罗学习之旅吧！</p></div>';
+  } else {
+    actDiv.innerHTML = activities.slice(0,8).map(a => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-light);">
+        <span style="font-size:20px;">${a.icon}</span><div style="flex:1">${a.text}</div>
+        <span style="font-size:12px;color:var(--text-muted);">${a.date}</span></div>`).join("");
+  }
+  renderReviewDue();
+  renderWeakness();
+}
+
+// ============ 智能复习（记忆曲线） ============
+const REVIEW_INTERVALS = [1, 3, 7, 15, 30, 60]; // 天数，按复习次数递增
+
+function getDueReviews() {
+  const due = [];
+  const now = Date.now();
+  ALL_CARDS.forEach((c, idx) => {
+    const m = appData.cardMastery[idx];
+    if (!m) return;
+    ["upright", "reversed"].forEach(orient => {
+      const o = m[orient];
+      if (!o || !o.level || o.level <= 0) return;
+      const count = o.reviewCount || 0;
+      const interval = REVIEW_INTERVALS[Math.min(count, REVIEW_INTERVALS.length - 1)] * 86400000;
+      const reviewedAt = o.reviewedAt ? new Date(o.reviewedAt).getTime() : 0;
+      if (now - reviewedAt >= interval) {
+        due.push({ idx, orient, card: c, level: o.level, count });
+      }
+    });
+  });
+  return due;
+}
+
+function renderReviewDue() {
+  const box = document.getElementById("review-due");
+  if (!box) return;
+  const due = getDueReviews();
+  if (due.length === 0) {
+    box.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>今天没有到期的牌，掌握得很稳！</p></div>';
+    return;
+  }
+  box.innerHTML = due.slice(0, 12).map(d => `
+    <div class="review-item" onclick="openCardDetail(${d.idx})" title="点击复习">
+      <span style="font-size:18px;">🃏</span>
+      <div style="flex:1;">
+        <div style="font-weight:600;">${es(d.card.cn)} <span class="orient-badge ${d.orient==='reversed'?'reversed':'upright'}" style="font-size:10px;margin-left:4px;">${d.orient==='reversed'?'逆位':'正位'}</span></div>
+        <div style="font-size:12px;color:var(--text-muted);">掌握 ${'⭐'.repeat(d.level)} · 已复习 ${d.count} 次</div>
+      </div>
+      <span style="font-size:12px;color:var(--gold-dark);">去复习 ›</span>
+    </div>`).join("") + (due.length > 12 ? `<div style="padding:8px;text-align:center;font-size:12px;color:var(--text-muted);">还有 ${due.length - 12} 张待复习</div>` : "");
+}
+
+// ============ 薄弱牌识别 + 学习洞察 ============
+function getGroupMastery() {
+  const groups = {};
+  ALL_CARDS.forEach((c, idx) => {
+    const g = c.groupLabel || "大阿尔卡纳";
+    if (!groups[g]) groups[g] = { sum: 0, count: 0, evaluated: 0, total: 0 };
+    groups[g].total++;
+    const m = appData.cardMastery[idx];
+    if (m) {
+      const u = m.upright?.level || 0, r = m.reversed?.level || 0;
+      if (u > 0 || r > 0) {
+        groups[g].sum += (u + r);
+        groups[g].count += (u > 0 ? 1 : 0) + (r > 0 ? 1 : 0);
+        groups[g].evaluated++;
+      }
+    }
+  });
+  return groups;
+}
+
+function renderWeakness() {
+  const box = document.getElementById("weakness-box");
+  if (!box) return;
+  const groups = getGroupMastery();
+  const entries = Object.entries(groups).map(([name, g]) => ({
+    name,
+    avg: g.count > 0 ? (g.sum / g.count) : 0,
+    evaluated: g.evaluated,
+    total: g.total
+  }));
+  const ranked = [...entries].sort((a, b) => a.avg - b.avg || (b.total - b.evaluated) - (a.total - a.evaluated));
+  const weakest = ranked.filter(e => e.evaluated < e.total || e.avg < 3).slice(0, 3);
+  const maxAvg = Math.max(...entries.map(e => e.avg), 1);
+
+  box.innerHTML = `
+    <div class="weakness-tags">
+      ${weakest.length === 0 ? '<span style="font-size:13px;color:var(--text-muted);">各组掌握均衡，继续保持！</span>' : weakest.map(w => `<span class="weakness-tag" title="平均 ${w.avg.toFixed(1)}/5，已评估 ${w.evaluated}/${w.total} 张">⚠️ ${es(w.name)} · ${w.avg.toFixed(1)}分</span>`).join("")}
+    </div>
+    <div class="weakness-bars">
+      ${entries.map(e => `
+        <div class="weakness-row">
+          <div class="weakness-name">${es(e.name)}</div>
+          <div class="weakness-bar-wrap"><div class="weakness-bar" style="width:${(e.avg / maxAvg * 100).toFixed(1)}%;background:${e.avg < 3 ? 'var(--red)' : 'var(--accent)'};"></div></div>
+          <div class="weakness-val">${e.avg.toFixed(1)}<span style="font-size:10px;color:var(--text-muted);">/5</span></div>
+        </div>`).join("")}
+    </div>`;
+}
+
+// ============ COURSES ============
+function renderCourses() {
+  const courses = appData.courses;
+  const done = courses.filter(c=>c.status==="done").length;
+  document.getElementById("course-progress-bar").style.width = (done/courses.length*100)+"%";
+  document.getElementById("course-progress-text").textContent = `${done}/${courses.length} 章节已完成`;
+
+  const list = document.getElementById("course-list");
+  if (courses.length===0) { list.innerHTML='<div class="empty-state"><div class="icon">📚</div><p>还没有添加课程章节。</p></div>'; return; }
+  const stL={done:"已完成",active:"学习中",todo:"待学习"};
+  const stC={done:"status-done",active:"status-active",todo:"status-todo"};
+  const nC={done:"done",active:"active",todo:"todo"};
+  list.innerHTML = courses.map((c,i)=>`
+    <div class="course-item">
+      <div class="course-num ${nC[c.status]||'todo'}">${i+1}</div>
+      <div class="course-info"><h4>${es(c.title)}</h4><p>${c.notes?es(c.notes):'暂无备注'}</p>
+      ${c.videoLink?`<p>🎬 <a href="${es(c.videoLink)}" target="_blank" style="color:var(--blue)">视频</a></p>`:''}
+      ${c.pdfLink?`<p>📄 <a href="${es(c.pdfLink)}" target="_blank" style="color:var(--blue)">资料</a></p>`:''}</div>
+      <span class="course-status ${stC[c.status]||'status-todo'}">${stL[c.status]||'待学习'}</span>
+      <div class="course-actions"><button class="btn btn-text btn-sm" onclick="editCourse(${c.id})">✏️</button>
+      <button class="btn btn-text btn-sm btn-danger" onclick="deleteCourse(${c.id})">🗑️</button></div></div>`).join("");
+}
+function openAddCourse(){openModal("course");}
+function editCourse(id){openModal("course",id);}
+function deleteCourse(id){if(confirm("确定删除？")){appData.courses=appData.courses.filter(c=>c.id!==id);saveData(appData);}}
+function saveCourse(id,data){
+  if(id){const idx=appData.courses.findIndex(c=>c.id===id);if(idx>=0)appData.courses[idx]={...appData.courses[idx],...data};}
+  else{const maxId=appData.courses.length>0?Math.max(...appData.courses.map(c=>c.id)):0;appData.courses.push({id:maxId+1,...data});}
+  saveData(appData);closeModal();
+}
+
+// ============ MASTERY ============
+let masteryFilter="all", masteryLevelFilter=-1, masteryOrient="both";
+
+function getMasteryLevel(idx) {
+  const m = appData.cardMastery[idx];
+  if (!m) return 0;
+  if (masteryOrient === "upright") return m.upright?.level||0;
+  if (masteryOrient === "reversed") return m.reversed?.level||0;
+  // "both" - show average
+  const u = m.upright?.level||0, r = m.reversed?.level||0;
+  if (u===0 && r===0) return 0;
+  return Math.round((u+r)/2);
+}
+
+function renderMastery() {
+  const mastery = appData.cardMastery;
+  let sum=0, countU=0, countR=0;
+  ALL_CARDS.forEach((_,i)=>{
+    if(mastery[i]){
+      if(mastery[i].upright?.level>0){sum+=mastery[i].upright.level;countU++;}
+      if(mastery[i].reversed?.level>0){sum+=mastery[i].reversed.level;countR++;}
+    }
+  });
+  const totalCards = ALL_CARDS.length;
+  const evaluated = new Set();
+  ALL_CARDS.forEach((_,i)=>{if(mastery[i]&&(mastery[i].upright?.level>0||mastery[i].reversed?.level>0))evaluated.add(i);});
+  document.getElementById("mastery-progress-bar").style.width = (evaluated.size/totalCards*100)+"%";
+  document.getElementById("mastery-progress-text").textContent = `已评估 ${evaluated.size}/${totalCards} 张 · 正位 ${countU} 逆位 ${countR}`;
+  document.getElementById("mastery-overview").textContent = `已评估 ${evaluated.size}/${totalCards}`;
+
+  const grid = document.getElementById("card-grid");
+  let filtered = ALL_CARDS.map((c,i)=>({...c, idx:i}));
+  if(masteryFilter!=="all") filtered=filtered.filter(c=>c.group===masteryFilter);
+  if(masteryLevelFilter>=0) filtered=filtered.filter(c=>{
+    const m=mastery[c.idx];
+    if(!m) return false;
+    const lv = getMasteryLevel(c.idx);
+    return lv===masteryLevelFilter;
+  });
+
+  const groups={};
+  filtered.forEach(c=>{const g=c.groupLabel||"大阿尔卡纳";if(!groups[g])groups[g]=[];groups[g].push(c);});
+
+  let html="";
+  for(const [group,cards] of Object.entries(groups)){
+    html+=`<div class="section-label">${group}</div>`;
+    html+=cards.map(c=>{
+      const m=mastery[c.idx];
+      const ul=m?.upright?.level||0, rl=m?.reversed?.level||0;
+      const level = getMasteryLevel(c.idx);
+      return `<div class="card-cell mastery-${level}" onclick="openCardDetail(${c.idx})" title="${c.cn} · ${c.en}">
+        <div class="card-cell-name">${c.cn}</div><div class="card-cell-en">${c.en}</div>
+        <div style="display:flex;justify-content:center;gap:6px;margin-top:3px;">
+          <div style="text-align:center;"><div class="orient-label">正</div><div class="card-upright-dots">${[1,2,3,4,5].map(l=>`<span class="dot ${l<=ul?'filled':'empty'}"></span>`).join("")}</div></div>
+          <div style="text-align:center;"><div class="orient-label">逆</div><div class="card-reversed-dots">${[1,2,3,4,5].map(l=>`<span class="dot ${l<=rl?'filled':'empty'}"></span>`).join("")}</div></div>
+        </div></div>`;
+    }).join("");
+  }
+  grid.innerHTML = html||'<div class="empty-state"><div class="icon">🔍</div><p>没有匹配的牌。</p></div>';
+}
+
+function filterMastery(filter){
+  masteryFilter=filter;
+  const btns=document.querySelectorAll("#panel-mastery .filter-btn");
+  btns.forEach((b,i)=>{if(i<6)b.classList.toggle("active",["全部","大阿尔卡纳","权杖","圣杯","宝剑","星币"][i]===b.textContent.trim()||(filter==="all"&&i===0));});
+  renderMastery();
+}
+function filterByLevel(level){
+  masteryLevelFilter=level;
+  const btns=document.querySelectorAll("#panel-mastery .filter-btn");
+  btns.forEach((b,i)=>{if(i>=6){const sc=(b.textContent.match(/⭐/g)||[]).length;b.classList.toggle("active",level===-1?i===6:sc===level);}});
+  renderMastery();
+}
+function setMasteryOrient(orient){
+  masteryOrient=orient;
+  document.querySelectorAll(".mastery-tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".mastery-tab").forEach(t=>{if(t.textContent.trim()==={"both":"正逆合并","upright":"仅正位","reversed":"仅逆位"}[orient])t.classList.add("active");});
+  renderMastery();
+}
+
+function openCardDetail(idx){
+  const card=ALL_CARDS[idx];
+  const m=appData.cardMastery[idx]||{upright:{level:0,notes:""},reversed:{level:0,notes:""}};
+  document.getElementById("modal-content").innerHTML=`
+    <h3>${card.cn} <span style="font-size:14px;color:var(--text-muted);font-weight:400;">${card.en}</span></h3>
+    ${card.kw?`<div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;padding:8px 14px;background:var(--bg-hover);border-radius:8px;">🔑 关键词：${card.kw}</div>`:''}
+    <div class="orient-switch">
+      <button class="orient-btn active" id="orient-upright" onclick="switchOrient('upright')">⬆️ 正位</button>
+      <button class="orient-btn" id="orient-reversed" onclick="switchOrient('reversed')">⬇️ 逆位</button>
+    </div>
+    <div id="orient-content"></div>
+    <div class="modal-actions"><button class="btn btn-text" onclick="closeModal()">取消</button><button class="btn btn-primary" id="save-card-btn">保存</button></div>`;
+  document.getElementById("modal-overlay").classList.remove("hidden");
+
+  let currentOrient = "upright";
+  window._cardIdx = idx;
+  window._currentOrient = currentOrient;
+
+  function renderOrient(orient){
+    currentOrient = orient;
+    window._currentOrient = orient;
+    document.getElementById("orient-upright").classList.toggle("active",orient==="upright");
+    document.getElementById("orient-reversed").classList.toggle("active",orient==="reversed");
+    const om = (m[orient]||{level:0,notes:""});
+    document.getElementById("orient-content").innerHTML=`
+      <label>掌握程度</label><div class="star-rating" id="star-rating">
+        ${[1,2,3,4,5].map(l=>`<span class="star ${l<=om.level?'active':''}" data-level="${l}">★</span>`).join("")}</div>
+      <label>学习笔记</label><textarea id="card-notes" placeholder="记录这张牌的关键词、理解...">${es(om.notes||"")}</textarea>`;
+    document.querySelectorAll("#star-rating .star").forEach(s=>{
+      s.addEventListener("click",()=>{
+        const lv=parseInt(s.dataset.level);
+        document.querySelectorAll("#star-rating .star").forEach((st,i)=>st.classList.toggle("active",i<lv));
+      });
+    });
+  }
+  renderOrient(currentOrient);
+  window._switchOrient = renderOrient;
+
+  document.getElementById("save-card-btn").onclick=()=>{
+    const activeStars=document.querySelectorAll("#star-rating .star.active").length;
+    const notes=document.getElementById("card-notes").value;
+    if(!appData.cardMastery[idx]) appData.cardMastery[idx]={upright:{level:0,notes:""},reversed:{level:0,notes:""}};
+    const orient = window._currentOrient==="upright" ? "upright" : "reversed";
+    const prev = appData.cardMastery[idx][orient] || {level:0, notes:"", reviewCount:0};
+    const now = new Date().toISOString();
+    const changed = activeStars !== (prev.level||0);
+    appData.cardMastery[idx][orient] = {
+      level: activeStars,
+      notes,
+      reviewCount: changed ? (prev.reviewCount||0)+1 : (prev.reviewCount||0),
+      reviewedAt: changed ? now : (prev.reviewedAt || now)
+    };
+    saveData(appData);closeModal();
+  };
+}
+function switchOrient(orient){if(window._switchOrient)window._switchOrient(orient);}
+
+// ============ DAILY ============
+function renderDaily(){
+  const draws=appData.dailyDraws;
+  const today=new Date().toISOString().slice(0,10);
+  const todayDraw=draws.find(d=>d.date===today);
+  const todayDiv=document.getElementById("today-draw");
+  const reviewBadge = (d) => {
+    if(!d.review) return '';
+    const bg = {"应验":"#e8f5e9","部分应验":"#fff8e8","未应验":"#fff0f0"}[d.review] || "var(--bg-hover)";
+    const cl = {"应验":"var(--green)","部分应验":"#b8860b","未应验":"var(--red)"}[d.review] || "var(--text-secondary)";
+    return `<div class="daily-review" style="background:${bg};color:${cl};">🌙 复盘：${es(d.review)}${d.reviewNote?` · ${es(d.reviewNote)}`:''}</div>`;
+  };
+  if(todayDraw){
+    const orientLabel=todayDraw.orient==="reversed"?"逆位":"正位";
+    const orientCls=todayDraw.orient==="reversed"?"reversed":"upright";
+    todayDiv.innerHTML=`<div class="daily-entry">
+      <div class="daily-entry-header"><span style="font-weight:700;font-size:15px;">今日之牌</span><span style="font-size:12px;color:var(--text-muted)">${todayDraw.date}</span></div>
+      <div class="daily-card-badge" style="margin-bottom:10px;">${es(todayDraw.cardName)}<span class="orient-badge ${orientCls}">${orientLabel}</span></div>
+      <p><span class="label">问题/意图：</span>${es(todayDraw.question||'—')}</p>
+      <p><span class="label">牌面解读：</span>${es(todayDraw.interpretation||'—')}</p>
+      <p><span class="label">个人感悟：</span>${es(todayDraw.reflection||'—')}</p>
+      ${reviewBadge(todayDraw)}
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-text btn-sm" onclick="openReviewModal('${todayDraw.id}')">🌙 晚间复盘</button><button class="btn btn-text btn-sm" onclick="editDaily('${todayDraw.id}')">✏️</button><button class="btn btn-text btn-sm btn-danger" onclick="deleteDaily('${todayDraw.id}')">🗑️</button></div></div>`;
+  }else{
+    todayDiv.innerHTML='<div class="empty-state"><div class="icon">🌅</div><p>今天还没抽牌。</p></div>';
+  }
+
+  const historyDiv=document.getElementById("daily-history");
+  const pastDraws=draws.filter(d=>d.date!==today).sort((a,b)=>b.date.localeCompare(a.date));
+  if(pastDraws.length===0){
+    historyDiv.innerHTML='<div class="empty-state"><div class="icon">📖</div><p>暂无历史记录。</p></div>';
+  }else{
+    historyDiv.innerHTML=pastDraws.map(d=>{
+      const ol=d.orient==="reversed"?"逆位":"正位";
+      const oc=d.orient==="reversed"?"reversed":"upright";
+      return `<div class="daily-entry"><div class="daily-entry-header"><span style="font-weight:700;">${d.date}</span></div>
+      <div class="daily-card-badge">${es(d.cardName)}<span class="orient-badge ${oc}">${ol}</span></div>
+      <p><span class="label">解读：</span>${es(d.interpretation||'—')}</p>
+      ${reviewBadge(d)}
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-text btn-sm" onclick="openReviewModal('${d.id}')">🌙 复盘</button><button class="btn btn-text btn-sm" onclick="editDaily('${d.id}')">✏️</button><button class="btn btn-text btn-sm btn-danger" onclick="deleteDaily('${d.id}')">🗑️</button></div></div>`;
+    }).join("");
+  }
+}
+function openAddDaily(){openModal("daily");}
+function editDaily(id){openModal("daily",id);}
+function deleteDaily(id){if(confirm("确定删除？")){appData.dailyDraws=appData.dailyDraws.filter(d=>d.id!==id);saveData(appData);}}
+function saveDaily(id,data){
+  if(id){const idx=appData.dailyDraws.findIndex(d=>d.id===id);if(idx>=0)appData.dailyDraws[idx]={...appData.dailyDraws[idx],...data};}
+  else{appData.dailyDraws.push({id:Date.now().toString(36),date:new Date().toISOString().slice(0,10),...data});}
+  saveData(appData);closeModal();
+}
+
+// ============ 每日一牌·晚间复盘 ============
+function openReviewModal(id){
+  const d = appData.dailyDraws.find(x=>x.id===id);
+  if(!d) return;
+  const opts = ["应验","部分应验","未应验"].map(o=>`<button class="review-opt ${d.review===o?'active':''}" data-v="${o}" onclick="pickReview('${o}')">${o}</button>`).join("");
+  document.getElementById("modal-content").innerHTML=`
+    <h3>🌙 晚间复盘</h3>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">${es(d.cardName)} · ${d.date} — 这一天，这张牌说中了吗？</p>
+    <label>应验程度</label>
+    <div class="review-opts" id="review-opts">${opts}</div>
+    <input type="hidden" id="review-val" value="${d.review||'应验'}">
+    <label>复盘感悟</label>
+    <textarea id="review-note" placeholder="今天发生了什么？和这张牌有什么对应？">${es(d.reviewNote||'')}</textarea>
+    <div class="modal-actions"><button class="btn btn-text" onclick="closeModal()">取消</button><button class="btn btn-primary" id="review-save">保存复盘</button></div>`;
+  document.getElementById("modal-overlay").classList.remove("hidden");
+  window._reviewId = id;
+  document.getElementById("review-save").onclick=()=>{
+    const d2 = appData.dailyDraws.find(x=>x.id===window._reviewId);
+    if(d2){
+      d2.review = document.getElementById("review-val").value;
+      d2.reviewNote = document.getElementById("review-note").value;
+      saveData(appData);
+    }
+    closeModal();
+  };
+}
+function pickReview(v){
+  document.getElementById("review-val").value = v;
+  document.querySelectorAll("#review-opts .review-opt").forEach(b=>b.classList.toggle("active", b.dataset.v===v));
+}
+window.pickReview = pickReview;
+
+// ============ SPREAD ============
+function renderSpreads(){
+  const spreads=[...appData.spreadPractices].reverse();
+  const listDiv=document.getElementById("spread-list");
+  if(spreads.length===0){listDiv.innerHTML='<div class="empty-state"><div class="icon">✨</div><p>还没有牌阵练习记录。</p></div>';return;}
+  listDiv.innerHTML=spreads.map(s=>`<div class="spread-entry">
+    <div class="spread-header"><h4>${es(s.spreadName)}</h4><div><span style="font-size:12px;color:var(--text-muted);margin-right:8px;">${s.date}</span><span>${'⭐'.repeat(s.rating||0)}</span></div></div>
+    <div class="spread-positions">${(s.positions||[]).map(p=>`<div class="position-tag">${es(p.name)}: ${es(p.card)}</div>`).join("")}</div>
+    <p style="font-size:13px;color:var(--text-secondary);"><span class="label">解读：</span>${es(s.interpretation||'—')}</p>
+    <p style="font-size:13px;color:var(--text-secondary);"><span class="label">反思：</span>${es(s.reflection||'—')}</p>
+    <div style="margin-top:10px;display:flex;gap:6px;"><button class="btn btn-text btn-sm" onclick="openSpreadAnalysis('${s.id}')" style="color:var(--gold-dark);">🔮 分析</button><button class="btn btn-text btn-sm" onclick="editSpread('${s.id}')">✏️</button><button class="btn btn-text btn-sm btn-danger" onclick="deleteSpread('${s.id}')">🗑️</button></div></div>`).join("");
+}
+function openAddSpread(){openModal("spread");}
+function editSpread(id){openModal("spread",id);}
+function deleteSpread(id){if(confirm("确定删除？")){appData.spreadPractices=appData.spreadPractices.filter(s=>s.id!==id);saveData(appData);}}
+function saveSpread(id,data){
+  if(id){const idx=appData.spreadPractices.findIndex(s=>s.id===id);if(idx>=0)appData.spreadPractices[idx]={...appData.spreadPractices[idx],...data};}
+  else{appData.spreadPractices.push({id:Date.now().toString(36),date:new Date().toISOString().slice(0,10),...data});}
+  saveData(appData);closeModal();
+}
+
+// ============ QUIZ ============
+let quizMode="name2meaning";
+let quizCurrentCard=null;
+let quizAnswered=false;
+let quizCorrect=0, quizWrong=0, quizStreak=0;
+
+function renderQuizStats(){
+  document.getElementById("quiz-correct").textContent=appData.quizStats.correct||quizCorrect;
+  document.getElementById("quiz-wrong").textContent=appData.quizStats.wrong||quizWrong;
+  document.getElementById("quiz-streak").textContent=appData.quizStats.streak||quizStreak;
+  quizCorrect=appData.quizStats.correct||0;
+  quizWrong=appData.quizStats.wrong||0;
+  quizStreak=appData.quizStats.streak||0;
+}
+
+function setQuizMode(mode){
+  quizMode=mode;
+  document.querySelectorAll(".quiz-mode-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".quiz-mode-btn").forEach(b=>{if(b.textContent==={"name2meaning":"牌名 → 含义","meaning2name":"含义 → 牌名","multiple":"四选一"}[mode])b.classList.add("active");});
+  resetQuiz();
+}
+
+function resetQuiz(){
+  quizCurrentCard=null; quizAnswered=false;
+  document.getElementById("quiz-icon").textContent="🃏";
+  document.getElementById("quiz-question").textContent="准备好了吗？";
+  document.getElementById("quiz-answer-area").innerHTML="";
+  document.getElementById("quiz-feedback").innerHTML="";
+  document.getElementById("quiz-action-btn").textContent="开始测验";
+  document.getElementById("quiz-action-btn").onclick=quizAction;
+}
+
+function getRandomCard(){
+  if(quizWrongOnly){
+    const wrongs = getWrongCards();
+    if(wrongs.length===0) return ALL_CARDS[Math.floor(Math.random()*ALL_CARDS.length)];
+    const w = wrongs[Math.floor(Math.random()*wrongs.length)];
+    return ALL_CARDS.find(c=>c.cn===w.cn) || ALL_CARDS[Math.floor(Math.random()*ALL_CARDS.length)];
+  }
+  return ALL_CARDS[Math.floor(Math.random()*ALL_CARDS.length)];
+}
+
+function getWrongOptions(correctCard){
+  const options = new Set([correctCard.cn]);
+  while(options.size<4){
+    const r = getRandomCard();
+    if(!options.has(r.cn)) options.add(r.cn);
+  }
+  const arr = [...options];
+  // Shuffle
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return arr;
+}
+
+function quizAction(){
+  if(!quizAnswered){
+    // Generate new question
+    quizCurrentCard = getRandomCard();
+    quizAnswered = true;
+    document.getElementById("quiz-action-btn").textContent="下一题";
+    document.getElementById("quiz-feedback").innerHTML="";
+
+    if(quizMode==="name2meaning"){
+      document.getElementById("quiz-icon").textContent="🃏";
+      document.getElementById("quiz-question").textContent=quizCurrentCard.cn;
+      document.getElementById("quiz-answer-area").innerHTML=`
+        <input class="quiz-input" id="quiz-input" placeholder="输入这张牌的关键词..." onkeydown="if(event.key==='Enter')checkQuizAnswer()">
+        <div style="margin-top:6px;"><button class="btn btn-text btn-sm" onclick="checkQuizAnswer()">确认</button></div>`;
+      setTimeout(()=>document.getElementById("quiz-input")?.focus(),100);
+    }else if(quizMode==="meaning2name"){
+      document.getElementById("quiz-icon").textContent="🃏";
+      document.getElementById("quiz-question").textContent=`关键词：${quizCurrentCard.kw||quizCurrentCard.en}`;
+      document.getElementById("quiz-answer-area").innerHTML=`
+        <input class="quiz-input" id="quiz-input" placeholder="输入牌名..." onkeydown="if(event.key==='Enter')checkQuizAnswer()">
+        <div style="margin-top:6px;"><button class="btn btn-text btn-sm" onclick="checkQuizAnswer()">确认</button></div>`;
+      setTimeout(()=>document.getElementById("quiz-input")?.focus(),100);
+    }else if(quizMode==="multiple"){
+      document.getElementById("quiz-icon").textContent="🃏";
+      const hint = quizCurrentCard.groupLabel?`(${quizCurrentCard.groupLabel})`:"";
+      document.getElementById("quiz-question").textContent=`关键词：${quizCurrentCard.kw||quizCurrentCard.en} ${hint}`;
+      const options = getWrongOptions(quizCurrentCard);
+      document.getElementById("quiz-answer-area").innerHTML = `
+        <div class="quiz-options">${options.map(o=>`<button class="quiz-option" onclick="checkQuizMultiple('${es(o)}')">${es(o)}</button>`).join("")}</div>`;
+    }
+  }else{
+    resetQuiz();
+  }
+}
+
+function checkQuizAnswer(){
+  if(!quizCurrentCard) return;
+  const input = document.getElementById("quiz-input");
+  if(!input) return;
+  const answer = input.value.trim();
+  const correctNames = [quizCurrentCard.cn, quizCurrentCard.en.toLowerCase()];
+  const isCorrect = correctNames.some(n=>answer.toLowerCase().includes(n.toLowerCase())) || 
+    (quizMode==="name2meaning" && quizCurrentCard.kw && answer.length>1 && quizCurrentCard.kw.split(" ").some(k=>answer.includes(k)));
+
+  if(isCorrect){quizCorrect++;quizStreak++;document.getElementById("quiz-feedback").innerHTML=`<div class="quiz-feedback correct">✅ 正确！是「${quizCurrentCard.cn}」(${quizCurrentCard.en})</div>`;}
+  else{quizWrong++;quizStreak=0;recordQuizWrong(quizCurrentCard);document.getElementById("quiz-feedback").innerHTML=`<div class="quiz-feedback incorrect">❌ 答案是「${quizCurrentCard.cn}」(${quizCurrentCard.en})</div>`;}
+
+  document.getElementById("quiz-correct").textContent=quizCorrect;
+  document.getElementById("quiz-wrong").textContent=quizWrong;
+  document.getElementById("quiz-streak").textContent=quizStreak;
+  appData.quizStats={correct:quizCorrect, wrong:quizWrong, streak:quizStreak};
+  saveData(appData);
+  document.getElementById("quiz-action-btn").textContent="下一题";
+}
+
+function checkQuizMultiple(answer){
+  if(!quizCurrentCard) return;
+  const isCorrect = answer === quizCurrentCard.cn;
+  document.querySelectorAll(".quiz-option").forEach(o=>{
+    if(o.textContent===quizCurrentCard.cn) o.classList.add("correct-answer");
+    if(o.textContent===answer && !isCorrect) o.classList.add("wrong-answer");
+  });
+
+  if(isCorrect){quizCorrect++;quizStreak++;document.getElementById("quiz-feedback").innerHTML=`<div class="quiz-feedback correct">✅ 正确！</div>`;}
+  else{quizWrong++;quizStreak=0;recordQuizWrong(quizCurrentCard);document.getElementById("quiz-feedback").innerHTML=`<div class="quiz-feedback incorrect">❌ 答案是「${quizCurrentCard.cn}」</div>`;}
+
+  document.getElementById("quiz-correct").textContent=quizCorrect;
+  document.getElementById("quiz-wrong").textContent=quizWrong;
+  document.getElementById("quiz-streak").textContent=quizStreak;
+  appData.quizStats={correct:quizCorrect, wrong:quizWrong, streak:quizStreak};
+  saveData(appData);
+  document.getElementById("quiz-action-btn").textContent="下一题";
+  document.querySelectorAll(".quiz-option").forEach(o=>o.disabled=true);
+}
+
+// ============ 错题本 ============
+let quizWrongOnly = false;
+
+function recordQuizWrong(card){
+  if(!appData.quizWrong) appData.quizWrong = {};
+  const key = card.cn;
+  if(!appData.quizWrong[key]) appData.quizWrong[key] = {count:0, lastWrongAt:null, en:card.en};
+  appData.quizWrong[key].count++;
+  appData.quizWrong[key].lastWrongAt = new Date().toISOString();
+  appData.quizWrong[key].en = card.en;
+}
+
+function getWrongCards(){
+  return Object.entries(appData.quizWrong||{}).map(([cn, v]) => ({cn, en:v.en, count:v.count, lastWrongAt:v.lastWrongAt}));
+}
+
+function renderWrongBook(){
+  const box = document.getElementById("wrong-book");
+  if(!box) return;
+  const wrongs = getWrongCards().sort((a,b)=>b.count-a.count);
+  if(wrongs.length===0){
+    box.innerHTML='<div class="empty-state"><div class="icon">📕</div><p>还没有错题，继续保持！</p></div>';
+    return;
+  }
+  box.innerHTML = wrongs.map(w=>`
+    <div class="wrong-item">
+      <span style="font-size:18px;">❌</span>
+      <div style="flex:1;"><div style="font-weight:600;">${es(w.cn)} <span style="font-size:12px;color:var(--text-muted);font-weight:400;">${es(w.en)}</span></div>
+      <div style="font-size:12px;color:var(--text-muted);">答错 ${w.count} 次</div></div>
+      <button class="btn btn-text btn-sm btn-danger" onclick="removeWrong('${es(w.cn)}')">清除</button>
+    </div>`).join("");
+}
+
+function removeWrong(cn){
+  if(appData.quizWrong && appData.quizWrong[cn]){
+    delete appData.quizWrong[cn];
+    saveData(appData);
+  }
+}
+window.removeWrong = removeWrong;
+
+function toggleWrongOnly(){
+  quizWrongOnly = !quizWrongOnly;
+  const btn = document.getElementById("wrong-mode-btn");
+  if(btn) btn.classList.toggle("active", quizWrongOnly);
+  resetQuiz();
+}
+window.toggleWrongOnly = toggleWrongOnly;
+
+// ============ NOTES ============
+function renderNotes(){
+  const search=(document.getElementById("note-search")?.value||"").toLowerCase();
+  let notes=[...appData.notes].reverse();
+  if(search)notes=notes.filter(n=>n.title.toLowerCase().includes(search)||n.content.toLowerCase().includes(search)||(n.tags||[]).some(t=>t.toLowerCase().includes(search)));
+  const grid=document.getElementById("notes-grid");
+  if(notes.length===0){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="icon">📝</div><p>'+(search?'没有匹配的笔记。':'还没有笔记。')+'</p></div>';return;}
+  grid.innerHTML=notes.map(n=>`<div class="note-card"><h4>${es(n.title)}</h4><div class="note-date">${n.date}</div>
+    <div class="note-body">${es(n.content).substring(0,200)}${n.content.length>200?'...':''}</div>
+    <div class="note-tags">${(n.tags||[]).map(t=>`<span class="tag">${es(t)}</span>`).join("")}</div>
+    <div class="note-actions"><button class="btn btn-text btn-sm" onclick="editNote('${n.id}')">✏️ 编辑</button><button class="btn btn-text btn-sm btn-danger" onclick="deleteNote('${n.id}')">🗑️</button></div></div>`).join("");
+}
+function openAddNote(){openModal("note");}
+function editNote(id){openModal("note",id);}
+function deleteNote(id){if(confirm("确定删除？")){appData.notes=appData.notes.filter(n=>n.id!==id);saveData(appData);}}
+function saveNote(id,data){
+  if(id){const idx=appData.notes.findIndex(n=>n.id===id);if(idx>=0)appData.notes[idx]={...appData.notes[idx],...data};}
+  else{appData.notes.push({id:Date.now().toString(36),date:new Date().toISOString().slice(0,10),...data});}
+  saveData(appData);closeModal();
+}
+
+// ============ MODAL ============
+function openModal(type,id){
+  const overlay=document.getElementById("modal-overlay");
+  const content=document.getElementById("modal-content");
+
+  if(type==="course"){
+    const course=id?appData.courses.find(c=>c.id===id):null;
+    content.innerHTML=`<h3>${id?'编辑章节':'添加章节'}</h3>
+      <label>章节名称</label><input id="modal-title" value="${es(course?.title||'')}" placeholder="如：大阿尔卡纳详解（上）">
+      <label>状态</label><select id="modal-status"><option value="todo" ${course?.status==='todo'?'selected':''}>待学习</option><option value="active" ${course?.status==='active'?'selected':''}>学习中</option><option value="done" ${course?.status==='done'?'selected':''}>已完成</option></select>
+      <label>备注</label><textarea id="modal-notes" placeholder="学习心得...">${es(course?.notes||'')}</textarea>
+      <label>视频链接</label><input id="modal-video" placeholder="https://..." value="${es(course?.videoLink||'')}">
+      <label>PDF/资料链接</label><input id="modal-pdf" placeholder="https://..." value="${es(course?.pdfLink||'')}">
+      <div class="modal-actions"><button class="btn btn-text" onclick="closeModal()">取消</button><button class="btn btn-primary" id="modal-save">保存</button></div>`;
+    document.getElementById("modal-save").onclick=()=>saveCourse(id,{title:document.getElementById("modal-title").value,status:document.getElementById("modal-status").value,notes:document.getElementById("modal-notes").value,videoLink:document.getElementById("modal-video").value,pdfLink:document.getElementById("modal-pdf").value});
+  }
+
+  if(type==="daily"){
+    const daily=id?appData.dailyDraws.find(d=>d.id===id):null;
+    const cardOptions=ALL_CARDS.map((c,i)=>`<option value="${i}" ${daily?.cardIdx===i?'selected':''}>${c.cn} (${c.en})</option>`).join("");
+    content.innerHTML=`<h3>${id?'编辑每日一牌':'今日抽牌'}</h3>
+      <label>抽到的牌</label><select id="modal-card">${cardOptions}</select>
+      <label>牌面方向</label>
+      <div class="orient-switch"><button class="orient-btn ${daily?.orient!=='reversed'?'active':''}" id="dl-upright" onclick="document.getElementById('dl-upright').classList.add('active');document.getElementById('dl-reversed').classList.remove('active');document.getElementById('modal-orient').value='upright';">⬆️ 正位</button>
+      <button class="orient-btn ${daily?.orient==='reversed'?'active':''}" id="dl-reversed" onclick="document.getElementById('dl-reversed').classList.add('active');document.getElementById('dl-upright').classList.remove('active');document.getElementById('modal-orient').value='reversed';">⬇️ 逆位</button></div>
+      <input type="hidden" id="modal-orient" value="${daily?.orient||'upright'}">
+      <label>问题/意图</label><input id="modal-question" value="${es(daily?.question||'')}" placeholder="今天想问什么？">
+      <label>牌面解读</label><textarea id="modal-interp">${es(daily?.interpretation||'')}</textarea>
+      <label>个人感悟</label><textarea id="modal-reflection">${es(daily?.reflection||'')}</textarea>
+      <div class="modal-actions"><button class="btn btn-text" onclick="closeModal()">取消</button><button class="btn btn-primary" id="modal-save">保存</button></div>`;
+    document.getElementById("modal-save").onclick=()=>{const cardIdx=parseInt(document.getElementById("modal-card").value);saveDaily(id,{cardIdx,cardName:ALL_CARDS[cardIdx].cn,cardEn:ALL_CARDS[cardIdx].en,orient:document.getElementById("modal-orient").value,question:document.getElementById("modal-question").value,interpretation:document.getElementById("modal-interp").value,reflection:document.getElementById("modal-reflection").value});};
+  }
+
+  if(type==="spread"){
+    const spread=id?appData.spreadPractices.find(s=>s.id===id):null;
+    const positions=spread?.positions||[{name:"",card:""}];
+    const templateOpts=Object.entries(SPREAD_TEMPLATES).map(([key,t])=>`<option value="${key}">${t.name}</option>`).join("");
+    content.innerHTML=`<h3>${id?'编辑牌阵练习':'记录牌阵练习'}</h3>
+      <label>选择模板（可选）</label>
+      <select id="modal-template" onchange="applySpreadTemplate()"><option value="">自定义牌阵</option>${templateOpts}</select>
+      <span style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:14px;" id="modal-template-desc"></span>
+      <label>牌阵名称</label><input id="modal-spread-name" value="${es(spread?.spreadName||'')}" placeholder="如：凯尔特十字">
+      <label>牌阵位置与牌面</label>
+      <div id="modal-positions">${positions.map((p,i)=>`<div class="add-row"><input placeholder="位置" value="${es(p.name)}" class="pos-name" style="flex:1"><input placeholder="牌名" value="${es(p.card)}" class="pos-card" style="flex:1">${positions.length>1?`<button class="btn btn-text btn-sm btn-danger" onclick="this.parentElement.remove()">×</button>`:''}</div>`).join("")}</div>
+      <button class="btn btn-text btn-sm" onclick="addPositionRow()" style="margin-bottom:14px;">+ 添加位置</button>
+      <label>解读</label><textarea id="modal-interp">${es(spread?.interpretation||'')}</textarea>
+      <label>反思</label><textarea id="modal-reflection">${es(spread?.reflection||'')}</textarea>
+      <label>自我评分</label><div class="star-rating" id="modal-rating">${[1,2,3,4,5].map(l=>`<span class="star ${l<=(spread?.rating||0)?'active':''}" data-level="${l}">★</span>`).join("")}</div>
+      <div class="modal-actions"><button class="btn btn-text" onclick="closeModal()">取消</button><button class="btn btn-primary" id="modal-save">保存</button></div>`;
+    document.querySelectorAll("#modal-rating .star").forEach(s=>s.addEventListener("click",()=>{const lv=parseInt(s.dataset.level);document.querySelectorAll("#modal-rating .star").forEach((st,i)=>st.classList.toggle("active",i<lv));}));
+    document.getElementById("modal-save").onclick=()=>{const posEls=document.querySelectorAll("#modal-positions .add-row");const posData=[];posEls.forEach(r=>{const n=r.querySelector(".pos-name").value,c=r.querySelector(".pos-card").value;if(n||c)posData.push({name:n,card:c});});const rs=document.querySelectorAll("#modal-rating .star.active").length;saveSpread(id,{spreadName:document.getElementById("modal-spread-name").value,positions:posData,interpretation:document.getElementById("modal-interp").value,reflection:document.getElementById("modal-reflection").value,rating:rs});};
+  }
+
+  if(type==="note"){
+    const note=id?appData.notes.find(n=>n.id===id):null;
+    content.innerHTML=`<h3>${id?'编辑笔记':'新建笔记'}</h3>
+      <label>标题</label><input id="modal-note-title" value="${es(note?.title||'')}" placeholder="笔记标题">
+      <label>内容</label><textarea id="modal-note-content" style="min-height:150px;">${es(note?.content||'')}</textarea>
+      <label>标签（逗号分隔）</label><input id="modal-note-tags" value="${es((note?.tags||[]).join(', '))}">
+      <div class="modal-actions"><button class="btn btn-text" onclick="closeModal()">取消</button><button class="btn btn-primary" id="modal-save">保存</button></div>`;
+    document.getElementById("modal-save").onclick=()=>{const tags=document.getElementById("modal-note-tags").value.split(",").map(t=>t.trim()).filter(Boolean);saveNote(id,{title:document.getElementById("modal-note-title").value,content:document.getElementById("modal-note-content").value,tags});};
+  }
+
+  overlay.classList.remove("hidden");
+}
+
+function addPositionRow(){
+  const c=document.getElementById("modal-positions");
+  const r=document.createElement("div");r.className="add-row";
+  r.innerHTML='<input placeholder="位置" class="pos-name" style="flex:1"><input placeholder="牌名" class="pos-card" style="flex:1"><button class="btn btn-text btn-sm btn-danger" onclick="this.parentElement.remove()">×</button>';
+  c.appendChild(r);
+}
+window.addPositionRow=addPositionRow;
+
+function applySpreadTemplate(){
+  const key=document.getElementById("modal-template").value;
+  if(!key){document.getElementById("modal-template-desc").textContent="";return;}
+  const t=SPREAD_TEMPLATES[key];
+  document.getElementById("modal-spread-name").value=t.name;
+  document.getElementById("modal-template-desc").textContent=t.description;
+  const c=document.getElementById("modal-positions");
+  c.innerHTML=t.positions.map(p=>`<div class="add-row"><input placeholder="位置" value="${p}" class="pos-name" style="flex:1"><input placeholder="牌名" class="pos-card" style="flex:1">${t.positions.length>1?`<button class="btn btn-text btn-sm btn-danger" onclick="this.parentElement.remove()">×</button>`:''}</div>`).join("");
+}
+window.applySpreadTemplate=applySpreadTemplate;
+
+function closeModal(){document.getElementById("modal-overlay").classList.add("hidden");}
+document.getElementById("modal-overlay").addEventListener("click",e=>{if(e.target===e.currentTarget)closeModal();});
+
+// ============ SPREAD ANALYSIS (Knowledge Base) ============
+const TAROT_KNOWLEDGE = {
+  major: {
+    "0": {u:{kw:["新的开始","自由","冒险","天真"],t:"一段全新的旅程正在开启，带着开放的心态拥抱未知。适合跳脱框架、大胆尝试。"},r:{kw:["鲁莽","停滞","缺乏方向"],t:"可能因为冲动或犹豫而原地踏步，需要先看清方向再迈步。"}},
+    "1": {u:{kw:["显化","能力","意志","创造力"],t:"你拥有将想法变为现实的能力，资源与工具都已齐备，行动起来吧。"},r:{kw:["操纵","欺骗","才能浪费"],t:"才能可能被误用，或对自己能力缺乏信心，注意言行是否一致。"}},
+    "2": {u:{kw:["直觉","潜意识","神秘","内在智慧"],t:"静下来倾听内心的声音，答案不在表面，而在更深层的直觉里。"},r:{kw:["忽视直觉","表面化","秘密"],t:"可能忽略了内心的信号，或对某些事情视而不见，需要诚实面对。"}},
+    "3": {u:{kw:["丰饶","滋养","母性","创造"],t:"丰盛与滋养的能量，关注身体、关系与创造力，照顾自己也照顾他人。"},r:{kw:["依赖","忽视自我","创造力阻塞"],t:"过度付出或依赖他人，别忘了先滋养自己，创作灵感需要空间。"}},
+    "4": {u:{kw:["权威","结构","稳定","掌控"],t:"需要建立秩序与边界，承担责任、以稳定可靠的方式推进。"},r:{kw:["专横","僵化","失控"],t:"过度控制或固执己见反而让局面失控，学会灵活与放手。"}},
+    "5": {u:{kw:["传统","信仰","指引","学习"],t:"寻求可靠的指导与经验，遵循成熟的体系能让学习事半功倍。"},r:{kw:["教条","反叛","盲从"],t:"可能盲目遵从或过度反叛，找到自己的路，而非全盘接受。"}},
+    "6": {u:{kw:["爱","和谐","选择","结合"],t:"关于爱与关系的深刻选择，遵循内心价值观做决定，让心与行动一致。"},r:{kw:["失衡","错误选择","分离"],t:"关系或选择中出现失衡，需要重新审视自己的真实需求。"}},
+    "7": {u:{kw:["意志","胜利","前进","决心"],t:"以坚定的意志驾驭前进的方向，克服阻力，朝着目标冲刺。"},r:{kw:["失控","停滞","方向迷失"],t:"可能失去掌控或方向感，先停稳战车，重新校准目标。"}},
+    "8": {u:{kw:["勇气","耐心","慈悲","内在力量"],t:"真正的力量来自温和与耐心，以柔克刚，驯服内心的野兽。"},r:{kw:["软弱","自我怀疑","急躁"],t:"对自己缺乏信心或急于求成，先安抚内在的不安。"}},
+    "9": {u:{kw:["内省","独处","寻求真理"],t:"是时候独处与内省，从喧嚣中抽身，答案在寂静之中。"},r:{kw:["孤立","逃避","固执"],t:"独处可能变成了逃避，注意不要因固执而拒绝帮助。"}},
+    "10": {u:{kw:["转变","周期","机遇","命运"],t:"命运之轮正在转动，抓住上升期的机会，顺势而为。"},r:{kw:["厄运","失控","抗拒变化"],t:"可能处于低谷或抗拒改变，记住周期终会过去，调整心态。"}},
+    "11": {u:{kw:["公平","真相","因果","法律"],t:"以公正和理性衡量一切，承担自己的责任，真相会浮出水面。"},r:{kw:["不公","偏见","逃避责任"],t:"警惕不公或自我偏袒，逃避责任只会让问题扩大。"}},
+    "12": {u:{kw:["换角度","放下","牺牲","等待"],t:"换个角度看问题，暂时无法改变就学会放下与等待，牺牲有时是必要的。"},r:{kw:["徒劳牺牲","拖延","抗拒"],t:"可能在无谓地拖延或牺牲，审视这段等待是否真的有意义。"}},
+    "13": {u:{kw:["结束","转变","重生","放下"],t:"一个阶段正在结束，放下旧有才能迎接新生，转变是成长必经之路。"},r:{kw:["抗拒改变","停滞","拖延"],t:"对结束的抗拒让生命停滞，越早放手，越早迎来重生。"}},
+    "14": {u:{kw:["平衡","调和","耐心","适度"],t:"在两端之间找到平衡点，以耐心调和冲突，细水长流。"},r:{kw:["失衡","极端","浪费"],t:"生活可能失衡或走向极端，调整节奏，回到中道。"}},
+    "15": {u:{kw:["束缚","欲望","物质","阴影"],t:"看见自己被什么束缚——习惯、欲望或恐惧，觉察是挣脱的第一步。"},r:{kw:["解脱","觉醒","戒断"],t:"束缚正在松动，你开始觉醒并挣脱旧模式，保持清醒。"}},
+    "16": {u:{kw:["突变","崩塌","觉醒","真相"],t:"旧结构突然崩塌，看似灾难，实则是必要的觉醒与重建。"},r:{kw:["避免灾难","延迟转变"],t:"可能侥幸避开了危机，但未处理的隐患仍需要面对。"}},
+    "17": {u:{kw:["希望","疗愈","灵感","信心"],t:"星光指引，希望与疗愈的能量，相信美好的可能，让灵感流动。"},r:{kw:["失望","迷失","悲观"],t:"暂时看不到方向或信心受挫，回到内心寻找光。"}},
+    "18": {u:{kw:["幻觉","不安","潜意识","迷雾"],t:"真相被迷雾笼罩，不要被表面幻象迷惑，留意梦境与直觉的提示。"},r:{kw:["拨云见日","释疑","勇气"],t:"迷雾正在散去，隐藏的真相逐渐清晰，拿出勇气面对。"}},
+    "19": {u:{kw:["成功","喜悦","活力","清晰"],t:"阳光普照，成功与喜悦的能量，一切都变得清晰明亮，尽情绽放。"},r:{kw:["暂时阻碍","热情消退"],t:"晴朗的天空可能暂时蒙尘，但阻碍只是暂时的，保持乐观。"}},
+    "20": {u:{kw:["觉醒","评估","重生","召唤"],t:"来自内心的召唤，是时候重新评估过去、迎来更高层次的觉醒。"},r:{kw:["自我怀疑","错失良机"],t:"可能因自我怀疑而错过重要的信号，倾听内心的召唤。"}},
+    "21": {u:{kw:["完成","圆满","整合","成就"],t:"一个循环圆满达成，所有部分整合为一，是收获与庆祝的时刻。"},r:{kw:["未完成","停滞","欠缺整合"],t:"事情尚未收尾或整合不完整，补上最后一块拼图。"}}
+  },
+  suits: {
+    wands: {name:"权杖", element:"火", icon:"🔥", theme:"行动、热情、事业与创造力", u:"这股火热的能量推动你主动出击，把想法付诸行动。", r:"行动力可能受阻或热情消退，需要重新点燃内在的动力。"},
+    cups: {name:"圣杯", element:"水", icon:"💧", theme:"情感、关系、直觉与爱", u:"情感世界丰盈流动，重视关系与直觉，让感受指引你。", r:"情绪可能泛滥或压抑，关系中的感受需要被认真对待。"},
+    swords: {name:"宝剑", element:"风", icon:"🌬️", theme:"思维、沟通、真相与决策", u:"理性思考与清晰沟通是当下的关键，用头脑厘清复杂局面。", r:"思绪可能混乱或沟通受阻，警惕过度分析与言语伤害。"},
+    pentacles: {name:"星币", element:"土", icon:"🪨", theme:"物质、金钱、工作与健康", u:"脚踏实地，关注物质基础与实际收获，付出会有回报。", r:"财务或工作上可能有延迟，注意健康与资源的管理。"}
+  },
+  numbers: {
+    "1": {label:"王牌", u:{kw:["新开始","潜力","种子"],t:"能量的种子已经埋下，一个崭新的开端正在形成。"},r:{kw:["延迟","未显化","错过"],t:"新机会尚未成熟或启动延迟，耐心等待种子发芽。"}},
+    "2": {label:"二", u:{kw:["平衡","选择","二元"],t:"面临权衡与选择，在两极之间找到平衡点。"},r:{kw:["失衡","僵局","犹豫"],t:"可能在选择中僵持不下，避免逃避决定。"}},
+    "3": {label:"三", u:{kw:["合作","成长","初步成果"],t:"合作带来成长，初步的成果开始显现，保持团队精神。"},r:{kw:["协作受阻","延误"],t:"团队或合作出现摩擦，成果暂时受阻。"}},
+    "4": {label:"四", u:{kw:["稳定","休息","巩固"],t:"结构稳定，适合巩固已有成果，休整是为了更好的前行。"},r:{kw:["停滞","过度保守"],t:"可能过度保守或陷入停滞，警惕舒适区的陷阱。"}},
+    "5": {label:"五", u:{kw:["挑战","变化","冲突"],t:"挑战与变化袭来，这是打破旧平衡的契机。"},r:{kw:["修复","和解"],t:"冲突正在平息，修复与和解成为可能。"}},
+    "6": {label:"六", u:{kw:["和谐","顺利","平衡点"],t:"局势走向和谐，付出与回报趋于平衡，享受这段顺遂。"},r:{kw:["失衡","拖延"],t:"平衡被打破，可能需要调整付出与回报的比例。"}},
+    "7": {label:"七", u:{kw:["评估","坚持","内在考验"],t:"到了评估与坚持的时刻，别被表象迷惑，坚守内心选择。"},r:{kw:["怀疑","半途而废"],t:"信心动摇或试图走捷径，提醒自己坚持的价值。"}},
+    "8": {label:"八", u:{kw:["行动","力量","进展"],t:"行动力强劲，事情在快速推进，保持专注与速度。"},r:{kw:["缓慢","过度用力"],t:"可能用力过猛或进展缓慢，调整节奏。"}},
+    "9": {label:"九", u:{kw:["接近完成","独处","收获前"],t:"接近圆满，最后的坚持与沉淀会带来丰厚回报。"},r:{kw:["未竟","疲惫"],t:"差最后一步，注意疲惫感，别在终点前放弃。"}},
+    "10": {label:"十", u:{kw:["完成","顶点","结果"],t:"一个周期圆满收束，成果与结果已经显现。"},r:{kw:["过犹不及","未完成"],t:"负担过重或收尾不顺，学会卸下不必背的东西。"}}
+  },
+  courts: {
+    page: {label:"侍从", u:{kw:["学习","好奇","新消息"],t:"以学习者的姿态出现，好奇与探索会带来新的讯息。"},r:{kw:["不成熟","拖延"],t:"消息延迟或心态不够成熟，先做好功课。"}},
+    knight: {label:"骑士", u:{kw:["行动","冲劲","追求"],t:"充满冲劲的行动者，朝着目标全速前进。"},r:{kw:["鲁莽","三分钟热度"],t:"冲动或缺乏耐力，注意节奏与方向。"}},
+    queen: {label:"皇后", u:{kw:["滋养","成熟","内在掌握"],t:"成熟的掌握者，以包容与智慧整合外在资源。"},r:{kw:["情绪化","过度内耗"],t:"可能过度内耗或情绪化，重新平衡内在。"}},
+    king: {label:"国王", u:{kw:["掌控","权威","领导"],t:"成熟的领导者，以权威与经验掌控全局。"},r:{kw:["专制","失控"],t:"控制欲过强或局面失控，学会适度放权。"}}
+  }
+};
+
+const POSITION_MEANINGS = {
+  "过去": "问题的背景与根源，你从何处而来，哪些经历塑造了现状。",
+  "现在": "当下的核心状态，正在影响你生活的中心能量。",
+  "未来": "如果保持当前方向，事态将如何发展、趋势指向何方。",
+  "现状": "当前处境的整体写照，问题的中心焦点。",
+  "阻碍": "你正面临的困难、障碍，以及需要克服的卡点。",
+  "基础": "问题的根基与深层原因，支撑整个局面的底层结构。",
+  "目标": "你的目标与渴望，以及实现它的方向。",
+  "建议": "最可行的行动建议，下一步该如何走。",
+  "结果": "最终的可能结果与落点。",
+  "希望": "你的期望、恐惧或潜意识中的渴求。",
+  "恐惧": "你潜意识中的担忧，它如何影响你的决策。",
+  "自我": "你自己在事件中的角色、态度与内在状态。",
+  "环境": "外部环境与他人带来的影响。",
+  "隐藏": "隐藏的因素、未被察觉的影响。",
+  "挑战": "当前最需要直面的挑战与课题。",
+  "助力": "可以借助的力量、支持与资源。",
+  "你的状态": "你在这段关系或事件中的位置与感受。",
+  "对方的状态": "另一方在关系或事件中的位置与感受。",
+  "关系现状": "双方互动的当下状态。",
+  "你的需求": "你在关系中最深层、最真实的需求。",
+  "对方的需求": "另一方最深层、最真实的需求。",
+  "共同未来": "关系或合作的潜在走向。",
+  "选择A的发展": "选择 A 的方向与前景。",
+  "选择A的结果": "选择 A 最终的可能结果。",
+  "选择B的发展": "选择 B 的方向与前景。",
+  "选择B的结果": "选择 B 最终的可能结果。",
+  "关键因素": "影响结局最关键的因素与变量。",
+  "火·行动/热情": "从行动与热情的维度看待这个问题。",
+  "水·情感/直觉": "从情感与直觉的维度看待这个问题。",
+  "风·思维/沟通": "从思维与沟通的维度看待这个问题。",
+  "土·物质/现实": "从物质与现实的角度看待这个问题。",
+  "整合指引": "四元素能量的整合与最终指引。",
+  "当前能量": "问题当前的能量状态。",
+  "肯定因素": "支持肯定的积极因素。",
+  "否定因素": "支持否定的因素或警告。",
+  "最终指引": "综合给出的最终方向性指引。",
+  "中心·你": "牌阵的核心——你自身在事件中的位置。"
+};
+
+const THEME_KEYWORDS = {
+  "感情": ["感情","爱情","恋爱","喜欢","心动","伴侣","分手","复合","暗恋","暧昧"],
+  "事业": ["事业","工作","职场","上班","辞职","跳槽","项目","老板","同事","晋升"],
+  "金钱": ["钱","财务","收入","存款","理财","投资","负债","赚钱","消费"],
+  "学业": ["学习","考试","学业","课程","论文","作业","成绩","毕业","网课"],
+  "健康": ["健康","身体","疾病","睡眠","运动","养生"],
+  "家庭": ["家庭","家人","父母","孩子","婚姻","结婚","婆媳"],
+  "人际": ["朋友","友谊","社交","关系","人脉","团队"],
+  "灵性": ["灵性","修行","冥想","直觉","能量","成长","自我"],
+  "旅行": ["旅行","出行","搬家","搬迁","远方"],
+  "选择": ["选择","决定","犹豫","纠结","要不要","该不该"]
+};
+
+function detectThemes(text) {
+  if (!text) return [];
+  const themes = [];
+  for (const [theme, kws] of Object.entries(THEME_KEYWORDS)) {
+    if (kws.some(kw => text.includes(kw))) themes.push(theme);
+  }
+  return themes;
+}
+
+// Resolve a card name (e.g. "圣杯侍从", "愚人", "权杖王牌") to card info + knowledge
+function getCardKnowledge(cardName) {
+  const c = ALL_CARDS.find(c => c.cn === cardName) || null;
+  if (!c) return null;
+  if (c.group === "major") {
+    const majorIdx = c.num; // Roman or number
+    const majorData = TAROT_KNOWLEDGE.major[String(MAJOR_ARCANA.findIndex(m => m.cn === cardName))];
+    if (!majorData) return { card: c, type: "major", meaning: null };
+    return { card: c, type: "major", majorIdx: MAJOR_ARCANA.findIndex(m => m.cn === cardName), meaning: majorData };
+  }
+  // Minor arcana
+  const suitKey = c.suit; // wands/cups/swords/pentacles
+  const suit = TAROT_KNOWLEDGE.suits[suitKey];
+  // Determine rank
+  const rankCN = cardName.replace(suit.name, "");
+  const numIdx = RANKS.findIndex(r => r.cn === rankCN);
+  let rankMeaning = null, rankLabel = rankCN;
+  if (numIdx !== -1) {
+    if (numIdx < 10) { // Ace(0) - Ten(9)
+      rankMeaning = TAROT_KNOWLEDGE.numbers[String(numIdx + 1)];
+      rankLabel = TAROT_KNOWLEDGE.numbers[String(numIdx + 1)].label + "·" + suit.name;
+    } else { // Page/Knight/Queen/King
+      const courtKey = ["page","knight","queen","king"][numIdx - 10];
+      rankMeaning = TAROT_KNOWLEDGE.courts[courtKey];
+      rankLabel = rankMeaning.label + "·" + suit.name;
+    }
+  }
+  return { card: c, type: "minor", suit, rankMeaning, rankLabel };
+}
+
+function buildCardReading(know, orient) {
+  if (know.type === "major" && know.meaning) {
+    const m = orient === "reversed" ? know.meaning.r : know.meaning.u;
+    return { kw: m.kw, txt: m.t, isCombined: false };
+  }
+  // Minor: combine suit + rank
+  if (know.suit && know.rankMeaning) {
+    const s = orient === "reversed" ? know.suit.r : know.suit.u;
+    const r = orient === "reversed" ? know.rankMeaning.r : know.rankMeaning.u;
+    const kw = [...(r.kw || [])];
+    if (orient === "upright" && kw.length < 3) kw.push(...(know.suit.theme.split("、") || []));
+    return { kw, txt: `${know.suit.theme}。${s}${r.t}`, isCombined: true };
+  }
+  return null;
+}
+
+function openSpreadAnalysis(id) {
+  const spread = appData.spreadPractices.find(s => s.id === id);
+  if (!spread) return;
+  window._analyzingSpread = spread;
+  document.getElementById("analysis-spread-name").textContent = "· " + spread.spreadName + "（" + spread.date + "）";
+  switchAnalysisTab("knowledge");
+  document.getElementById("analysis-modal-overlay").classList.remove("hidden");
+  renderKnowledgeAnalysis(spread);
+  // Reset AI body
+  document.getElementById("analysis-ai-body").innerHTML = "";
+}
+
+function switchAnalysisTab(tab) {
+  document.getElementById("atab-knowledge").classList.toggle("active", tab === "knowledge");
+  document.getElementById("atab-ai").classList.toggle("active", tab === "ai");
+  document.getElementById("analysis-knowledge-body").classList.toggle("hidden", tab !== "knowledge");
+  document.getElementById("analysis-ai-body").classList.toggle("hidden", tab !== "ai");
+  if (tab === "ai" && !document.getElementById("analysis-ai-body").innerHTML) {
+    renderAiPanel();
+  }
+}
+
+function closeAnalysisModal() {
+  document.getElementById("analysis-modal-overlay").classList.add("hidden");
+}
+document.getElementById("analysis-modal-overlay").addEventListener("click", e => {
+  if (e.target === e.currentTarget) closeAnalysisModal();
+});
+
+function renderKnowledgeAnalysis(spread) {
+  const positions = spread.positions || [];
+  const questions = (spread.interpretation || "") + " " + (spread.reflection || "");
+  const themes = detectThemes(questions);
+
+  // Overview stats
+  let upright = 0, reversed = 0, major = 0, minor = 0;
+  const elementCount = {};
+  positions.forEach(p => {
+    const know = getCardKnowledge(p.card);
+    if (!know) return;
+    const orient = (p.orient === "reversed") ? "reversed" : "upright";
+    if (orient === "reversed") reversed++; else upright++;
+    if (know.type === "major") major++; else {
+      minor++;
+      const el = know.suit ? know.suit.element : "?";
+      elementCount[el] = (elementCount[el] || 0) + 1;
+    }
+  });
+
+  const elChips = Object.entries(elementCount).map(([el, n]) =>
+    `<span class="analysis-chip">${el}元素 ×${n}</span>`).join("");
+
+  let html = "";
+  html += `<div class="analysis-section">
+    <div class="analysis-section-title">📊 牌阵概览</div>
+    <div class="analysis-overview">
+      <span class="analysis-chip">⬆️ 正位 <b>${upright}</b></span>
+      <span class="analysis-chip">⬇️ 逆位 <b>${reversed}</b></span>
+      <span class="analysis-chip">🃏 大阿卡纳 <b>${major}</b></span>
+      <span class="analysis-chip">🎴 小阿卡纳 <b>${minor}</b></span>
+      ${elChips}
+    </div>`;
+
+  if (themes.length > 0) {
+    html += `<div class="analysis-note">🎯 结合你的记录，本次牌阵与 <b>${themes.join("、")}</b> 方面的议题相关。</div>`;
+  }
+  if (questions) {
+    html += `<div class="analysis-note">📝 你的记录：${es(questions.substring(0, 120))}${questions.length > 120 ? "..." : ""}</div>`;
+  }
+  html += `</div>`;
+
+  // Position readings
+  html += `<div class="analysis-section">
+    <div class="analysis-section-title">🔮 逐位解读</div>`;
+
+  if (positions.length === 0) {
+    html += `<div class="empty-state"><p>这个牌阵还没有记录牌面，先去编辑补充吧。</p></div>`;
+  }
+
+  positions.forEach((p, i) => {
+    const know = getCardKnowledge(p.card);
+    const orient = (p.orient === "reversed") ? "reversed" : "upright";
+    const posMeaning = POSITION_MEANINGS[p.name] || (p.name ? `位置「${p.name}」代表该方面的影响。` : "位置含义未定义。");
+
+    html += `<div class="analysis-pos">
+      <div class="analysis-pos-header">
+        <span class="analysis-pos-name">${i + 1}. ${es(p.name || "未命名位置")}</span>
+        <span class="analysis-pos-card">${es(p.card || "未抽牌")} <span class="${orient === "reversed" ? "rev" : "up"}">${orient === "reversed" ? "⬇️ 逆位" : "⬆️ 正位"}</span></span>
+      </div>
+      <div class="analysis-pos-txt"><b style="color:var(--accent);">位置含义：</b>${es(posMeaning)}</div>`;
+
+    if (know) {
+      const reading = buildCardReading(know, orient);
+      if (reading) {
+        html += `<div style="margin-top:6px;">
+          ${reading.kw.map(k => `<span class="analysis-kw">${es(k)}</span>`).join("")}
+        </div>
+        <div class="analysis-pos-txt" style="margin-top:6px;"><b style="color:var(--accent);">${es(know.card.cn)}解读：</b>${es(reading.txt)}</div>`;
+        if (reading.isCombined) {
+          html += `<div style="font-size:11px;color:var(--text-muted);margin-top:4px;">（由元素主题 + 数字/宫廷含义组合生成）</div>`;
+        }
+      }
+    } else if (p.card) {
+      html += `<div class="analysis-pos-txt" style="margin-top:6px;color:var(--text-muted);">未找到「${es(p.card)}」的牌义数据</div>`;
+    }
+    html += `</div>`;
+  });
+
+  html += `</div>`;
+
+  // Overall synthesis
+  html += `<div class="analysis-section">
+    <div class="analysis-section-title">🌟 整体趋势</div>
+    <div class="analysis-pos-txt">${buildSynthesis(positions, upright, reversed, major, minor)}</div>
+  </div>`;
+
+  html += `<div class="analysis-note">💡 本解读基于内置塔罗知识库生成，作为学习参考。塔罗的最终答案始终在你心中——结合你自己的直觉和笔记，才是最有价值的解读。</div>`;
+
+  document.getElementById("analysis-knowledge-body").innerHTML = html;
+}
+
+function buildSynthesis(positions, upright, reversed, major, minor) {
+  const parts = [];
+  const total = positions.length || 1;
+
+  if (reversed === 0 && upright > 0) {
+    parts.push("牌面整体偏向顺位，能量流动顺畅，事态发展较为明朗。");
+  } else if (reversed >= Math.ceil(total / 2)) {
+    parts.push("逆位占比偏高，提示此事存在较多的阻碍、内在卡点或需要重新审视的部分。");
+  } else if (reversed > 0) {
+    parts.push("正逆位相对均衡，事情既有顺利的一面，也有需要注意的暗流。");
+  }
+
+  if (major >= Math.ceil(total / 2) && major > 0) {
+    parts.push("大阿卡纳占比高，说明这件事涉及生命中的重要课题，能量影响深远，值得认真对待。");
+  } else if (minor > 0 && major > 0) {
+    parts.push("大阿卡纳与小阿卡纳兼有，既有宏观的人生课题，也有日常层面的具体细节。");
+  } else if (minor === total && total > 0) {
+    parts.push("全部为小阿卡纳，此事更多是日常现实层面的议题，专注于具体行动与细节即可。");
+  }
+
+  parts.push("建议：将各位置的解读串联起来，关注重复出现的主题与元素；结合你的记录和直觉，找出对你最有触动的那句话，那往往就是最重要的提示。");
+  return parts.join("<br>");
+}
+
+// ============ AI ANALYSIS ============
+const AI_SETTINGS_KEY = "tarot_ai_settings";
+
+function getAiSettings() {
+  try { return JSON.parse(localStorage.getItem(AI_SETTINGS_KEY)) || {baseUrl:"https://api.deepseek.com", key:"", model:"deepseek-chat"}; }
+  catch(e) { return {baseUrl:"https://api.deepseek.com", key:"", model:"deepseek-chat"}; }
+}
+
+function saveAiSettings() {
+  const s = {
+    baseUrl: (document.getElementById("ai-base-url").value || "https://api.deepseek.com").trim(),
+    key: document.getElementById("ai-api-key").value.trim(),
+    model: (document.getElementById("ai-model").value || "deepseek-chat").trim()
+  };
+  localStorage.setItem(AI_SETTINGS_KEY, JSON.stringify(s));
+  document.getElementById("ai-settings-overlay").classList.add("hidden");
+  showToast("✅ AI 设置已保存", "green");
+  renderAiPanel();
+}
+document.getElementById("ai-settings-overlay").addEventListener("click", e => {
+  if (e.target === e.currentTarget) document.getElementById("ai-settings-overlay").classList.add("hidden");
+});
+
+function renderAiPanel() {
+  const spread = window._analyzingSpread;
+  if (!spread) return;
+  const settings = getAiSettings();
+  const body = document.getElementById("analysis-ai-body");
+
+  if (!settings.key) {
+    body.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">🤖</div>
+        <p>AI 深度解读需要先配置 API Key</p>
+        <div style="margin-top:12px;">
+          <button class="btn btn-primary" onclick="openAiSettings()">⚙️ 去配置</button>
+        </div>
+        <p class="text-muted" style="margin-top:12px;">推荐使用 DeepSeek（国内可直连）<br>在 platform.deepseek.com 免费注册即可获得 API Key</p>
+      </div>`;
+    return;
+  }
+
+  body.innerHTML = `
+    <div class="analysis-desc">
+      将牌阵、牌面与你的笔记发送给 AI 模型生成深度解读。
+      当前模型：<b>${es(settings.model)}</b>
+      <button class="btn btn-text btn-sm" onclick="openAiSettings()" style="float:right;">⚙️ 设置</button>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="runAiAnalysis()">✨ 生成 AI 深度解读</button>
+    <div id="ai-result-area" style="margin-top:14px;"></div>`;
+}
+
+function openAiSettings() {
+  const s = getAiSettings();
+  document.getElementById("ai-base-url").value = s.baseUrl;
+  document.getElementById("ai-api-key").value = s.key;
+  document.getElementById("ai-model").value = s.model;
+  document.getElementById("ai-settings-overlay").classList.remove("hidden");
+}
+
+async function runAiAnalysis() {
+  const spread = window._analyzingSpread;
+  if (!spread) return;
+  const settings = getAiSettings();
+  if (!settings.key) { openAiSettings(); return; }
+
+  const area = document.getElementById("ai-result-area");
+  area.innerHTML = `<div class="analysis-ai-loading"><span class="spin">🔮</span> AI 正在解读牌阵，请稍候...</div>`;
+
+  // Build the prompt
+  const posText = (spread.positions || []).map((p, i) =>
+    `${i + 1}. 【${p.name || "未命名"}】${p.card || "未抽牌"} ${p.orient === "reversed" ? "（逆位）" : "（正位）"}`
+  ).join("\n");
+
+  const userNotes = `问题/意图：${spread.interpretation || "未记录"}\n自我反思：${spread.reflection || "未记录"}`;
+
+  const prompt = `你是一位经验丰富的韦特塔罗(RWS)解读师。请根据以下信息进行一次完整、深入、有温度的牌阵解读。
+
+【牌阵】${spread.spreadName}
+【牌面】
+${posText}
+
+【提问者的记录】
+${userNotes}
+
+请用中文回答，包含以下部分：
+1. 整体能量概览（正逆位分布、大阿卡纳占比、元素分布说明了什么）
+2. 逐位解读（每张牌在对应位置的含义，结合正逆位）
+3. 牌与牌之间的呼应（重复元素、数字、主题）
+4. 综合建议与行动指引
+5. 用一段温柔而直击人心的话总结
+
+请以塔罗学习者的视角，给出有深度但不过度玄学的解读。`;
+
+  try {
+    const resp = await fetch(settings.baseUrl.replace(/\/$/, "") + "/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${settings.key}` },
+      body: JSON.stringify({
+        model: settings.model,
+        messages: [
+          { role: "system", content: "你是一位专业而温暖的韦特塔罗解读师，擅长结合牌义、牌阵位置与提问者的情况做综合解读。" },
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.8
+      })
+    });
+
+    if (resp.status === 401) { throw new Error("API Key 无效，请检查后重试"); }
+    if (resp.status === 404) { throw new Error("模型名称或 API 地址不正确"); }
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || `HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const content = data.choices?.[0]?.message?.content || "AI 未返回内容";
+    area.innerHTML = `<div class="analysis-ai-result">${es(content).replace(/\n/g, "<br>")}</div>`;
+  } catch(e) {
+    if (e.message === "Failed to fetch") {
+      area.innerHTML = `<div class="analysis-feedback" style="padding:14px;background:#fff0f0;color:var(--red);border-radius:8px;font-size:13px;">
+        ❌ 无法连接到 AI 服务。<br>可能是网络问题，或该服务不允许浏览器跨域访问（CORS）。<br><br>建议：<br>1. 确认 API 地址正确（DeepSeek 为 https://api.deepseek.com）<br>2. 检查网络<br>3. 可先在知识库解读中查看基础分析
+      </div>`;
+    } else {
+      area.innerHTML = `<div style="padding:14px;background:#fff0f0;color:var(--red);border-radius:8px;font-size:13px;">❌ ${es(e.message)}</div>`;
+    }
+  }
+}
+
+// ============ HELPERS ============
+function es(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+// ============ SYNC (QR Code) ============
+//---------------------------------------------------------------------
+//
+// QR Code Generator for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+//
+// The word 'QR Code' is registered trademark of
+// DENSO WAVE INCORPORATED
+//  http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+
+var qrcode = function() {
+
+  //---------------------------------------------------------------------
+  // qrcode
+  //---------------------------------------------------------------------
+
+  /**
+   * qrcode
+   * @param typeNumber 1 to 40
+   * @param errorCorrectionLevel 'L','M','Q','H'
+   */
+  var qrcode = function(typeNumber, errorCorrectionLevel) {
+
+    var PAD0 = 0xEC;
+    var PAD1 = 0x11;
+
+    var _typeNumber = typeNumber;
+    var _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
+    var _modules = null;
+    var _moduleCount = 0;
+    var _dataCache = null;
+    var _dataList = [];
+
+    var _this = {};
+
+    var makeImpl = function(test, maskPattern) {
+
+      _moduleCount = _typeNumber * 4 + 17;
+      _modules = function(moduleCount) {
+        var modules = new Array(moduleCount);
+        for (var row = 0; row < moduleCount; row += 1) {
+          modules[row] = new Array(moduleCount);
+          for (var col = 0; col < moduleCount; col += 1) {
+            modules[row][col] = null;
+          }
+        }
+        return modules;
+      }(_moduleCount);
+
+      setupPositionProbePattern(0, 0);
+      setupPositionProbePattern(_moduleCount - 7, 0);
+      setupPositionProbePattern(0, _moduleCount - 7);
+      setupPositionAdjustPattern();
+      setupTimingPattern();
+      setupTypeInfo(test, maskPattern);
+
+      if (_typeNumber >= 7) {
+        setupTypeNumber(test);
+      }
+
+      if (_dataCache == null) {
+        _dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
+      }
+
+      mapData(_dataCache, maskPattern);
+    };
+
+    var setupPositionProbePattern = function(row, col) {
+
+      for (var r = -1; r <= 7; r += 1) {
+
+        if (row + r <= -1 || _moduleCount <= row + r) continue;
+
+        for (var c = -1; c <= 7; c += 1) {
+
+          if (col + c <= -1 || _moduleCount <= col + c) continue;
+
+          if ( (0 <= r && r <= 6 && (c == 0 || c == 6) )
+              || (0 <= c && c <= 6 && (r == 0 || r == 6) )
+              || (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+            _modules[row + r][col + c] = true;
+          } else {
+            _modules[row + r][col + c] = false;
+          }
+        }
+      }
+    };
+
+    var getBestMaskPattern = function() {
+
+      var minLostPoint = 0;
+      var pattern = 0;
+
+      for (var i = 0; i < 8; i += 1) {
+
+        makeImpl(true, i);
+
+        var lostPoint = QRUtil.getLostPoint(_this);
+
+        if (i == 0 || minLostPoint > lostPoint) {
+          minLostPoint = lostPoint;
+          pattern = i;
+        }
+      }
+
+      return pattern;
+    };
+
+    var setupTimingPattern = function() {
+
+      for (var r = 8; r < _moduleCount - 8; r += 1) {
+        if (_modules[r][6] != null) {
+          continue;
+        }
+        _modules[r][6] = (r % 2 == 0);
+      }
+
+      for (var c = 8; c < _moduleCount - 8; c += 1) {
+        if (_modules[6][c] != null) {
+          continue;
+        }
+        _modules[6][c] = (c % 2 == 0);
+      }
+    };
+
+    var setupPositionAdjustPattern = function() {
+
+      var pos = QRUtil.getPatternPosition(_typeNumber);
+
+      for (var i = 0; i < pos.length; i += 1) {
+
+        for (var j = 0; j < pos.length; j += 1) {
+
+          var row = pos[i];
+          var col = pos[j];
+
+          if (_modules[row][col] != null) {
+            continue;
+          }
+
+          for (var r = -2; r <= 2; r += 1) {
+
+            for (var c = -2; c <= 2; c += 1) {
+
+              if (r == -2 || r == 2 || c == -2 || c == 2
+                  || (r == 0 && c == 0) ) {
+                _modules[row + r][col + c] = true;
+              } else {
+                _modules[row + r][col + c] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    var setupTypeNumber = function(test) {
+
+      var bits = QRUtil.getBCHTypeNumber(_typeNumber);
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
+      }
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+      }
+    };
+
+    var setupTypeInfo = function(test, maskPattern) {
+
+      var data = (_errorCorrectionLevel << 3) | maskPattern;
+      var bits = QRUtil.getBCHTypeInfo(data);
+
+      // vertical
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 6) {
+          _modules[i][8] = mod;
+        } else if (i < 8) {
+          _modules[i + 1][8] = mod;
+        } else {
+          _modules[_moduleCount - 15 + i][8] = mod;
+        }
+      }
+
+      // horizontal
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 8) {
+          _modules[8][_moduleCount - i - 1] = mod;
+        } else if (i < 9) {
+          _modules[8][15 - i - 1 + 1] = mod;
+        } else {
+          _modules[8][15 - i - 1] = mod;
+        }
+      }
+
+      // fixed module
+      _modules[_moduleCount - 8][8] = (!test);
+    };
+
+    var mapData = function(data, maskPattern) {
+
+      var inc = -1;
+      var row = _moduleCount - 1;
+      var bitIndex = 7;
+      var byteIndex = 0;
+      var maskFunc = QRUtil.getMaskFunction(maskPattern);
+
+      for (var col = _moduleCount - 1; col > 0; col -= 2) {
+
+        if (col == 6) col -= 1;
+
+        while (true) {
+
+          for (var c = 0; c < 2; c += 1) {
+
+            if (_modules[row][col - c] == null) {
+
+              var dark = false;
+
+              if (byteIndex < data.length) {
+                dark = ( ( (data[byteIndex] >>> bitIndex) & 1) == 1);
+              }
+
+              var mask = maskFunc(row, col - c);
+
+              if (mask) {
+                dark = !dark;
+              }
+
+              _modules[row][col - c] = dark;
+              bitIndex -= 1;
+
+              if (bitIndex == -1) {
+                byteIndex += 1;
+                bitIndex = 7;
+              }
+            }
+          }
+
+          row += inc;
+
+          if (row < 0 || _moduleCount <= row) {
+            row -= inc;
+            inc = -inc;
+            break;
+          }
+        }
+      }
+    };
+
+    var createBytes = function(buffer, rsBlocks) {
+
+      var offset = 0;
+
+      var maxDcCount = 0;
+      var maxEcCount = 0;
+
+      var dcdata = new Array(rsBlocks.length);
+      var ecdata = new Array(rsBlocks.length);
+
+      for (var r = 0; r < rsBlocks.length; r += 1) {
+
+        var dcCount = rsBlocks[r].dataCount;
+        var ecCount = rsBlocks[r].totalCount - dcCount;
+
+        maxDcCount = Math.max(maxDcCount, dcCount);
+        maxEcCount = Math.max(maxEcCount, ecCount);
+
+        dcdata[r] = new Array(dcCount);
+
+        for (var i = 0; i < dcdata[r].length; i += 1) {
+          dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
+        }
+        offset += dcCount;
+
+        var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+        var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+        var modPoly = rawPoly.mod(rsPoly);
+        ecdata[r] = new Array(rsPoly.getLength() - 1);
+        for (var i = 0; i < ecdata[r].length; i += 1) {
+          var modIndex = i + modPoly.getLength() - ecdata[r].length;
+          ecdata[r][i] = (modIndex >= 0)? modPoly.getAt(modIndex) : 0;
+        }
+      }
+
+      var totalCodeCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalCodeCount += rsBlocks[i].totalCount;
+      }
+
+      var data = new Array(totalCodeCount);
+      var index = 0;
+
+      for (var i = 0; i < maxDcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < dcdata[r].length) {
+            data[index] = dcdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      for (var i = 0; i < maxEcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < ecdata[r].length) {
+            data[index] = ecdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      return data;
+    };
+
+    var createData = function(typeNumber, errorCorrectionLevel, dataList) {
+
+      var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectionLevel);
+
+      var buffer = qrBitBuffer();
+
+      for (var i = 0; i < dataList.length; i += 1) {
+        var data = dataList[i];
+        buffer.put(data.getMode(), 4);
+        buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+        data.write(buffer);
+      }
+
+      // calc num max data.
+      var totalDataCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalDataCount += rsBlocks[i].dataCount;
+      }
+
+      if (buffer.getLengthInBits() > totalDataCount * 8) {
+        throw 'code length overflow. ('
+          + buffer.getLengthInBits()
+          + '>'
+          + totalDataCount * 8
+          + ')';
+      }
+
+      // end code
+      if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+        buffer.put(0, 4);
+      }
+
+      // padding
+      while (buffer.getLengthInBits() % 8 != 0) {
+        buffer.putBit(false);
+      }
+
+      // padding
+      while (true) {
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD0, 8);
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD1, 8);
+      }
+
+      return createBytes(buffer, rsBlocks);
+    };
+
+    _this.addData = function(data, mode) {
+
+      mode = mode || 'Byte';
+
+      var newData = null;
+
+      switch(mode) {
+      case 'Numeric' :
+        newData = qrNumber(data);
+        break;
+      case 'Alphanumeric' :
+        newData = qrAlphaNum(data);
+        break;
+      case 'Byte' :
+        newData = qr8BitByte(data);
+        break;
+      case 'Kanji' :
+        newData = qrKanji(data);
+        break;
+      default :
+        throw 'mode:' + mode;
+      }
+
+      _dataList.push(newData);
+      _dataCache = null;
+    };
+
+    _this.isDark = function(row, col) {
+      if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
+        throw row + ',' + col;
+      }
+      return _modules[row][col];
+    };
+
+    _this.getModuleCount = function() {
+      return _moduleCount;
+    };
+
+    _this.make = function() {
+      if (_typeNumber < 1) {
+        var typeNumber = 1;
+
+        for (; typeNumber < 40; typeNumber++) {
+          var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, _errorCorrectionLevel);
+          var buffer = qrBitBuffer();
+
+          for (var i = 0; i < _dataList.length; i++) {
+            var data = _dataList[i];
+            buffer.put(data.getMode(), 4);
+            buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+            data.write(buffer);
+          }
+
+          var totalDataCount = 0;
+          for (var i = 0; i < rsBlocks.length; i++) {
+            totalDataCount += rsBlocks[i].dataCount;
+          }
+
+          if (buffer.getLengthInBits() <= totalDataCount * 8) {
+            break;
+          }
+        }
+
+        _typeNumber = typeNumber;
+      }
+
+      makeImpl(false, getBestMaskPattern() );
+    };
+
+    _this.createTableTag = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var qrHtml = '';
+
+      qrHtml += '<table style="';
+      qrHtml += ' border-width: 0px; border-style: none;';
+      qrHtml += ' border-collapse: collapse;';
+      qrHtml += ' padding: 0px; margin: ' + margin + 'px;';
+      qrHtml += '">';
+      qrHtml += '<tbody>';
+
+      for (var r = 0; r < _this.getModuleCount(); r += 1) {
+
+        qrHtml += '<tr>';
+
+        for (var c = 0; c < _this.getModuleCount(); c += 1) {
+          qrHtml += '<td style="';
+          qrHtml += ' border-width: 0px; border-style: none;';
+          qrHtml += ' border-collapse: collapse;';
+          qrHtml += ' padding: 0px; margin: 0px;';
+          qrHtml += ' width: ' + cellSize + 'px;';
+          qrHtml += ' height: ' + cellSize + 'px;';
+          qrHtml += ' background-color: ';
+          qrHtml += _this.isDark(r, c)? '#000000' : '#ffffff';
+          qrHtml += ';';
+          qrHtml += '"/>';
+        }
+
+        qrHtml += '</tr>';
+      }
+
+      qrHtml += '</tbody>';
+      qrHtml += '</table>';
+
+      return qrHtml;
+    };
+
+    _this.createSvgTag = function(cellSize, margin, alt, title) {
+
+      var opts = {};
+      if (typeof arguments[0] == 'object') {
+        // Called by options.
+        opts = arguments[0];
+        // overwrite cellSize and margin.
+        cellSize = opts.cellSize;
+        margin = opts.margin;
+        alt = opts.alt;
+        title = opts.title;
+      }
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      // Compose alt property surrogate
+      alt = (typeof alt === 'string') ? {text: alt} : alt || {};
+      alt.text = alt.text || null;
+      alt.id = (alt.text) ? alt.id || 'qrcode-description' : null;
+
+      // Compose title property surrogate
+      title = (typeof title === 'string') ? {text: title} : title || {};
+      title.text = title.text || null;
+      title.id = (title.text) ? title.id || 'qrcode-title' : null;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var c, mc, r, mr, qrSvg='', rect;
+
+      rect = 'l' + cellSize + ',0 0,' + cellSize +
+        ' -' + cellSize + ',0 0,-' + cellSize + 'z ';
+
+      qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
+      qrSvg += !opts.scalable ? ' width="' + size + 'px" height="' + size + 'px"' : '';
+      qrSvg += ' viewBox="0 0 ' + size + ' ' + size + '" ';
+      qrSvg += ' preserveAspectRatio="xMinYMin meet"';
+      qrSvg += (title.text || alt.text) ? ' role="img" aria-labelledby="' +
+          escapeXml([title.id, alt.id].join(' ').trim() ) + '"' : '';
+      qrSvg += '>';
+      qrSvg += (title.text) ? '<title id="' + escapeXml(title.id) + '">' +
+          escapeXml(title.text) + '</title>' : '';
+      qrSvg += (alt.text) ? '<description id="' + escapeXml(alt.id) + '">' +
+          escapeXml(alt.text) + '</description>' : '';
+      qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
+      qrSvg += '<path d="';
+
+      for (r = 0; r < _this.getModuleCount(); r += 1) {
+        mr = r * cellSize + margin;
+        for (c = 0; c < _this.getModuleCount(); c += 1) {
+          if (_this.isDark(r, c) ) {
+            mc = c*cellSize+margin;
+            qrSvg += 'M' + mc + ',' + mr + rect;
+          }
+        }
+      }
+
+      qrSvg += '" stroke="transparent" fill="black"/>';
+      qrSvg += '</svg>';
+
+      return qrSvg;
+    };
+
+    _this.createDataURL = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      return createDataURL(size, size, function(x, y) {
+        if (min <= x && x < max && min <= y && y < max) {
+          var c = Math.floor( (x - min) / cellSize);
+          var r = Math.floor( (y - min) / cellSize);
+          return _this.isDark(r, c)? 0 : 1;
+        } else {
+          return 1;
+        }
+      } );
+    };
+
+    _this.createImgTag = function(cellSize, margin, alt) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+
+      var img = '';
+      img += '<img';
+      img += '\u0020src="';
+      img += _this.createDataURL(cellSize, margin);
+      img += '"';
+      img += '\u0020width="';
+      img += size;
+      img += '"';
+      img += '\u0020height="';
+      img += size;
+      img += '"';
+      if (alt) {
+        img += '\u0020alt="';
+        img += escapeXml(alt);
+        img += '"';
+      }
+      img += '/>';
+
+      return img;
+    };
+
+    var escapeXml = function(s) {
+      var escaped = '';
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charAt(i);
+        switch(c) {
+        case '<': escaped += '&lt;'; break;
+        case '>': escaped += '&gt;'; break;
+        case '&': escaped += '&amp;'; break;
+        case '"': escaped += '&quot;'; break;
+        default : escaped += c; break;
+        }
+      }
+      return escaped;
+    };
+
+    var _createHalfASCII = function(margin) {
+      var cellSize = 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r1, r2, p;
+
+      var blocks = {
+        '██': '█',
+        '█ ': '▀',
+        ' █': '▄',
+        '  ': ' '
+      };
+
+      var blocksLastLineNoMargin = {
+        '██': '▀',
+        '█ ': '▀',
+        ' █': ' ',
+        '  ': ' '
+      };
+
+      var ascii = '';
+      for (y = 0; y < size; y += 2) {
+        r1 = Math.floor((y - min) / cellSize);
+        r2 = Math.floor((y + 1 - min) / cellSize);
+        for (x = 0; x < size; x += 1) {
+          p = '█';
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
+            p = ' ';
+          }
+
+          if (min <= x && x < max && min <= y+1 && y+1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
+            p += ' ';
+          }
+          else {
+            p += '█';
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          ascii += (margin < 1 && y+1 >= max) ? blocksLastLineNoMargin[p] : blocks[p];
+        }
+
+        ascii += '\n';
+      }
+
+      if (size % 2 && margin > 0) {
+        return ascii.substring(0, ascii.length - size - 1) + Array(size+1).join('▀');
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.createASCII = function(cellSize, margin) {
+      cellSize = cellSize || 1;
+
+      if (cellSize < 2) {
+        return _createHalfASCII(margin);
+      }
+
+      cellSize -= 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r, p;
+
+      var white = Array(cellSize+1).join('██');
+      var black = Array(cellSize+1).join('  ');
+
+      var ascii = '';
+      var line = '';
+      for (y = 0; y < size; y += 1) {
+        r = Math.floor( (y - min) / cellSize);
+        line = '';
+        for (x = 0; x < size; x += 1) {
+          p = 1;
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
+            p = 0;
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          line += p ? white : black;
+        }
+
+        for (r = 0; r < cellSize; r += 1) {
+          ascii += line + '\n';
+        }
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.renderTo2dContext = function(context, cellSize) {
+      cellSize = cellSize || 2;
+      var length = _this.getModuleCount();
+      for (var row = 0; row < length; row++) {
+        for (var col = 0; col < length; col++) {
+          context.fillStyle = _this.isDark(row, col) ? 'black' : 'white';
+          context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrcode.stringToBytes
+  //---------------------------------------------------------------------
+
+  qrcode.stringToBytesFuncs = {
+    'default' : function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        bytes.push(c & 0xff);
+      }
+      return bytes;
+    }
+  };
+
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['default'];
+
+  //---------------------------------------------------------------------
+  // qrcode.createStringToBytes
+  //---------------------------------------------------------------------
+
+  /**
+   * @param unicodeData base64 string of byte array.
+   * [16bit Unicode],[16bit Bytes], ...
+   * @param numChars
+   */
+  qrcode.createStringToBytes = function(unicodeData, numChars) {
+
+    // create conversion map.
+
+    var unicodeMap = function() {
+
+      var bin = base64DecodeInputStream(unicodeData);
+      var read = function() {
+        var b = bin.read();
+        if (b == -1) throw 'eof';
+        return b;
+      };
+
+      var count = 0;
+      var unicodeMap = {};
+      while (true) {
+        var b0 = bin.read();
+        if (b0 == -1) break;
+        var b1 = read();
+        var b2 = read();
+        var b3 = read();
+        var k = String.fromCharCode( (b0 << 8) | b1);
+        var v = (b2 << 8) | b3;
+        unicodeMap[k] = v;
+        count += 1;
+      }
+      if (count != numChars) {
+        throw count + ' != ' + numChars;
+      }
+
+      return unicodeMap;
+    }();
+
+    var unknownChar = '?'.charCodeAt(0);
+
+    return function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        if (c < 128) {
+          bytes.push(c);
+        } else {
+          var b = unicodeMap[s.charAt(i)];
+          if (typeof b == 'number') {
+            if ( (b & 0xff) == b) {
+              // 1byte
+              bytes.push(b);
+            } else {
+              // 2bytes
+              bytes.push(b >>> 8);
+              bytes.push(b & 0xff);
+            }
+          } else {
+            bytes.push(unknownChar);
+          }
+        }
+      }
+      return bytes;
+    };
+  };
+
+  //---------------------------------------------------------------------
+  // QRMode
+  //---------------------------------------------------------------------
+
+  var QRMode = {
+    MODE_NUMBER :    1 << 0,
+    MODE_ALPHA_NUM : 1 << 1,
+    MODE_8BIT_BYTE : 1 << 2,
+    MODE_KANJI :     1 << 3
+  };
+
+  //---------------------------------------------------------------------
+  // QRErrorCorrectionLevel
+  //---------------------------------------------------------------------
+
+  var QRErrorCorrectionLevel = {
+    L : 1,
+    M : 0,
+    Q : 3,
+    H : 2
+  };
+
+  //---------------------------------------------------------------------
+  // QRMaskPattern
+  //---------------------------------------------------------------------
+
+  var QRMaskPattern = {
+    PATTERN000 : 0,
+    PATTERN001 : 1,
+    PATTERN010 : 2,
+    PATTERN011 : 3,
+    PATTERN100 : 4,
+    PATTERN101 : 5,
+    PATTERN110 : 6,
+    PATTERN111 : 7
+  };
+
+  //---------------------------------------------------------------------
+  // QRUtil
+  //---------------------------------------------------------------------
+
+  var QRUtil = function() {
+
+    var PATTERN_POSITION_TABLE = [
+      [],
+      [6, 18],
+      [6, 22],
+      [6, 26],
+      [6, 30],
+      [6, 34],
+      [6, 22, 38],
+      [6, 24, 42],
+      [6, 26, 46],
+      [6, 28, 50],
+      [6, 30, 54],
+      [6, 32, 58],
+      [6, 34, 62],
+      [6, 26, 46, 66],
+      [6, 26, 48, 70],
+      [6, 26, 50, 74],
+      [6, 30, 54, 78],
+      [6, 30, 56, 82],
+      [6, 30, 58, 86],
+      [6, 34, 62, 90],
+      [6, 28, 50, 72, 94],
+      [6, 26, 50, 74, 98],
+      [6, 30, 54, 78, 102],
+      [6, 28, 54, 80, 106],
+      [6, 32, 58, 84, 110],
+      [6, 30, 58, 86, 114],
+      [6, 34, 62, 90, 118],
+      [6, 26, 50, 74, 98, 122],
+      [6, 30, 54, 78, 102, 126],
+      [6, 26, 52, 78, 104, 130],
+      [6, 30, 56, 82, 108, 134],
+      [6, 34, 60, 86, 112, 138],
+      [6, 30, 58, 86, 114, 142],
+      [6, 34, 62, 90, 118, 146],
+      [6, 30, 54, 78, 102, 126, 150],
+      [6, 24, 50, 76, 102, 128, 154],
+      [6, 28, 54, 80, 106, 132, 158],
+      [6, 32, 58, 84, 110, 136, 162],
+      [6, 26, 54, 82, 110, 138, 166],
+      [6, 30, 58, 86, 114, 142, 170]
+    ];
+    var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0);
+    var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0);
+    var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
+
+    var _this = {};
+
+    var getBCHDigit = function(data) {
+      var digit = 0;
+      while (data != 0) {
+        digit += 1;
+        data >>>= 1;
+      }
+      return digit;
+    };
+
+    _this.getBCHTypeInfo = function(data) {
+      var d = data << 10;
+      while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
+        d ^= (G15 << (getBCHDigit(d) - getBCHDigit(G15) ) );
+      }
+      return ( (data << 10) | d) ^ G15_MASK;
+    };
+
+    _this.getBCHTypeNumber = function(data) {
+      var d = data << 12;
+      while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
+        d ^= (G18 << (getBCHDigit(d) - getBCHDigit(G18) ) );
+      }
+      return (data << 12) | d;
+    };
+
+    _this.getPatternPosition = function(typeNumber) {
+      return PATTERN_POSITION_TABLE[typeNumber - 1];
+    };
+
+    _this.getMaskFunction = function(maskPattern) {
+
+      switch (maskPattern) {
+
+      case QRMaskPattern.PATTERN000 :
+        return function(i, j) { return (i + j) % 2 == 0; };
+      case QRMaskPattern.PATTERN001 :
+        return function(i, j) { return i % 2 == 0; };
+      case QRMaskPattern.PATTERN010 :
+        return function(i, j) { return j % 3 == 0; };
+      case QRMaskPattern.PATTERN011 :
+        return function(i, j) { return (i + j) % 3 == 0; };
+      case QRMaskPattern.PATTERN100 :
+        return function(i, j) { return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 == 0; };
+      case QRMaskPattern.PATTERN101 :
+        return function(i, j) { return (i * j) % 2 + (i * j) % 3 == 0; };
+      case QRMaskPattern.PATTERN110 :
+        return function(i, j) { return ( (i * j) % 2 + (i * j) % 3) % 2 == 0; };
+      case QRMaskPattern.PATTERN111 :
+        return function(i, j) { return ( (i * j) % 3 + (i + j) % 2) % 2 == 0; };
+
+      default :
+        throw 'bad maskPattern:' + maskPattern;
+      }
+    };
+
+    _this.getErrorCorrectPolynomial = function(errorCorrectLength) {
+      var a = qrPolynomial([1], 0);
+      for (var i = 0; i < errorCorrectLength; i += 1) {
+        a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0) );
+      }
+      return a;
+    };
+
+    _this.getLengthInBits = function(mode, type) {
+
+      if (1 <= type && type < 10) {
+
+        // 1 - 9
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 10;
+        case QRMode.MODE_ALPHA_NUM : return 9;
+        case QRMode.MODE_8BIT_BYTE : return 8;
+        case QRMode.MODE_KANJI     : return 8;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 27) {
+
+        // 10 - 26
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 12;
+        case QRMode.MODE_ALPHA_NUM : return 11;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 10;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 41) {
+
+        // 27 - 40
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 14;
+        case QRMode.MODE_ALPHA_NUM : return 13;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 12;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else {
+        throw 'type:' + type;
+      }
+    };
+
+    _this.getLostPoint = function(qrcode) {
+
+      var moduleCount = qrcode.getModuleCount();
+
+      var lostPoint = 0;
+
+      // LEVEL1
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount; col += 1) {
+
+          var sameCount = 0;
+          var dark = qrcode.isDark(row, col);
+
+          for (var r = -1; r <= 1; r += 1) {
+
+            if (row + r < 0 || moduleCount <= row + r) {
+              continue;
+            }
+
+            for (var c = -1; c <= 1; c += 1) {
+
+              if (col + c < 0 || moduleCount <= col + c) {
+                continue;
+              }
+
+              if (r == 0 && c == 0) {
+                continue;
+              }
+
+              if (dark == qrcode.isDark(row + r, col + c) ) {
+                sameCount += 1;
+              }
+            }
+          }
+
+          if (sameCount > 5) {
+            lostPoint += (3 + sameCount - 5);
+          }
+        }
+      };
+
+      // LEVEL2
+
+      for (var row = 0; row < moduleCount - 1; row += 1) {
+        for (var col = 0; col < moduleCount - 1; col += 1) {
+          var count = 0;
+          if (qrcode.isDark(row, col) ) count += 1;
+          if (qrcode.isDark(row + 1, col) ) count += 1;
+          if (qrcode.isDark(row, col + 1) ) count += 1;
+          if (qrcode.isDark(row + 1, col + 1) ) count += 1;
+          if (count == 0 || count == 4) {
+            lostPoint += 3;
+          }
+        }
+      }
+
+      // LEVEL3
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount - 6; col += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row, col + 1)
+              &&  qrcode.isDark(row, col + 2)
+              &&  qrcode.isDark(row, col + 3)
+              &&  qrcode.isDark(row, col + 4)
+              && !qrcode.isDark(row, col + 5)
+              &&  qrcode.isDark(row, col + 6) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount - 6; row += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row + 1, col)
+              &&  qrcode.isDark(row + 2, col)
+              &&  qrcode.isDark(row + 3, col)
+              &&  qrcode.isDark(row + 4, col)
+              && !qrcode.isDark(row + 5, col)
+              &&  qrcode.isDark(row + 6, col) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      // LEVEL4
+
+      var darkCount = 0;
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount; row += 1) {
+          if (qrcode.isDark(row, col) ) {
+            darkCount += 1;
+          }
+        }
+      }
+
+      var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+      lostPoint += ratio * 10;
+
+      return lostPoint;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // QRMath
+  //---------------------------------------------------------------------
+
+  var QRMath = function() {
+
+    var EXP_TABLE = new Array(256);
+    var LOG_TABLE = new Array(256);
+
+    // initialize tables
+    for (var i = 0; i < 8; i += 1) {
+      EXP_TABLE[i] = 1 << i;
+    }
+    for (var i = 8; i < 256; i += 1) {
+      EXP_TABLE[i] = EXP_TABLE[i - 4]
+        ^ EXP_TABLE[i - 5]
+        ^ EXP_TABLE[i - 6]
+        ^ EXP_TABLE[i - 8];
+    }
+    for (var i = 0; i < 255; i += 1) {
+      LOG_TABLE[EXP_TABLE[i] ] = i;
+    }
+
+    var _this = {};
+
+    _this.glog = function(n) {
+
+      if (n < 1) {
+        throw 'glog(' + n + ')';
+      }
+
+      return LOG_TABLE[n];
+    };
+
+    _this.gexp = function(n) {
+
+      while (n < 0) {
+        n += 255;
+      }
+
+      while (n >= 256) {
+        n -= 255;
+      }
+
+      return EXP_TABLE[n];
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrPolynomial
+  //---------------------------------------------------------------------
+
+  function qrPolynomial(num, shift) {
+
+    if (typeof num.length == 'undefined') {
+      throw num.length + '/' + shift;
+    }
+
+    var _num = function() {
+      var offset = 0;
+      while (offset < num.length && num[offset] == 0) {
+        offset += 1;
+      }
+      var _num = new Array(num.length - offset + shift);
+      for (var i = 0; i < num.length - offset; i += 1) {
+        _num[i] = num[i + offset];
+      }
+      return _num;
+    }();
+
+    var _this = {};
+
+    _this.getAt = function(index) {
+      return _num[index];
+    };
+
+    _this.getLength = function() {
+      return _num.length;
+    };
+
+    _this.multiply = function(e) {
+
+      var num = new Array(_this.getLength() + e.getLength() - 1);
+
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        for (var j = 0; j < e.getLength(); j += 1) {
+          num[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i) ) + QRMath.glog(e.getAt(j) ) );
+        }
+      }
+
+      return qrPolynomial(num, 0);
+    };
+
+    _this.mod = function(e) {
+
+      if (_this.getLength() - e.getLength() < 0) {
+        return _this;
+      }
+
+      var ratio = QRMath.glog(_this.getAt(0) ) - QRMath.glog(e.getAt(0) );
+
+      var num = new Array(_this.getLength() );
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        num[i] = _this.getAt(i);
+      }
+
+      for (var i = 0; i < e.getLength(); i += 1) {
+        num[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i) ) + ratio);
+      }
+
+      // recursive call
+      return qrPolynomial(num, 0).mod(e);
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // QRRSBlock
+  //---------------------------------------------------------------------
+
+  var QRRSBlock = function() {
+
+    var RS_BLOCK_TABLE = [
+
+      // L
+      // M
+      // Q
+      // H
+
+      // 1
+      [1, 26, 19],
+      [1, 26, 16],
+      [1, 26, 13],
+      [1, 26, 9],
+
+      // 2
+      [1, 44, 34],
+      [1, 44, 28],
+      [1, 44, 22],
+      [1, 44, 16],
+
+      // 3
+      [1, 70, 55],
+      [1, 70, 44],
+      [2, 35, 17],
+      [2, 35, 13],
+
+      // 4
+      [1, 100, 80],
+      [2, 50, 32],
+      [2, 50, 24],
+      [4, 25, 9],
+
+      // 5
+      [1, 134, 108],
+      [2, 67, 43],
+      [2, 33, 15, 2, 34, 16],
+      [2, 33, 11, 2, 34, 12],
+
+      // 6
+      [2, 86, 68],
+      [4, 43, 27],
+      [4, 43, 19],
+      [4, 43, 15],
+
+      // 7
+      [2, 98, 78],
+      [4, 49, 31],
+      [2, 32, 14, 4, 33, 15],
+      [4, 39, 13, 1, 40, 14],
+
+      // 8
+      [2, 121, 97],
+      [2, 60, 38, 2, 61, 39],
+      [4, 40, 18, 2, 41, 19],
+      [4, 40, 14, 2, 41, 15],
+
+      // 9
+      [2, 146, 116],
+      [3, 58, 36, 2, 59, 37],
+      [4, 36, 16, 4, 37, 17],
+      [4, 36, 12, 4, 37, 13],
+
+      // 10
+      [2, 86, 68, 2, 87, 69],
+      [4, 69, 43, 1, 70, 44],
+      [6, 43, 19, 2, 44, 20],
+      [6, 43, 15, 2, 44, 16],
+
+      // 11
+      [4, 101, 81],
+      [1, 80, 50, 4, 81, 51],
+      [4, 50, 22, 4, 51, 23],
+      [3, 36, 12, 8, 37, 13],
+
+      // 12
+      [2, 116, 92, 2, 117, 93],
+      [6, 58, 36, 2, 59, 37],
+      [4, 46, 20, 6, 47, 21],
+      [7, 42, 14, 4, 43, 15],
+
+      // 13
+      [4, 133, 107],
+      [8, 59, 37, 1, 60, 38],
+      [8, 44, 20, 4, 45, 21],
+      [12, 33, 11, 4, 34, 12],
+
+      // 14
+      [3, 145, 115, 1, 146, 116],
+      [4, 64, 40, 5, 65, 41],
+      [11, 36, 16, 5, 37, 17],
+      [11, 36, 12, 5, 37, 13],
+
+      // 15
+      [5, 109, 87, 1, 110, 88],
+      [5, 65, 41, 5, 66, 42],
+      [5, 54, 24, 7, 55, 25],
+      [11, 36, 12, 7, 37, 13],
+
+      // 16
+      [5, 122, 98, 1, 123, 99],
+      [7, 73, 45, 3, 74, 46],
+      [15, 43, 19, 2, 44, 20],
+      [3, 45, 15, 13, 46, 16],
+
+      // 17
+      [1, 135, 107, 5, 136, 108],
+      [10, 74, 46, 1, 75, 47],
+      [1, 50, 22, 15, 51, 23],
+      [2, 42, 14, 17, 43, 15],
+
+      // 18
+      [5, 150, 120, 1, 151, 121],
+      [9, 69, 43, 4, 70, 44],
+      [17, 50, 22, 1, 51, 23],
+      [2, 42, 14, 19, 43, 15],
+
+      // 19
+      [3, 141, 113, 4, 142, 114],
+      [3, 70, 44, 11, 71, 45],
+      [17, 47, 21, 4, 48, 22],
+      [9, 39, 13, 16, 40, 14],
+
+      // 20
+      [3, 135, 107, 5, 136, 108],
+      [3, 67, 41, 13, 68, 42],
+      [15, 54, 24, 5, 55, 25],
+      [15, 43, 15, 10, 44, 16],
+
+      // 21
+      [4, 144, 116, 4, 145, 117],
+      [17, 68, 42],
+      [17, 50, 22, 6, 51, 23],
+      [19, 46, 16, 6, 47, 17],
+
+      // 22
+      [2, 139, 111, 7, 140, 112],
+      [17, 74, 46],
+      [7, 54, 24, 16, 55, 25],
+      [34, 37, 13],
+
+      // 23
+      [4, 151, 121, 5, 152, 122],
+      [4, 75, 47, 14, 76, 48],
+      [11, 54, 24, 14, 55, 25],
+      [16, 45, 15, 14, 46, 16],
+
+      // 24
+      [6, 147, 117, 4, 148, 118],
+      [6, 73, 45, 14, 74, 46],
+      [11, 54, 24, 16, 55, 25],
+      [30, 46, 16, 2, 47, 17],
+
+      // 25
+      [8, 132, 106, 4, 133, 107],
+      [8, 75, 47, 13, 76, 48],
+      [7, 54, 24, 22, 55, 25],
+      [22, 45, 15, 13, 46, 16],
+
+      // 26
+      [10, 142, 114, 2, 143, 115],
+      [19, 74, 46, 4, 75, 47],
+      [28, 50, 22, 6, 51, 23],
+      [33, 46, 16, 4, 47, 17],
+
+      // 27
+      [8, 152, 122, 4, 153, 123],
+      [22, 73, 45, 3, 74, 46],
+      [8, 53, 23, 26, 54, 24],
+      [12, 45, 15, 28, 46, 16],
+
+      // 28
+      [3, 147, 117, 10, 148, 118],
+      [3, 73, 45, 23, 74, 46],
+      [4, 54, 24, 31, 55, 25],
+      [11, 45, 15, 31, 46, 16],
+
+      // 29
+      [7, 146, 116, 7, 147, 117],
+      [21, 73, 45, 7, 74, 46],
+      [1, 53, 23, 37, 54, 24],
+      [19, 45, 15, 26, 46, 16],
+
+      // 30
+      [5, 145, 115, 10, 146, 116],
+      [19, 75, 47, 10, 76, 48],
+      [15, 54, 24, 25, 55, 25],
+      [23, 45, 15, 25, 46, 16],
+
+      // 31
+      [13, 145, 115, 3, 146, 116],
+      [2, 74, 46, 29, 75, 47],
+      [42, 54, 24, 1, 55, 25],
+      [23, 45, 15, 28, 46, 16],
+
+      // 32
+      [17, 145, 115],
+      [10, 74, 46, 23, 75, 47],
+      [10, 54, 24, 35, 55, 25],
+      [19, 45, 15, 35, 46, 16],
+
+      // 33
+      [17, 145, 115, 1, 146, 116],
+      [14, 74, 46, 21, 75, 47],
+      [29, 54, 24, 19, 55, 25],
+      [11, 45, 15, 46, 46, 16],
+
+      // 34
+      [13, 145, 115, 6, 146, 116],
+      [14, 74, 46, 23, 75, 47],
+      [44, 54, 24, 7, 55, 25],
+      [59, 46, 16, 1, 47, 17],
+
+      // 35
+      [12, 151, 121, 7, 152, 122],
+      [12, 75, 47, 26, 76, 48],
+      [39, 54, 24, 14, 55, 25],
+      [22, 45, 15, 41, 46, 16],
+
+      // 36
+      [6, 151, 121, 14, 152, 122],
+      [6, 75, 47, 34, 76, 48],
+      [46, 54, 24, 10, 55, 25],
+      [2, 45, 15, 64, 46, 16],
+
+      // 37
+      [17, 152, 122, 4, 153, 123],
+      [29, 74, 46, 14, 75, 47],
+      [49, 54, 24, 10, 55, 25],
+      [24, 45, 15, 46, 46, 16],
+
+      // 38
+      [4, 152, 122, 18, 153, 123],
+      [13, 74, 46, 32, 75, 47],
+      [48, 54, 24, 14, 55, 25],
+      [42, 45, 15, 32, 46, 16],
+
+      // 39
+      [20, 147, 117, 4, 148, 118],
+      [40, 75, 47, 7, 76, 48],
+      [43, 54, 24, 22, 55, 25],
+      [10, 45, 15, 67, 46, 16],
+
+      // 40
+      [19, 148, 118, 6, 149, 119],
+      [18, 75, 47, 31, 76, 48],
+      [34, 54, 24, 34, 55, 25],
+      [20, 45, 15, 61, 46, 16]
+    ];
+
+    var qrRSBlock = function(totalCount, dataCount) {
+      var _this = {};
+      _this.totalCount = totalCount;
+      _this.dataCount = dataCount;
+      return _this;
+    };
+
+    var _this = {};
+
+    var getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
+
+      switch(errorCorrectionLevel) {
+      case QRErrorCorrectionLevel.L :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+      case QRErrorCorrectionLevel.M :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+      case QRErrorCorrectionLevel.Q :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+      case QRErrorCorrectionLevel.H :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+      default :
+        return undefined;
+      }
+    };
+
+    _this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
+
+      var rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
+
+      if (typeof rsBlock == 'undefined') {
+        throw 'bad rs block @ typeNumber:' + typeNumber +
+            '/errorCorrectionLevel:' + errorCorrectionLevel;
+      }
+
+      var length = rsBlock.length / 3;
+
+      var list = [];
+
+      for (var i = 0; i < length; i += 1) {
+
+        var count = rsBlock[i * 3 + 0];
+        var totalCount = rsBlock[i * 3 + 1];
+        var dataCount = rsBlock[i * 3 + 2];
+
+        for (var j = 0; j < count; j += 1) {
+          list.push(qrRSBlock(totalCount, dataCount) );
+        }
+      }
+
+      return list;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrBitBuffer
+  //---------------------------------------------------------------------
+
+  var qrBitBuffer = function() {
+
+    var _buffer = [];
+    var _length = 0;
+
+    var _this = {};
+
+    _this.getBuffer = function() {
+      return _buffer;
+    };
+
+    _this.getAt = function(index) {
+      var bufIndex = Math.floor(index / 8);
+      return ( (_buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+    };
+
+    _this.put = function(num, length) {
+      for (var i = 0; i < length; i += 1) {
+        _this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+      }
+    };
+
+    _this.getLengthInBits = function() {
+      return _length;
+    };
+
+    _this.putBit = function(bit) {
+
+      var bufIndex = Math.floor(_length / 8);
+      if (_buffer.length <= bufIndex) {
+        _buffer.push(0);
+      }
+
+      if (bit) {
+        _buffer[bufIndex] |= (0x80 >>> (_length % 8) );
+      }
+
+      _length += 1;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrNumber
+  //---------------------------------------------------------------------
+
+  var qrNumber = function(data) {
+
+    var _mode = QRMode.MODE_NUMBER;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _data;
+
+      var i = 0;
+
+      while (i + 2 < data.length) {
+        buffer.put(strToNum(data.substring(i, i + 3) ), 10);
+        i += 3;
+      }
+
+      if (i < data.length) {
+        if (data.length - i == 1) {
+          buffer.put(strToNum(data.substring(i, i + 1) ), 4);
+        } else if (data.length - i == 2) {
+          buffer.put(strToNum(data.substring(i, i + 2) ), 7);
+        }
+      }
+    };
+
+    var strToNum = function(s) {
+      var num = 0;
+      for (var i = 0; i < s.length; i += 1) {
+        num = num * 10 + chatToNum(s.charAt(i) );
+      }
+      return num;
+    };
+
+    var chatToNum = function(c) {
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      }
+      throw 'illegal char :' + c;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrAlphaNum
+  //---------------------------------------------------------------------
+
+  var qrAlphaNum = function(data) {
+
+    var _mode = QRMode.MODE_ALPHA_NUM;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var s = _data;
+
+      var i = 0;
+
+      while (i + 1 < s.length) {
+        buffer.put(
+          getCode(s.charAt(i) ) * 45 +
+          getCode(s.charAt(i + 1) ), 11);
+        i += 2;
+      }
+
+      if (i < s.length) {
+        buffer.put(getCode(s.charAt(i) ), 6);
+      }
+    };
+
+    var getCode = function(c) {
+
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      } else if ('A' <= c && c <= 'Z') {
+        return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+      } else {
+        switch (c) {
+        case ' ' : return 36;
+        case '$' : return 37;
+        case '%' : return 38;
+        case '*' : return 39;
+        case '+' : return 40;
+        case '-' : return 41;
+        case '.' : return 42;
+        case '/' : return 43;
+        case ':' : return 44;
+        default :
+          throw 'illegal char :' + c;
+        }
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qr8BitByte
+  //---------------------------------------------------------------------
+
+  var qr8BitByte = function(data) {
+
+    var _mode = QRMode.MODE_8BIT_BYTE;
+    var _data = data;
+    var _bytes = qrcode.stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _bytes.length;
+    };
+
+    _this.write = function(buffer) {
+      for (var i = 0; i < _bytes.length; i += 1) {
+        buffer.put(_bytes[i], 8);
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrKanji
+  //---------------------------------------------------------------------
+
+  var qrKanji = function(data) {
+
+    var _mode = QRMode.MODE_KANJI;
+    var _data = data;
+
+    var stringToBytes = qrcode.stringToBytesFuncs['SJIS'];
+    if (!stringToBytes) {
+      throw 'sjis not supported.';
+    }
+    !function(c, code) {
+      // self test for sjis support.
+      var test = stringToBytes(c);
+      if (test.length != 2 || ( (test[0] << 8) | test[1]) != code) {
+        throw 'sjis not supported.';
+      }
+    }('\u53cb', 0x9746);
+
+    var _bytes = stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return ~~(_bytes.length / 2);
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _bytes;
+
+      var i = 0;
+
+      while (i + 1 < data.length) {
+
+        var c = ( (0xff & data[i]) << 8) | (0xff & data[i + 1]);
+
+        if (0x8140 <= c && c <= 0x9FFC) {
+          c -= 0x8140;
+        } else if (0xE040 <= c && c <= 0xEBBF) {
+          c -= 0xC140;
+        } else {
+          throw 'illegal char at ' + (i + 1) + '/' + c;
+        }
+
+        c = ( (c >>> 8) & 0xff) * 0xC0 + (c & 0xff);
+
+        buffer.put(c, 13);
+
+        i += 2;
+      }
+
+      if (i < data.length) {
+        throw 'illegal char at ' + (i + 1);
+      }
+    };
+
+    return _this;
+  };
+
+  //=====================================================================
+  // GIF Support etc.
+  //
+
+  //---------------------------------------------------------------------
+  // byteArrayOutputStream
+  //---------------------------------------------------------------------
+
+  var byteArrayOutputStream = function() {
+
+    var _bytes = [];
+
+    var _this = {};
+
+    _this.writeByte = function(b) {
+      _bytes.push(b & 0xff);
+    };
+
+    _this.writeShort = function(i) {
+      _this.writeByte(i);
+      _this.writeByte(i >>> 8);
+    };
+
+    _this.writeBytes = function(b, off, len) {
+      off = off || 0;
+      len = len || b.length;
+      for (var i = 0; i < len; i += 1) {
+        _this.writeByte(b[i + off]);
+      }
+    };
+
+    _this.writeString = function(s) {
+      for (var i = 0; i < s.length; i += 1) {
+        _this.writeByte(s.charCodeAt(i) );
+      }
+    };
+
+    _this.toByteArray = function() {
+      return _bytes;
+    };
+
+    _this.toString = function() {
+      var s = '';
+      s += '[';
+      for (var i = 0; i < _bytes.length; i += 1) {
+        if (i > 0) {
+          s += ',';
+        }
+        s += _bytes[i];
+      }
+      s += ']';
+      return s;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64EncodeOutputStream
+  //---------------------------------------------------------------------
+
+  var base64EncodeOutputStream = function() {
+
+    var _buffer = 0;
+    var _buflen = 0;
+    var _length = 0;
+    var _base64 = '';
+
+    var _this = {};
+
+    var writeEncoded = function(b) {
+      _base64 += String.fromCharCode(encode(b & 0x3f) );
+    };
+
+    var encode = function(n) {
+      if (n < 0) {
+        // error.
+      } else if (n < 26) {
+        return 0x41 + n;
+      } else if (n < 52) {
+        return 0x61 + (n - 26);
+      } else if (n < 62) {
+        return 0x30 + (n - 52);
+      } else if (n == 62) {
+        return 0x2b;
+      } else if (n == 63) {
+        return 0x2f;
+      }
+      throw 'n:' + n;
+    };
+
+    _this.writeByte = function(n) {
+
+      _buffer = (_buffer << 8) | (n & 0xff);
+      _buflen += 8;
+      _length += 1;
+
+      while (_buflen >= 6) {
+        writeEncoded(_buffer >>> (_buflen - 6) );
+        _buflen -= 6;
+      }
+    };
+
+    _this.flush = function() {
+
+      if (_buflen > 0) {
+        writeEncoded(_buffer << (6 - _buflen) );
+        _buffer = 0;
+        _buflen = 0;
+      }
+
+      if (_length % 3 != 0) {
+        // padding
+        var padlen = 3 - _length % 3;
+        for (var i = 0; i < padlen; i += 1) {
+          _base64 += '=';
+        }
+      }
+    };
+
+    _this.toString = function() {
+      return _base64;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64DecodeInputStream
+  //---------------------------------------------------------------------
+
+  var base64DecodeInputStream = function(str) {
+
+    var _str = str;
+    var _pos = 0;
+    var _buffer = 0;
+    var _buflen = 0;
+
+    var _this = {};
+
+    _this.read = function() {
+
+      while (_buflen < 8) {
+
+        if (_pos >= _str.length) {
+          if (_buflen == 0) {
+            return -1;
+          }
+          throw 'unexpected end of file./' + _buflen;
+        }
+
+        var c = _str.charAt(_pos);
+        _pos += 1;
+
+        if (c == '=') {
+          _buflen = 0;
+          return -1;
+        } else if (c.match(/^\s$/) ) {
+          // ignore if whitespace.
+          continue;
+        }
+
+        _buffer = (_buffer << 6) | decode(c.charCodeAt(0) );
+        _buflen += 6;
+      }
+
+      var n = (_buffer >>> (_buflen - 8) ) & 0xff;
+      _buflen -= 8;
+      return n;
+    };
+
+    var decode = function(c) {
+      if (0x41 <= c && c <= 0x5a) {
+        return c - 0x41;
+      } else if (0x61 <= c && c <= 0x7a) {
+        return c - 0x61 + 26;
+      } else if (0x30 <= c && c <= 0x39) {
+        return c - 0x30 + 52;
+      } else if (c == 0x2b) {
+        return 62;
+      } else if (c == 0x2f) {
+        return 63;
+      } else {
+        throw 'c:' + c;
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // gifImage (B/W)
+  //---------------------------------------------------------------------
+
+  var gifImage = function(width, height) {
+
+    var _width = width;
+    var _height = height;
+    var _data = new Array(width * height);
+
+    var _this = {};
+
+    _this.setPixel = function(x, y, pixel) {
+      _data[y * _width + x] = pixel;
+    };
+
+    _this.write = function(out) {
+
+      //---------------------------------
+      // GIF Signature
+
+      out.writeString('GIF87a');
+
+      //---------------------------------
+      // Screen Descriptor
+
+      out.writeShort(_width);
+      out.writeShort(_height);
+
+      out.writeByte(0x80); // 2bit
+      out.writeByte(0);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Global Color Map
+
+      // black
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+
+      // white
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+
+      //---------------------------------
+      // Image Descriptor
+
+      out.writeString(',');
+      out.writeShort(0);
+      out.writeShort(0);
+      out.writeShort(_width);
+      out.writeShort(_height);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Local Color Map
+
+      //---------------------------------
+      // Raster Data
+
+      var lzwMinCodeSize = 2;
+      var raster = getLZWRaster(lzwMinCodeSize);
+
+      out.writeByte(lzwMinCodeSize);
+
+      var offset = 0;
+
+      while (raster.length - offset > 255) {
+        out.writeByte(255);
+        out.writeBytes(raster, offset, 255);
+        offset += 255;
+      }
+
+      out.writeByte(raster.length - offset);
+      out.writeBytes(raster, offset, raster.length - offset);
+      out.writeByte(0x00);
+
+      //---------------------------------
+      // GIF Terminator
+      out.writeString(';');
+    };
+
+    var bitOutputStream = function(out) {
+
+      var _out = out;
+      var _bitLength = 0;
+      var _bitBuffer = 0;
+
+      var _this = {};
+
+      _this.write = function(data, length) {
+
+        if ( (data >>> length) != 0) {
+          throw 'length over';
+        }
+
+        while (_bitLength + length >= 8) {
+          _out.writeByte(0xff & ( (data << _bitLength) | _bitBuffer) );
+          length -= (8 - _bitLength);
+          data >>>= (8 - _bitLength);
+          _bitBuffer = 0;
+          _bitLength = 0;
+        }
+
+        _bitBuffer = (data << _bitLength) | _bitBuffer;
+        _bitLength = _bitLength + length;
+      };
+
+      _this.flush = function() {
+        if (_bitLength > 0) {
+          _out.writeByte(_bitBuffer);
+        }
+      };
+
+      return _this;
+    };
+
+    var getLZWRaster = function(lzwMinCodeSize) {
+
+      var clearCode = 1 << lzwMinCodeSize;
+      var endCode = (1 << lzwMinCodeSize) + 1;
+      var bitLength = lzwMinCodeSize + 1;
+
+      // Setup LZWTable
+      var table = lzwTable();
+
+      for (var i = 0; i < clearCode; i += 1) {
+        table.add(String.fromCharCode(i) );
+      }
+      table.add(String.fromCharCode(clearCode) );
+      table.add(String.fromCharCode(endCode) );
+
+      var byteOut = byteArrayOutputStream();
+      var bitOut = bitOutputStream(byteOut);
+
+      // clear code
+      bitOut.write(clearCode, bitLength);
+
+      var dataIndex = 0;
+
+      var s = String.fromCharCode(_data[dataIndex]);
+      dataIndex += 1;
+
+      while (dataIndex < _data.length) {
+
+        var c = String.fromCharCode(_data[dataIndex]);
+        dataIndex += 1;
+
+        if (table.contains(s + c) ) {
+
+          s = s + c;
+
+        } else {
+
+          bitOut.write(table.indexOf(s), bitLength);
+
+          if (table.size() < 0xfff) {
+
+            if (table.size() == (1 << bitLength) ) {
+              bitLength += 1;
+            }
+
+            table.add(s + c);
+          }
+
+          s = c;
+        }
+      }
+
+      bitOut.write(table.indexOf(s), bitLength);
+
+      // end code
+      bitOut.write(endCode, bitLength);
+
+      bitOut.flush();
+
+      return byteOut.toByteArray();
+    };
+
+    var lzwTable = function() {
+
+      var _map = {};
+      var _size = 0;
+
+      var _this = {};
+
+      _this.add = function(key) {
+        if (_this.contains(key) ) {
+          throw 'dup key:' + key;
+        }
+        _map[key] = _size;
+        _size += 1;
+      };
+
+      _this.size = function() {
+        return _size;
+      };
+
+      _this.indexOf = function(key) {
+        return _map[key];
+      };
+
+      _this.contains = function(key) {
+        return typeof _map[key] != 'undefined';
+      };
+
+      return _this;
+    };
+
+    return _this;
+  };
+
+  var createDataURL = function(width, height, getPixel) {
+    var gif = gifImage(width, height);
+    for (var y = 0; y < height; y += 1) {
+      for (var x = 0; x < width; x += 1) {
+        gif.setPixel(x, y, getPixel(x, y) );
+      }
+    }
+
+    var b = byteArrayOutputStream();
+    gif.write(b);
+
+    var base64 = base64EncodeOutputStream();
+    var bytes = b.toByteArray();
+    for (var i = 0; i < bytes.length; i += 1) {
+      base64.writeByte(bytes[i]);
+    }
+    base64.flush();
+
+    return 'data:image/gif;base64,' + base64;
+  };
+
+  //---------------------------------------------------------------------
+  // returns qrcode function.
+
+  return qrcode;
+}();
+
+// multibyte support
+!function() {
+
+  qrcode.stringToBytesFuncs['UTF-8'] = function(s) {
+    // http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
+    function toUTF8Array(str) {
+      var utf8 = [];
+      for (var i=0; i < str.length; i++) {
+        var charcode = str.charCodeAt(i);
+        if (charcode < 0x80) utf8.push(charcode);
+        else if (charcode < 0x800) {
+          utf8.push(0xc0 | (charcode >> 6),
+              0x80 | (charcode & 0x3f));
+        }
+        else if (charcode < 0xd800 || charcode >= 0xe000) {
+          utf8.push(0xe0 | (charcode >> 12),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+        // surrogate pair
+        else {
+          i++;
+          // UTF-16 encodes 0x10000-0x10FFFF by
+          // subtracting 0x10000 and splitting the
+          // 20 bits of 0x0-0xFFFFF into two halves
+          charcode = 0x10000 + (((charcode & 0x3ff)<<10)
+            | (str.charCodeAt(i) & 0x3ff));
+          utf8.push(0xf0 | (charcode >>18),
+              0x80 | ((charcode>>12) & 0x3f),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+      }
+      return utf8;
+    }
+    return toUTF8Array(s);
+  };
+
+}();
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+      define([], factory);
+  } else if (typeof exports === 'object') {
+      module.exports = factory();
+  }
+}(function () {
+    return qrcode;
+}));
+
+
+// Simplified helper using official qrcode-generator API (typeNumber 0 = auto)
+function _makeCode(text) {
+  const qr = qrcode(0, "L");
+  qr.addData(text);
+  qr.make();
+  return qr;
+}
+
+// QR sync functions
+function getShareUrl() {
+  const json = JSON.stringify(appData);
+  const b64 = btoa(unescape(encodeURIComponent(json)));
+  return window.location.origin + window.location.pathname + "#sync=" + b64;
+}
+
+function openShareModal() {
+  document.getElementById("share-modal-overlay").classList.remove("hidden");
+  document.getElementById("share-link").value = getShareUrl();
+
+  // Estimate data size to decide QR vs link
+  const url = getShareUrl();
+  const hashIdx = url.indexOf("#sync=");
+  const dataLen = hashIdx >= 0 ? url.length - hashIdx - 6 : 0; // b64 length
+  const dataKB = (dataLen / 1024).toFixed(1);
+
+  const sizeInfo = document.createElement("div");
+  sizeInfo.id = "qr-size-info";
+  sizeInfo.style.cssText = "font-size:12px;color:var(--text-muted);margin-bottom:12px;text-align:center;";
+  sizeInfo.textContent = `📦 当前数据量：${dataKB} KB` +
+    (dataLen > 2500 ? " · 已超过二维码容量(≈2.5KB)，请用下方链接同步" : "");
+
+  const oldInfo = document.getElementById("qr-size-info");
+  if (oldInfo) oldInfo.remove();
+  document.getElementById("qr-container").insertAdjacentElement("beforebegin", sizeInfo);
+
+  if (dataLen > 2500) {
+    document.getElementById("qr-container").innerHTML = `<div style="padding:30px;color:var(--text-secondary);text-align:center;">
+      <div style="font-size:40px;margin-bottom:12px;">📎</div>
+      <div style="font-weight:600;margin-bottom:6px;">数据量较大，二维码已无法容纳</div>
+      <div style="font-size:12px;">请点击下方「📋 复制」按钮，把链接通过微信/QQ发送到另一台设备<br>对方打开链接即可自动导入</div>
+    </div>`;
+    return;
+  }
+
+  document.getElementById("qr-container").innerHTML = '<div id="qr-loading" style="padding:40px;color:var(--text-muted);">⏳ 生成中...</div>';
+  setTimeout(() => {
+    try {
+      const qr = _makeCode(url);
+      const count = qr.getModuleCount();
+      const size = 280;
+      const cellSize = Math.floor(size / count);
+      const actualSize = cellSize * count;
+
+      let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${actualSize} ${actualSize}" width="${actualSize}" height="${actualSize}">`;
+      svg += `<rect width="${actualSize}" height="${actualSize}" fill="#ffffff"/>`;
+      for (let r = 0; r < count; r++) {
+        for (let c = 0; c < count; c++) {
+          if (qr.isDark(r, c)) {
+            svg += `<rect x="${c*cellSize}" y="${r*cellSize}" width="${cellSize}" height="${cellSize}" fill="#2d1b4e"/>`;
+          }
+        }
+      }
+      svg += "</svg>";
+
+      document.getElementById("qr-container").innerHTML = svg;
+    } catch(e) {
+      document.getElementById("qr-container").innerHTML = `<div style="padding:20px;color:var(--red);">❌ 数据过大无法生成二维码<br><small>请使用下方复制链接方式</small></div>`;
+    }
+  }, 100);
+}
+
+function copyShareLink() {
+  const input = document.getElementById("share-link");
+  input.select();
+  navigator.clipboard.writeText(input.value).then(() => showToast("✅ 链接已复制，发送给另一台设备即可","green"))
+    .catch(() => showToast("⚠️ 复制失败，请手动全选复制","red"));
+}
+
+function openImportModal() {
+  document.getElementById("import-modal-overlay").classList.remove("hidden");
+  document.getElementById("import-data").value = "";
+}
+
+function parseImportData(raw) {
+  if (!raw) return null;
+  let b64;
+  const hashMatch = raw.match(/#sync=(.+)$/);
+  if (hashMatch) b64 = hashMatch[1];
+  else if (raw.startsWith("ey")) b64 = raw;
+  else {
+    try { JSON.parse(raw); return JSON.parse(raw); }
+    catch(e) { return null; }
+  }
+  if (b64) {
+    try {
+      const json = decodeURIComponent(escape(atob(b64)));
+      return JSON.parse(json);
+    } catch(e) { return null; }
+  }
+  return null;
+}
+
+function fmtTime(iso) {
+  if (!iso) return "未知";
+  try { return new Date(iso).toLocaleString("zh-CN", {month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}); }
+  catch(e) { return iso; }
+}
+
+function countData(data) {
+  return {
+    daily: (data.dailyDraws||[]).length,
+    spread: (data.spreadPractices||[]).length,
+    notes: (data.notes||[]).length,
+    courses: (data.courses||[]).length,
+    cards: Object.keys(data.cardMastery||{}).length,
+    time: data.lastSaved || "未知"
+  };
+}
+
+function migrateData(data) {
+  if (!data.quizStats) data.quizStats = {correct:0,wrong:0,streak:0};
+  if (!data.version || data.version < 3) {
+    const newMastery = {};
+    if (data.cardMastery) for (const [key, val] of Object.entries(data.cardMastery)) {
+      if (typeof val.level !== 'undefined') newMastery[key] = {upright:{level:val.level,notes:val.notes||""},reversed:{level:0,notes:""}};
+      else newMastery[key] = val;
+    }
+    data.cardMastery = newMastery; data.version = 3;
+  }
+  return data;
+}
+
+function smartMerge(incoming) {
+  const merged = JSON.parse(JSON.stringify(appData));
+  const inc = JSON.parse(JSON.stringify(incoming));
+
+  // Merge courses: keep by ID, incoming wins if same ID
+  const mergedCourses = {};
+  merged.courses.forEach(c => { mergedCourses[c.id] = c; });
+  inc.courses.forEach(c => { mergedCourses[c.id] = c; });
+  merged.courses = Object.values(mergedCourses).sort((a,b) => a.id - b.id);
+
+  // Merge card mastery: keep higher level for each orientation
+  const mergedMastery = {};
+  for (const [key, val] of Object.entries(merged.cardMastery || {})) mergedMastery[key] = val;
+  for (const [key, val] of Object.entries(inc.cardMastery || {})) {
+    if (!mergedMastery[key]) { mergedMastery[key] = val; continue; }
+    const mu = mergedMastery[key].upright, iu = val.upright;
+    const mr = mergedMastery[key].reversed, ir = val.reversed;
+    if (iu && (!mu || iu.level > mu.level)) mergedMastery[key].upright = iu;
+    if (ir && (!mr || ir.level > mr.level)) mergedMastery[key].reversed = ir;
+  }
+  merged.cardMastery = mergedMastery;
+
+  // Merge daily draws: keep by ID, keep all unique
+  const mergedDraws = {};
+  merged.dailyDraws.forEach(d => { mergedDraws[d.id] = d; });
+  inc.dailyDraws.forEach(d => { mergedDraws[d.id] = d; });
+  merged.dailyDraws = Object.values(mergedDraws);
+
+  // Merge spread practices
+  const mergedSpreads = {};
+  merged.spreadPractices.forEach(s => { mergedSpreads[s.id] = s; });
+  inc.spreadPractices.forEach(s => { mergedSpreads[s.id] = s; });
+  merged.spreadPractices = Object.values(mergedSpreads);
+
+  // Merge notes
+  const mergedNotes = {};
+  merged.notes.forEach(n => { mergedNotes[n.id] = n; });
+  inc.notes.forEach(n => { mergedNotes[n.id] = n; });
+  merged.notes = Object.values(mergedNotes);
+
+  // Quiz stats: take best
+  merged.quizStats = {
+    correct: Math.max(merged.quizStats?.correct||0, inc.quizStats?.correct||0),
+    wrong: Math.max(merged.quizStats?.wrong||0, inc.quizStats?.wrong||0),
+    streak: Math.max(merged.quizStats?.streak||0, inc.quizStats?.streak||0),
+  };
+
+  merged.lastSaved = new Date().toISOString();
+  return merged;
+}
+
+function showComparisonAndImport(incoming, sourceHint) {
+  incoming = migrateData(incoming);
+  const local = countData(appData);
+  const remote = countData(incoming);
+
+  document.getElementById("modal-content").innerHTML = `
+    <h3>📊 数据对比</h3>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">${sourceHint||'检测到同步数据'}</p>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;">
+      <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:6px;font-weight:600;">数据项</td><td style="padding:6px;text-align:center;font-weight:600;color:var(--accent);">📱 本设备</td><td style="padding:6px;text-align:center;font-weight:600;color:var(--blue);">📥 导入数据</td></tr>
+      <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:6px;">每日一牌</td><td style="padding:6px;text-align:center;">${local.daily}</td><td style="padding:6px;text-align:center;">${remote.daily}</td></tr>
+      <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:6px;">牌阵练习</td><td style="padding:6px;text-align:center;">${local.spread}</td><td style="padding:6px;text-align:center;">${remote.spread}</td></tr>
+      <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:6px;">学习笔记</td><td style="padding:6px;text-align:center;">${local.notes}</td><td style="padding:6px;text-align:center;">${remote.notes}</td></tr>
+      <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:6px;">课程章节</td><td style="padding:6px;text-align:center;">${local.courses}</td><td style="padding:6px;text-align:center;">${remote.courses}</td></tr>
+      <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:6px;">牌义评估</td><td style="padding:6px;text-align:center;">${local.cards}张</td><td style="padding:6px;text-align:center;">${remote.cards}张</td></tr>
+      <tr><td style="padding:6px;">最后修改</td><td style="padding:6px;text-align:center;font-size:11px;color:var(--text-muted);">${fmtTime(local.time)}</td><td style="padding:6px;text-align:center;font-size:11px;color:var(--text-muted);">${fmtTime(remote.time)}</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">
+      💡 <b>智能合并</b>：保留两边所有数据，冲突项取较新/较完整的版本<br>
+      ⚠️ <b>覆盖导入</b>：丢弃本设备数据，全部替换为导入数据（不可撤销）
+    </p>
+    <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;">
+      <button class="btn btn-text" onclick="closeModal()">取消</button>
+      <button class="btn btn-danger btn-sm" id="btn-replace">⚠️ 覆盖导入</button>
+      <button class="btn btn-primary" id="btn-merge">🔀 智能合并</button>
+    </div>`;
+
+  document.getElementById("btn-merge").onclick = () => {
+    appData = smartMerge(incoming);
+    saveData(appData);
+    closeModal();
+    document.getElementById("import-modal-overlay").classList.add("hidden");
+    showToast("✅ 数据已智能合并", "green");
+  };
+
+  document.getElementById("btn-replace").onclick = () => {
+    if (!confirm("⚠️ 确定要丢弃本设备数据，完全替换为导入数据吗？")) return;
+    appData = incoming;
+    saveData(appData);
+    closeModal();
+    document.getElementById("import-modal-overlay").classList.add("hidden");
+    showToast("✅ 数据已覆盖导入", "green");
+  };
+
+  document.getElementById("modal-overlay").classList.remove("hidden");
+}
+
+function doImport() {
+  const raw = document.getElementById("import-data").value.trim();
+  if (!raw) { showToast("⚠️ 请粘贴同步链接", "red"); return; }
+  const data = parseImportData(raw);
+  if (!data) { showToast("❌ 数据格式不正确", "red"); return; }
+  if (!data.dailyDraws && !data.courses && !data.cardMastery) { showToast("❌ 未检测到有效的塔罗数据", "red"); return; }
+  showComparisonAndImport(data, "从粘贴的数据导入");
+}
+
+// Check URL hash on load for auto-import
+(function checkSyncHash() {
+  const hash = window.location.hash;
+  const match = hash.match(/^#sync=(.+)$/);
+  if (match) {
+    try {
+      const json = decodeURIComponent(escape(atob(match[1])));
+      const data = JSON.parse(json);
+      if (data && (data.dailyDraws || data.courses || data.cardMastery)) {
+        setTimeout(() => {
+          showComparisonAndImport(data, "扫码同步数据");
+          // Clear hash after showing dialog
+          history.replaceState(null, "", window.location.pathname);
+        }, 500);
+      }
+    } catch(e) { /* ignore invalid hash data */ }
+  }
+})();
+
+function showToast(msg, color) {
+  const toast = document.getElementById("sync-toast");
+  toast.textContent = msg;
+  toast.style.background = color === "green" ? "#e8f5e9" : color === "red" ? "#fff0f0" : "#e3f2fd";
+  toast.style.color = color === "green" ? "#2e7d32" : color === "red" ? "#c62828" : "#1565c0";
+  toast.style.opacity = "1";
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => { toast.style.opacity = "0"; }, 3000);
+}
+
+// Close modals on overlay click
+document.getElementById("share-modal-overlay")?.addEventListener("click", e => {
+  if (e.target === e.currentTarget) document.getElementById("share-modal-overlay").classList.add("hidden");
+});
+document.getElementById("import-modal-overlay")?.addEventListener("click", e => {
+  if (e.target === e.currentTarget) document.getElementById("import-modal-overlay").classList.add("hidden");
+});
+
+// ============ INIT ============
+renderAll();
+
+// ============ PWA (offline support) ============
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
