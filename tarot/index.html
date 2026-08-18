@@ -367,6 +367,29 @@ body {
 .analysis-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
 .analysis-divider { border: none; border-top: 1px dashed var(--border); margin: 16px 0; }
 
+/* 今日复习 + 薄弱牌组 */
+.review-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border-light); border-radius:8px; margin-bottom:8px; cursor:pointer; transition:var(--transition); }
+.review-item:hover { border-color:var(--accent); background:var(--accent-light); }
+.weakness-tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+.weakness-tag { display:inline-block; padding:4px 12px; border-radius:16px; font-size:12px; font-weight:600; background:#fff0f0; color:var(--red); border:1px solid #fcc; }
+.weakness-bars { display:flex; flex-direction:column; gap:10px; }
+.weakness-row { display:flex; align-items:center; gap:10px; }
+.weakness-name { width:76px; font-size:13px; color:var(--text-secondary); text-align:right; flex-shrink:0; }
+.weakness-bar-wrap { flex:1; height:10px; background:var(--border-light); border-radius:5px; overflow:hidden; }
+.weakness-bar { height:100%; border-radius:5px; transition:width 0.5s ease; }
+.weakness-val { width:46px; font-size:13px; font-weight:700; color:var(--text); text-align:left; flex-shrink:0; }
+
+/* 晚间复盘 */
+.daily-review { margin-top:10px; padding:8px 12px; border-radius:8px; font-size:12px; line-height:1.5; }
+.review-opts { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+.review-opt { padding:6px 16px; border:1px solid var(--border); border-radius:20px; background:#fff; font-size:13px; cursor:pointer; transition:var(--transition); }
+.review-opt.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* 错题本 */
+.wrong-mode-btn { padding:6px 16px; border:1px solid var(--border); border-radius:20px; background:#fff; font-size:13px; cursor:pointer; transition:var(--transition); color:var(--text-secondary); }
+.wrong-mode-btn.active { background:#fff0f0; color:var(--red); border-color:var(--red); }
+.wrong-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border-light); border-radius:8px; margin-bottom:8px; }
+
 @media (max-width: 768px) {
   .analysis-modal { padding: 16px; }
   .analysis-pos { padding: 10px 12px; }
@@ -576,6 +599,11 @@ body {
     </div>
 
     <div class="card mb-16">
+      <div class="card-header"><h2>🧠 今日复习 <span style="font-size:12px;font-weight:400;color:var(--text-muted);">（记忆曲线自动提醒）</span></h2></div>
+      <div id="review-due" class="empty-state"><div class="icon">🧠</div><p>加载中…</p></div>
+    </div>
+
+    <div class="card mb-16">
       <div class="card-header"><h2>🎯 学习总览</h2></div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
         <div>
@@ -597,6 +625,11 @@ body {
           <div style="font-size:22px;font-weight:700;color:var(--red);" id="dash-reversed-avg">-</div>
         </div>
       </div>
+    </div>
+
+    <div class="card mb-16">
+      <div class="card-header"><h2>📉 薄弱牌组 <span style="font-size:12px;font-weight:400;color:var(--text-muted);">（一眼看出该补哪里）</span></h2></div>
+      <div id="weakness-box" class="empty-state"><div class="icon">📉</div><p>加载中…</p></div>
     </div>
 
     <div class="card">
@@ -692,6 +725,9 @@ body {
       <button class="quiz-mode-btn" onclick="setQuizMode('meaning2name')">含义 → 牌名</button>
       <button class="quiz-mode-btn" onclick="setQuizMode('multiple')">四选一</button>
     </div>
+    <div style="margin:8px 0 16px;">
+      <button class="wrong-mode-btn" id="wrong-mode-btn" onclick="toggleWrongOnly()">📕 重刷错题</button>
+    </div>
     <div class="quiz-container">
       <div class="quiz-stats">
         <div class="quiz-stat"><div class="quiz-stat-val green" id="quiz-correct">0</div><div class="quiz-stat-lbl">正确</div></div>
@@ -705,6 +741,10 @@ body {
         <div id="quiz-feedback"></div>
         <button class="btn btn-primary btn-big" id="quiz-action-btn" onclick="quizAction()">开始测验</button>
       </div>
+    </div>
+    <div class="card mt-16">
+      <div class="card-header"><h3>📕 错题本 <span style="font-size:12px;font-weight:400;color:var(--text-muted);">（答错的牌自动收进来）</span></h3></div>
+      <div id="wrong-book" class="empty-state"><div class="icon">📕</div><p>加载中…</p></div>
     </div>
   </section>
 
@@ -926,6 +966,7 @@ function getDefaultData() {
     spreadPractices: [],
     notes: [],
     quizStats: {correct:0, wrong:0, streak:0},
+    quizWrong: {},
     version: 3
   };
 }
@@ -951,6 +992,7 @@ function loadData() {
         data.version = 3;
       }
       if (!data.quizStats) data.quizStats = {correct:0, wrong:0, streak:0};
+      if (!data.quizWrong) data.quizWrong = {};
       return data;
     }
   } catch(e) {}
@@ -1003,6 +1045,7 @@ function renderAll() {
   renderDaily();
   renderSpreads();
   renderQuizStats();
+  renderWrongBook();
   renderNotes();
 }
 
@@ -1121,6 +1164,98 @@ function renderDashboard() {
         <span style="font-size:20px;">${a.icon}</span><div style="flex:1">${a.text}</div>
         <span style="font-size:12px;color:var(--text-muted);">${a.date}</span></div>`).join("");
   }
+  renderReviewDue();
+  renderWeakness();
+}
+
+// ============ 智能复习（记忆曲线） ============
+const REVIEW_INTERVALS = [1, 3, 7, 15, 30, 60]; // 天数，按复习次数递增
+
+function getDueReviews() {
+  const due = [];
+  const now = Date.now();
+  ALL_CARDS.forEach((c, idx) => {
+    const m = appData.cardMastery[idx];
+    if (!m) return;
+    ["upright", "reversed"].forEach(orient => {
+      const o = m[orient];
+      if (!o || !o.level || o.level <= 0) return;
+      const count = o.reviewCount || 0;
+      const interval = REVIEW_INTERVALS[Math.min(count, REVIEW_INTERVALS.length - 1)] * 86400000;
+      const reviewedAt = o.reviewedAt ? new Date(o.reviewedAt).getTime() : 0;
+      if (now - reviewedAt >= interval) {
+        due.push({ idx, orient, card: c, level: o.level, count });
+      }
+    });
+  });
+  return due;
+}
+
+function renderReviewDue() {
+  const box = document.getElementById("review-due");
+  if (!box) return;
+  const due = getDueReviews();
+  if (due.length === 0) {
+    box.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>今天没有到期的牌，掌握得很稳！</p></div>';
+    return;
+  }
+  box.innerHTML = due.slice(0, 12).map(d => `
+    <div class="review-item" onclick="openCardDetail(${d.idx})" title="点击复习">
+      <span style="font-size:18px;">🃏</span>
+      <div style="flex:1;">
+        <div style="font-weight:600;">${es(d.card.cn)} <span class="orient-badge ${d.orient==='reversed'?'reversed':'upright'}" style="font-size:10px;margin-left:4px;">${d.orient==='reversed'?'逆位':'正位'}</span></div>
+        <div style="font-size:12px;color:var(--text-muted);">掌握 ${'⭐'.repeat(d.level)} · 已复习 ${d.count} 次</div>
+      </div>
+      <span style="font-size:12px;color:var(--gold-dark);">去复习 ›</span>
+    </div>`).join("") + (due.length > 12 ? `<div style="padding:8px;text-align:center;font-size:12px;color:var(--text-muted);">还有 ${due.length - 12} 张待复习</div>` : "");
+}
+
+// ============ 薄弱牌识别 + 学习洞察 ============
+function getGroupMastery() {
+  const groups = {};
+  ALL_CARDS.forEach((c, idx) => {
+    const g = c.groupLabel || "大阿尔卡纳";
+    if (!groups[g]) groups[g] = { sum: 0, count: 0, evaluated: 0, total: 0 };
+    groups[g].total++;
+    const m = appData.cardMastery[idx];
+    if (m) {
+      const u = m.upright?.level || 0, r = m.reversed?.level || 0;
+      if (u > 0 || r > 0) {
+        groups[g].sum += (u + r);
+        groups[g].count += (u > 0 ? 1 : 0) + (r > 0 ? 1 : 0);
+        groups[g].evaluated++;
+      }
+    }
+  });
+  return groups;
+}
+
+function renderWeakness() {
+  const box = document.getElementById("weakness-box");
+  if (!box) return;
+  const groups = getGroupMastery();
+  const entries = Object.entries(groups).map(([name, g]) => ({
+    name,
+    avg: g.count > 0 ? (g.sum / g.count) : 0,
+    evaluated: g.evaluated,
+    total: g.total
+  }));
+  const ranked = [...entries].sort((a, b) => a.avg - b.avg || (b.total - b.evaluated) - (a.total - a.evaluated));
+  const weakest = ranked.filter(e => e.evaluated < e.total || e.avg < 3).slice(0, 3);
+  const maxAvg = Math.max(...entries.map(e => e.avg), 1);
+
+  box.innerHTML = `
+    <div class="weakness-tags">
+      ${weakest.length === 0 ? '<span style="font-size:13px;color:var(--text-muted);">各组掌握均衡，继续保持！</span>' : weakest.map(w => `<span class="weakness-tag" title="平均 ${w.avg.toFixed(1)}/5，已评估 ${w.evaluated}/${w.total} 张">⚠️ ${es(w.name)} · ${w.avg.toFixed(1)}分</span>`).join("")}
+    </div>
+    <div class="weakness-bars">
+      ${entries.map(e => `
+        <div class="weakness-row">
+          <div class="weakness-name">${es(e.name)}</div>
+          <div class="weakness-bar-wrap"><div class="weakness-bar" style="width:${(e.avg / maxAvg * 100).toFixed(1)}%;background:${e.avg < 3 ? 'var(--red)' : 'var(--accent)'};"></div></div>
+          <div class="weakness-val">${e.avg.toFixed(1)}<span style="font-size:10px;color:var(--text-muted);">/5</span></div>
+        </div>`).join("")}
+    </div>`;
 }
 
 // ============ COURSES ============
@@ -1276,8 +1411,16 @@ function openCardDetail(idx){
     const activeStars=document.querySelectorAll("#star-rating .star.active").length;
     const notes=document.getElementById("card-notes").value;
     if(!appData.cardMastery[idx]) appData.cardMastery[idx]={upright:{level:0,notes:""},reversed:{level:0,notes:""}};
-    if(window._currentOrient==="upright"){appData.cardMastery[idx].upright={level:activeStars,notes};}
-    else{appData.cardMastery[idx].reversed={level:activeStars,notes};}
+    const orient = window._currentOrient==="upright" ? "upright" : "reversed";
+    const prev = appData.cardMastery[idx][orient] || {level:0, notes:"", reviewCount:0};
+    const now = new Date().toISOString();
+    const changed = activeStars !== (prev.level||0);
+    appData.cardMastery[idx][orient] = {
+      level: activeStars,
+      notes,
+      reviewCount: changed ? (prev.reviewCount||0)+1 : (prev.reviewCount||0),
+      reviewedAt: changed ? now : (prev.reviewedAt || now)
+    };
     saveData(appData);closeModal();
   };
 }
@@ -1289,6 +1432,12 @@ function renderDaily(){
   const today=new Date().toISOString().slice(0,10);
   const todayDraw=draws.find(d=>d.date===today);
   const todayDiv=document.getElementById("today-draw");
+  const reviewBadge = (d) => {
+    if(!d.review) return '';
+    const bg = {"应验":"#e8f5e9","部分应验":"#fff8e8","未应验":"#fff0f0"}[d.review] || "var(--bg-hover)";
+    const cl = {"应验":"var(--green)","部分应验":"#b8860b","未应验":"var(--red)"}[d.review] || "var(--text-secondary)";
+    return `<div class="daily-review" style="background:${bg};color:${cl};">🌙 复盘：${es(d.review)}${d.reviewNote?` · ${es(d.reviewNote)}`:''}</div>`;
+  };
   if(todayDraw){
     const orientLabel=todayDraw.orient==="reversed"?"逆位":"正位";
     const orientCls=todayDraw.orient==="reversed"?"reversed":"upright";
@@ -1298,7 +1447,8 @@ function renderDaily(){
       <p><span class="label">问题/意图：</span>${es(todayDraw.question||'—')}</p>
       <p><span class="label">牌面解读：</span>${es(todayDraw.interpretation||'—')}</p>
       <p><span class="label">个人感悟：</span>${es(todayDraw.reflection||'—')}</p>
-      <div style="margin-top:10px;display:flex;gap:6px;"><button class="btn btn-text btn-sm" onclick="editDaily('${todayDraw.id}')">✏️</button><button class="btn btn-text btn-sm btn-danger" onclick="deleteDaily('${todayDraw.id}')">🗑️</button></div></div>`;
+      ${reviewBadge(todayDraw)}
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-text btn-sm" onclick="openReviewModal('${todayDraw.id}')">🌙 晚间复盘</button><button class="btn btn-text btn-sm" onclick="editDaily('${todayDraw.id}')">✏️</button><button class="btn btn-text btn-sm btn-danger" onclick="deleteDaily('${todayDraw.id}')">🗑️</button></div></div>`;
   }else{
     todayDiv.innerHTML='<div class="empty-state"><div class="icon">🌅</div><p>今天还没抽牌。</p></div>';
   }
@@ -1314,7 +1464,8 @@ function renderDaily(){
       return `<div class="daily-entry"><div class="daily-entry-header"><span style="font-weight:700;">${d.date}</span></div>
       <div class="daily-card-badge">${es(d.cardName)}<span class="orient-badge ${oc}">${ol}</span></div>
       <p><span class="label">解读：</span>${es(d.interpretation||'—')}</p>
-      <div style="margin-top:8px;display:flex;gap:6px;"><button class="btn btn-text btn-sm" onclick="editDaily('${d.id}')">✏️</button><button class="btn btn-text btn-sm btn-danger" onclick="deleteDaily('${d.id}')">🗑️</button></div></div>`;
+      ${reviewBadge(d)}
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-text btn-sm" onclick="openReviewModal('${d.id}')">🌙 复盘</button><button class="btn btn-text btn-sm" onclick="editDaily('${d.id}')">✏️</button><button class="btn btn-text btn-sm btn-danger" onclick="deleteDaily('${d.id}')">🗑️</button></div></div>`;
     }).join("");
   }
 }
@@ -1326,6 +1477,38 @@ function saveDaily(id,data){
   else{appData.dailyDraws.push({id:Date.now().toString(36),date:new Date().toISOString().slice(0,10),...data});}
   saveData(appData);closeModal();
 }
+
+// ============ 每日一牌·晚间复盘 ============
+function openReviewModal(id){
+  const d = appData.dailyDraws.find(x=>x.id===id);
+  if(!d) return;
+  const opts = ["应验","部分应验","未应验"].map(o=>`<button class="review-opt ${d.review===o?'active':''}" data-v="${o}" onclick="pickReview('${o}')">${o}</button>`).join("");
+  document.getElementById("modal-content").innerHTML=`
+    <h3>🌙 晚间复盘</h3>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">${es(d.cardName)} · ${d.date} — 这一天，这张牌说中了吗？</p>
+    <label>应验程度</label>
+    <div class="review-opts" id="review-opts">${opts}</div>
+    <input type="hidden" id="review-val" value="${d.review||'应验'}">
+    <label>复盘感悟</label>
+    <textarea id="review-note" placeholder="今天发生了什么？和这张牌有什么对应？">${es(d.reviewNote||'')}</textarea>
+    <div class="modal-actions"><button class="btn btn-text" onclick="closeModal()">取消</button><button class="btn btn-primary" id="review-save">保存复盘</button></div>`;
+  document.getElementById("modal-overlay").classList.remove("hidden");
+  window._reviewId = id;
+  document.getElementById("review-save").onclick=()=>{
+    const d2 = appData.dailyDraws.find(x=>x.id===window._reviewId);
+    if(d2){
+      d2.review = document.getElementById("review-val").value;
+      d2.reviewNote = document.getElementById("review-note").value;
+      saveData(appData);
+    }
+    closeModal();
+  };
+}
+function pickReview(v){
+  document.getElementById("review-val").value = v;
+  document.querySelectorAll("#review-opts .review-opt").forEach(b=>b.classList.toggle("active", b.dataset.v===v));
+}
+window.pickReview = pickReview;
 
 // ============ SPREAD ============
 function renderSpreads(){
@@ -1381,6 +1564,12 @@ function resetQuiz(){
 }
 
 function getRandomCard(){
+  if(quizWrongOnly){
+    const wrongs = getWrongCards();
+    if(wrongs.length===0) return ALL_CARDS[Math.floor(Math.random()*ALL_CARDS.length)];
+    const w = wrongs[Math.floor(Math.random()*wrongs.length)];
+    return ALL_CARDS.find(c=>c.cn===w.cn) || ALL_CARDS[Math.floor(Math.random()*ALL_CARDS.length)];
+  }
   return ALL_CARDS[Math.floor(Math.random()*ALL_CARDS.length)];
 }
 
@@ -1441,7 +1630,7 @@ function checkQuizAnswer(){
     (quizMode==="name2meaning" && quizCurrentCard.kw && answer.length>1 && quizCurrentCard.kw.split(" ").some(k=>answer.includes(k)));
 
   if(isCorrect){quizCorrect++;quizStreak++;document.getElementById("quiz-feedback").innerHTML=`<div class="quiz-feedback correct">✅ 正确！是「${quizCurrentCard.cn}」(${quizCurrentCard.en})</div>`;}
-  else{quizWrong++;quizStreak=0;document.getElementById("quiz-feedback").innerHTML=`<div class="quiz-feedback incorrect">❌ 答案是「${quizCurrentCard.cn}」(${quizCurrentCard.en})</div>`;}
+  else{quizWrong++;quizStreak=0;recordQuizWrong(quizCurrentCard);document.getElementById("quiz-feedback").innerHTML=`<div class="quiz-feedback incorrect">❌ 答案是「${quizCurrentCard.cn}」(${quizCurrentCard.en})</div>`;}
 
   document.getElementById("quiz-correct").textContent=quizCorrect;
   document.getElementById("quiz-wrong").textContent=quizWrong;
@@ -1460,7 +1649,7 @@ function checkQuizMultiple(answer){
   });
 
   if(isCorrect){quizCorrect++;quizStreak++;document.getElementById("quiz-feedback").innerHTML=`<div class="quiz-feedback correct">✅ 正确！</div>`;}
-  else{quizWrong++;quizStreak=0;document.getElementById("quiz-feedback").innerHTML=`<div class="quiz-feedback incorrect">❌ 答案是「${quizCurrentCard.cn}」</div>`;}
+  else{quizWrong++;quizStreak=0;recordQuizWrong(quizCurrentCard);document.getElementById("quiz-feedback").innerHTML=`<div class="quiz-feedback incorrect">❌ 答案是「${quizCurrentCard.cn}」</div>`;}
 
   document.getElementById("quiz-correct").textContent=quizCorrect;
   document.getElementById("quiz-wrong").textContent=quizWrong;
@@ -1470,6 +1659,55 @@ function checkQuizMultiple(answer){
   document.getElementById("quiz-action-btn").textContent="下一题";
   document.querySelectorAll(".quiz-option").forEach(o=>o.disabled=true);
 }
+
+// ============ 错题本 ============
+let quizWrongOnly = false;
+
+function recordQuizWrong(card){
+  if(!appData.quizWrong) appData.quizWrong = {};
+  const key = card.cn;
+  if(!appData.quizWrong[key]) appData.quizWrong[key] = {count:0, lastWrongAt:null, en:card.en};
+  appData.quizWrong[key].count++;
+  appData.quizWrong[key].lastWrongAt = new Date().toISOString();
+  appData.quizWrong[key].en = card.en;
+}
+
+function getWrongCards(){
+  return Object.entries(appData.quizWrong||{}).map(([cn, v]) => ({cn, en:v.en, count:v.count, lastWrongAt:v.lastWrongAt}));
+}
+
+function renderWrongBook(){
+  const box = document.getElementById("wrong-book");
+  if(!box) return;
+  const wrongs = getWrongCards().sort((a,b)=>b.count-a.count);
+  if(wrongs.length===0){
+    box.innerHTML='<div class="empty-state"><div class="icon">📕</div><p>还没有错题，继续保持！</p></div>';
+    return;
+  }
+  box.innerHTML = wrongs.map(w=>`
+    <div class="wrong-item">
+      <span style="font-size:18px;">❌</span>
+      <div style="flex:1;"><div style="font-weight:600;">${es(w.cn)} <span style="font-size:12px;color:var(--text-muted);font-weight:400;">${es(w.en)}</span></div>
+      <div style="font-size:12px;color:var(--text-muted);">答错 ${w.count} 次</div></div>
+      <button class="btn btn-text btn-sm btn-danger" onclick="removeWrong('${es(w.cn)}')">清除</button>
+    </div>`).join("");
+}
+
+function removeWrong(cn){
+  if(appData.quizWrong && appData.quizWrong[cn]){
+    delete appData.quizWrong[cn];
+    saveData(appData);
+  }
+}
+window.removeWrong = removeWrong;
+
+function toggleWrongOnly(){
+  quizWrongOnly = !quizWrongOnly;
+  const btn = document.getElementById("wrong-mode-btn");
+  if(btn) btn.classList.toggle("active", quizWrongOnly);
+  resetQuiz();
+}
+window.toggleWrongOnly = toggleWrongOnly;
 
 // ============ NOTES ============
 function renderNotes(){
