@@ -18,6 +18,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
     <style>
         /* ===== Reset & Base ===== */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -3573,20 +3574,32 @@
             fillDiaryImages(preview);
         }
 
-        function compressImage(file) {
-            return new Promise((resolve, reject) => {
-                const t = (file.type || '').toLowerCase();
-                // 小体积的常规格式图片直接上传（省一次解码耗时）；HEIC 等一律走压缩转 JPG
-                const isCommon = t === 'image/jpeg' || t === 'image/png' || t === 'image/webp' || t === 'image/gif';
-                if (isCommon && file.size < 120 * 1024) { resolve(file); return; }
-                // Timeout guard: if compression hangs (old phones), upload original
+        async function compressImage(file) {
+            const t = (file.type || '').toLowerCase();
+            const name = (file.name || '').toLowerCase();
+            const isHeic = t === 'image/heic' || t === 'image/heif' || /\.(heic|heif)$/.test(name);
+            // OPPO 相机常把照片标成 HEIC/HEIF，先在浏览器端转成 JPEG。
+            // 不能解码时不要再报“格式无法读取”并丢弃，直接上传原文件，保证照片不丢。
+            if (isHeic && typeof window.heic2any === 'function') {
+                try {
+                    const converted = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.82 });
+                    return Array.isArray(converted) ? converted[0] : converted;
+                } catch (e) {
+                    console.warn('[compress] HEIC 转 JPG 失败，尝试上传原文件', e);
+                    return file;
+                }
+            }
+            // 小体积的常规格式图片直接上传，省一次解码耗时。
+            const isCommon = t === 'image/jpeg' || t === 'image/png' || t === 'image/webp' || t === 'image/gif';
+            if (isCommon && file.size < 120 * 1024) return file;
+            return new Promise((resolve) => {
+                // Timeout guard: 老手机压缩卡住时上传原文件，不阻塞保存流程。
                 const timer = setTimeout(() => { console.warn('[compress] 压缩超时，上传原文件'); resolve(file); }, 8000);
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const img = new Image();
                     img.onload = () => {
                         try {
-                            // 最长边 1000px + 质量 0.62 —— 手机上够看就行，省内存省存储
                             const MAX = 1000;
                             let { width, height } = img;
                             if (width > MAX || height > MAX) {
@@ -3598,21 +3611,16 @@
                             canvas.width = width;
                             canvas.height = height;
                             const ctx = canvas.getContext('2d');
-                            // PNG/WebP 透明背景转 JPEG 会变黑，先铺白底
                             if (t === 'image/png' || t === 'image/webp') {
                                 ctx.fillStyle = '#ffffff';
                                 ctx.fillRect(0, 0, width, height);
                             }
                             ctx.drawImage(img, 0, 0, width, height);
                             clearTimeout(timer);
-                            const finish = (blob) => {
-                                if (blob) resolve(blob);
-                                else reject(new Error('图片转换失败'));
-                            };
+                            const finish = (blob) => resolve(blob || file);
                             if (typeof canvas.toBlob === 'function') {
                                 canvas.toBlob(finish, 'image/jpeg', 0.62);
                             } else {
-                                // Old browsers (OPPO ColorOS etc.) may lack toBlob
                                 const dataUrl = canvas.toDataURL('image/jpeg', 0.62);
                                 const bin = atob(dataUrl.split(',')[1]);
                                 const arr = new Uint8Array(bin.length);
@@ -3621,13 +3629,10 @@
                             }
                         } catch (err) {
                             clearTimeout(timer);
-                            resolve(file); // compression failed, upload original
+                            resolve(file);
                         }
                     };
-                    img.onerror = () => {
-                        clearTimeout(timer);
-                        reject(new Error('这张图片格式无法读取（可能是不支持的格式），已跳过'));
-                    };
+                    img.onerror = () => { clearTimeout(timer); resolve(file); };
                     img.src = e.target.result;
                 };
                 reader.onerror = () => { clearTimeout(timer); resolve(file); };
@@ -6007,7 +6012,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v33';
+                b.textContent = 'v34';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
