@@ -3342,13 +3342,11 @@
                 const hasImages = dayDiary && dayDiary.images && dayDiary.images.length > 0;
                 const isSelected = dateStr === diaryState.selectedDate;
 
-                // Mood emoji + content preview inside cell
+                // Content preview inside cell
                 let diaryInfoHtml = '';
                 if (hasDiary) {
-                    const moods = { 1: '😞', 2: '😐', 3: '🙂', 4: '😀', 5: '😊' };
-                    const moodHtml = dayDiary.mood ? `<span class="diary-mood">${moods[dayDiary.mood] || ''}</span>` : '';
                     const preview = (dayDiary.content || '').replace(/\n+/g, ' ').slice(0, 50);
-                    diaryInfoHtml = `<div style="margin-top:2px;">${moodHtml}${preview ? `<div class="diary-preview">${esc(preview)}</div>` : ''}</div>`;
+                    diaryInfoHtml = preview ? `<div style="margin-top:2px;"><div class="diary-preview">${esc(preview)}</div></div>` : '';
                 }
 
                 // Build photo thumbnails (max 3 shown, tiny thumbs to save memory)
@@ -3431,11 +3429,9 @@
                     </div>`;
                 return;
             }
-            const moods = { 1: '😞', 2: '😐', 3: '🙂', 4: '😀', 5: '😊' };
             view.innerHTML = `
                 <div class="diary-meta">
                     ${diary.title ? `<strong style="font-size:1.1rem;">${esc(diary.title)}</strong>` : ''}
-                    ${diary.mood ? `<span>${moods[diary.mood] || ''}</span>` : ''}
                     <span style="margin-left:auto;">🕐 ${formatDate(diary.updated_at)}</span>
                     <button class="btn btn-sm btn-outline" onclick="openDiaryModal(${diary.id})">✏️</button>
                     <button class="btn btn-sm btn-danger" onclick="deleteDiary(${diary.id})">🗑</button>
@@ -3471,11 +3467,13 @@
         }
 
         let diaryImages = [];
+        let _diaryMood = 3; // 心情字段 UI 已移除，保存时保留原值，避免覆盖旧数据
 
         function openDiaryModal(diaryId) {
             const isEdit = !!diaryId;
             const fetchDiary = isEdit ? api(`/api/diaries/${diaryId}`) : Promise.resolve(null);
             fetchDiary.then(diary => {
+                _diaryMood = diary ? (diary.mood || 3) : 3;
                 // Normalize images to plain URL strings for internal state
                 diaryImages = diary ? (diary.images || []).map(it => (typeof it === 'object' && it) ? it.url : it) : [];
                 const overlay = document.getElementById('modalOverlay');
@@ -3483,21 +3481,9 @@
                 overlay.innerHTML = `
                 <div class="modal" style="width:600px;">
                     <h3>${isEdit ? '✏️ 编辑日记' : '📖 写日记'}</h3>
-                    <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                        <div>
-                            <label>日期</label>
-                            <input id="dDate" type="date" value="${diary ? diary.date : today}">
-                        </div>
-                        <div>
-                            <label>心情</label>
-                            <select id="dMood">
-                                <option value="5" ${diary && diary.mood === 5 ? 'selected' : ''}>😊 非常好</option>
-                                <option value="4" ${diary && diary.mood === 4 ? 'selected' : ''}>😀 不错</option>
-                                <option value="3" ${!diary || diary.mood === 3 ? 'selected' : ''}>🙂 一般</option>
-                                <option value="2" ${diary && diary.mood === 2 ? 'selected' : ''}>😐 有点down</option>
-                                <option value="1" ${diary && diary.mood === 1 ? 'selected' : ''}>😞 很差</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label>日期</label>
+                        <input id="dDate" type="date" value="${diary ? diary.date : today}">
                     </div>
                     <div class="form-group">
                         <label>标题</label>
@@ -3650,7 +3636,7 @@
                 date: document.getElementById('dDate').value,
                 title: document.getElementById('dTitle').value.trim(),
                 content: document.getElementById('dContent').value,
-                mood: parseInt(document.getElementById('dMood').value) || 3,
+                mood: _diaryMood,
                 images: diaryImages,
             };
             if (!data.date) return alert('请选择日期');
@@ -6012,7 +5998,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v34';
+                b.textContent = 'v35';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
