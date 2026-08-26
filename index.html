@@ -1578,30 +1578,38 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        .diary-calendar .day-cell .diary-cell-photos {
-            display: flex;
-            gap: 2px;
-            margin-top: 3px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .diary-calendar .day-cell .diary-cell-photos img {
-            width: 24px;
-            height: 24px;
-            object-fit: cover;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            cursor: pointer;
-            transition: transform 0.12s;
-        }
-        .diary-calendar .day-cell .diary-cell-photos img:hover { transform: scale(1.08); }
-        .diary-calendar .day-cell .photo-more {
-            font-size: 0.6rem;
-            color: var(--text-muted);
+        .diary-calendar .day-cell.has-photos {
             background: var(--surface);
-            border-radius: 4px;
-            padding: 1px 4px;
+            overflow: hidden;
+            padding: 0;
+        }
+        .diary-calendar .day-cell.has-photos .cell-photo {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+        }
+        .diary-calendar .day-cell.has-photos .day-num {
+            position: relative;
+            z-index: 2;
+            color: #fff;
+            font-weight: 700;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.65);
+        }
+        .diary-calendar .day-cell.has-photos .photo-count {
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+            z-index: 2;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            font-size: 0.6rem;
+            line-height: 1;
+            padding: 2px 6px;
+            border-radius: 10px;
+            pointer-events: none;
         }
         .diary-entry {
             background: var(--surface);
@@ -1751,7 +1759,8 @@
             .calendar-header { flex-wrap: wrap; gap: 8px; }
             .calendar-header h3 { font-size: 1rem; }
             .anniv-row { flex-wrap: wrap; }
-            .diary-calendar .day-cell .diary-cell-photos img { width: 18px; height: 18px; }
+            .diary-calendar .day-cell.has-photos .cell-photo { border-radius: 4px; }
+            .diary-calendar .day-cell.has-photos .photo-count { font-size: 0.52rem; padding: 1px 5px; }
             .diary-entry .diary-images { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .diary-entry .diary-images img { height: 42vw; max-height: 200px; }
             .upload-preview { grid-template-columns: repeat(3, 1fr); }
@@ -3355,36 +3364,32 @@
                 const hasImages = dayDiary && dayDiary.images && dayDiary.images.length > 0;
                 const isSelected = dateStr === diaryState.selectedDate;
 
-                // Content preview inside cell
+                // Content preview inside cell (hidden when photos fill the cell)
                 let diaryInfoHtml = '';
-                if (hasDiary) {
+                if (hasDiary && !hasImages) {
                     const preview = (dayDiary.content || '').replace(/\n+/g, ' ').slice(0, 50);
                     diaryInfoHtml = preview ? `<div style="margin-top:2px;"><div class="diary-preview">${esc(preview)}</div></div>` : '';
                 }
 
-                // Build photo thumbnails (max 3 shown, tiny thumbs to save memory)
+                // Photo cell: first photo fills the cell, date floats on top + count badge
                 let photosHtml = '';
                 if (hasImages) {
-                    const imgs = dayDiary.images.slice(0, 3);
-                    const extra = dayDiary.images.length - 3;
-                    photosHtml = `<div class="diary-cell-photos">
-                        ${imgs.map(it => {
-                            const url = (typeof it === 'object' && it) ? (it.url || '') : it;
-                            const thumb = (typeof it === 'object' && it) ? (it.thumb || url) : null;
-                            const src = thumb || url;
-                            return `<img src="${LocalDB.resolveImgSync(src)}" data-url="${esc(src)}" class="diary-img" loading="lazy" onclick="event.stopPropagation();viewImage('${url}')" alt="日记照片">`;
-                        }).join('')}
-                        ${extra > 0 ? `<span class="photo-more">📷+${extra}</span>` : ''}
-                    </div>`;
+                    const first = dayDiary.images[0];
+                    const url = (typeof first === 'object' && first) ? (first.url || '') : first;
+                    const thumb = (typeof first === 'object' && first) ? (first.thumb || url) : null;
+                    const src = thumb || url;
+                    const count = dayDiary.images.length;
+                    photosHtml = `<img class="cell-photo" src="${LocalDB.resolveImgSync(src)}" data-url="${esc(src)}" loading="lazy" alt="日记照片">
+                        ${count > 1 ? `<span class="photo-count">📷${count}</span>` : ''}`;
                 }
 
-                html += `<div class="day-cell ${isToday ? 'today' : ''} ${hasDiary ? 'has-diary' : ''} ${isSelected ? 'selected' : ''}"
+                html += `<div class="day-cell ${isToday ? 'today' : ''} ${hasDiary ? 'has-diary' : ''} ${hasImages ? 'has-photos' : ''} ${isSelected ? 'selected' : ''}"
                     style="${isSelected ? 'outline:2px solid var(--primary);' : ''}"
                     onclick="selectDiaryDate('${dateStr}')">
                     <div class="day-num">${d}</div>
                     ${diaryInfoHtml}
                     ${photosHtml}
-                    ${hasDiary && !hasImages && !dayDiary.mood && !(dayDiary.content || '').trim() ? '<div class="diary-mark">📖</div>' : ''}
+                    ${hasDiary && !hasImages && !(dayDiary.content || '').trim() ? '<div class="diary-mark">📖</div>' : ''}
                 </div>`;
             }
             const totalCells = startDay + daysInMonth;
@@ -3400,7 +3405,7 @@
         // 这里从 IndexedDB 取真图并更新 src，保证有图一定能显示
         function fillDiaryImages(root) {
             if (!root) return;
-            root.querySelectorAll('img.diary-img').forEach(img => {
+            root.querySelectorAll('img[data-url]').forEach(img => {
                 const url = img.getAttribute('data-url');
                 if (!url) return;
                 if (img.src && img.src.startsWith('data:image/gif')) { // 占位图 → 需异步取真图
@@ -6011,7 +6016,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v36';
+                b.textContent = 'v37';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
