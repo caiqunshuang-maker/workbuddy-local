@@ -1551,7 +1551,7 @@
             padding: 16px;
             box-shadow: var(--shadow);
         }
-        .diary-calendar .calendar-grid { grid-auto-rows: 132px; }
+        .diary-calendar .calendar-grid { grid-auto-rows: 88px; }
         .diary-calendar .calendar-grid .day-cell { min-height: 0; aspect-ratio: auto; position: relative; overflow: hidden; }
         .diary-calendar .day-cell.has-diary {
             background: var(--primary-light);
@@ -1574,7 +1574,7 @@
             margin-top: 2px;
             word-break: break-word;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -1588,21 +1588,21 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 44px;
-            height: 44px;
+            width: 38px;
+            height: 38px;
             object-fit: cover;
-            border-radius: 9px;
+            border-radius: 8px;
             border: 1px solid rgba(0,0,0,0.08);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.14);
         }
         .diary-calendar .day-cell.has-photos .photo-count {
             position: absolute;
             left: 50%;
             top: 50%;
-            transform: translate(calc(-50% + 12px), calc(-50% + 12px));
+            transform: translate(calc(-50% + 10px), calc(-50% + 10px));
             background: rgba(0,0,0,0.6);
             color: #fff;
-            font-size: 0.56rem;
+            font-size: 0.54rem;
             line-height: 1;
             padding: 2px 5px;
             border-radius: 9px;
@@ -1757,8 +1757,8 @@
             .calendar-header { flex-wrap: wrap; gap: 8px; }
             .calendar-header h3 { font-size: 1rem; }
             .anniv-row { flex-wrap: wrap; }
-            .diary-calendar .day-cell.has-photos .cell-photo { width: 36px; height: 36px; border-radius: 7px; }
-            .diary-calendar .day-cell.has-photos .photo-count { font-size: 0.5rem; padding: 1px 4px; transform: translate(calc(-50% + 9px), calc(-50% + 9px)); }
+            .diary-calendar .day-cell.has-photos .cell-photo { width: 32px; height: 32px; border-radius: 6px; }
+            .diary-calendar .day-cell.has-photos .photo-count { font-size: 0.48rem; padding: 1px 4px; transform: translate(calc(-50% + 8px), calc(-50% + 8px)); }
             .diary-entry .diary-images { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .diary-entry .diary-images img { height: 42vw; max-height: 200px; }
             .upload-preview { grid-template-columns: repeat(3, 1fr); }
@@ -6014,7 +6014,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v38';
+                b.textContent = 'v39';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
