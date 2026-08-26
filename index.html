@@ -1551,7 +1551,9 @@
             padding: 16px;
             box-shadow: var(--shadow);
         }
-        .diary-calendar .calendar-grid { grid-auto-rows: 88px; }
+        .diary-calendar .calendar-grid { grid-auto-rows: 60px; }
+        .diary-calendar .calendar-grid .day-header { padding: 2px 0 5px; font-size: 0.7rem; }
+        .diary-calendar .calendar-grid .day-num { font-size: 0.72rem; margin-bottom: 1px; }
         .diary-calendar .calendar-grid .day-cell { min-height: 0; aspect-ratio: auto; position: relative; overflow: hidden; }
         .diary-calendar .day-cell.has-diary {
             background: var(--primary-light);
@@ -1568,13 +1570,13 @@
             line-height: 1.2;
         }
         .diary-calendar .day-cell .diary-preview {
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             color: var(--text-secondary);
-            line-height: 1.35;
-            margin-top: 2px;
+            line-height: 1.3;
+            margin-top: 1px;
             word-break: break-word;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -1588,24 +1590,24 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 38px;
-            height: 38px;
+            width: 32px;
+            height: 32px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 7px;
             border: 1px solid rgba(0,0,0,0.08);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.14);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.12);
         }
         .diary-calendar .day-cell.has-photos .photo-count {
             position: absolute;
             left: 50%;
             top: 50%;
-            transform: translate(calc(-50% + 10px), calc(-50% + 10px));
+            transform: translate(calc(-50% + 8px), calc(-50% + 8px));
             background: rgba(0,0,0,0.6);
             color: #fff;
-            font-size: 0.54rem;
+            font-size: 0.5rem;
             line-height: 1;
-            padding: 2px 5px;
-            border-radius: 9px;
+            padding: 1px 4px;
+            border-radius: 8px;
             pointer-events: none;
             white-space: nowrap;
         }
@@ -1757,8 +1759,8 @@
             .calendar-header { flex-wrap: wrap; gap: 8px; }
             .calendar-header h3 { font-size: 1rem; }
             .anniv-row { flex-wrap: wrap; }
-            .diary-calendar .day-cell.has-photos .cell-photo { width: 32px; height: 32px; border-radius: 6px; }
-            .diary-calendar .day-cell.has-photos .photo-count { font-size: 0.48rem; padding: 1px 4px; transform: translate(calc(-50% + 8px), calc(-50% + 8px)); }
+            .diary-calendar .day-cell.has-photos .cell-photo { width: 28px; height: 28px; border-radius: 6px; }
+            .diary-calendar .day-cell.has-photos .photo-count { font-size: 0.46rem; padding: 1px 3px; transform: translate(calc(-50% + 7px), calc(-50% + 7px)); }
             .diary-entry .diary-images { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .diary-entry .diary-images img { height: 42vw; max-height: 200px; }
             .upload-preview { grid-template-columns: repeat(3, 1fr); }
@@ -1771,7 +1773,7 @@
             .metric-form-inline { grid-template-columns: repeat(2, 1fr); }
             .diary-layout { grid-template-columns: 1fr; }
             .diary-calendar .calendar-grid .day-cell { min-height: 0; }
-            .diary-calendar .day-cell .diary-preview { font-size: 0.55rem; -webkit-line-clamp: 2; }
+            .diary-calendar .day-cell .diary-preview { font-size: 0.5rem; -webkit-line-clamp: 1; }
             .diary-calendar .day-cell .diary-mood { font-size: 0.85rem; }
             .stats-grid { gap: 8px; }
             .stat-card { padding: 12px 14px; }
@@ -6014,7 +6016,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v39';
+                b.textContent = 'v40';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
