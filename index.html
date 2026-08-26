@@ -1589,8 +1589,9 @@
             width: 24px;
             height: 24px;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 6px;
             border: 1px solid var(--border);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
             cursor: pointer;
             transition: transform 0.12s;
         }
@@ -1625,35 +1626,44 @@
         }
         .diary-entry .diary-images {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
-            margin-top: 14px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
         }
         .diary-entry .diary-images img {
             width: 100%;
-            height: 140px;
+            height: 150px;
             object-fit: cover;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             cursor: pointer;
-            transition: transform 0.15s;
+            transition: transform 0.15s, box-shadow 0.15s;
         }
-        .diary-entry .diary-images img:hover { transform: scale(1.03); }
+        .diary-entry .diary-images img:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
         .upload-preview {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
             gap: 10px;
-            margin-top: 8px;
+            margin-top: 10px;
         }
         .upload-preview .img-thumb {
             position: relative;
-            width: 90px;
-            height: 90px;
+            width: 100%;
+            height: 96px;
+            border-radius: var(--radius-sm);
+            overflow: visible;
         }
         .upload-preview .img-thumb img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
         .upload-preview .img-thumb button {
             position: absolute;
@@ -1742,6 +1752,9 @@
             .calendar-header h3 { font-size: 1rem; }
             .anniv-row { flex-wrap: wrap; }
             .diary-calendar .day-cell .diary-cell-photos img { width: 18px; height: 18px; }
+            .diary-entry .diary-images { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .diary-entry .diary-images img { height: 42vw; max-height: 200px; }
+            .upload-preview { grid-template-columns: repeat(3, 1fr); }
             .toolbar { flex-wrap: wrap; gap: 6px; }
             .toolbar select, .toolbar input { flex: 1; min-width: 0; }
             .toolbar .btn { flex: 1; }
@@ -5998,7 +6011,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v35';
+                b.textContent = 'v36';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
