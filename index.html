@@ -1844,9 +1844,6 @@
             <button class="nav-item" data-page="fitness" data-title="💪 健身">
                 <span class="icon">💪</span> <span>健身</span>
             </button>
-            <button class="nav-item" data-page="diary" data-title="📖 日记">
-                <span class="icon">📖</span> <span>日记</span>
-            </button>
             <button class="nav-item" data-page="money" data-title="💰 记账">
                 <span class="icon">💰</span> <span>记账</span>
             </button>
@@ -2017,34 +2014,6 @@
                 </div>
             </div>
 
-            <!-- ===== Page: Diary ===== -->
-            <div class="page" id="page-diary">
-                <div class="diary-health-tip" id="diaryHealthTip" style="display:none;background:#fff3cd;color:#856404;border:1px solid #ffeeba;border-radius:8px;padding:8px 12px;font-size:0.8rem;margin-bottom:10px;"></div>
-                <div class="diary-layout">
-                    <!-- Calendar side -->
-                    <div class="diary-calendar">
-                        <div class="calendar-header">
-                            <h3 id="diaryCalTitle">2026年 8月</h3>
-                            <div class="calendar-nav">
-                                <button onclick="changeDiaryMonth(-1)">‹</button>
-                                <button onclick="changeDiaryMonth(1)">›</button>
-                            </div>
-                        </div>
-                        <div class="calendar-grid" id="diaryCalGrid"></div>
-                        <div style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);">
-                            📖 标记的日期有日记 · 点击日期查看
-                        </div>
-                    </div>
-                    <!-- Entry side -->
-                    <div class="diary-entry">
-                        <div class="toolbar" style="justify-content:space-between;">
-                            <h3 id="diaryDateLabel">2026-08-03</h3>
-                        </div>
-                        <div id="diaryView"></div>
-                    </div>
-                </div>
-            </div>
-
             <!-- ===== Page: Money ===== -->
             <div class="page" id="page-money">
                 <div class="money-toolbar">
@@ -2136,9 +2105,6 @@
         <button class="bn-item" data-page="fitness">
             <span class="bn-icon">💪</span><span class="bn-text">健身</span>
         </button>
-        <button class="bn-item" data-page="diary">
-            <span class="bn-icon">📖</span><span class="bn-text">日记</span>
-        </button>
         <button class="bn-item" data-page="money">
             <span class="bn-icon">💰</span><span class="bn-text">记账</span>
         </button>
@@ -2187,7 +2153,7 @@
         });
 
         // ===== Navigation =====
-        const ALL_PAGES = ['dashboard', 'tasks', 'calendar', 'notes', 'habits', 'review', 'fitness', 'diary', 'money', 'storage'];
+        const ALL_PAGES = ['dashboard', 'tasks', 'calendar', 'notes', 'habits', 'review', 'fitness', 'money', 'storage'];
         // 记住当前页面：闪退/系统杀后台/刷新后能回到原页面，而不是强制回概览
         function rememberPage(page) {
             try { localStorage.setItem('wb_last_page', page); } catch (e) { /* ignore */ }
@@ -2207,7 +2173,6 @@
                 if (page === 'calendar') renderCalendar();
                 if (page === 'notes') renderNotes();
                 if (page === 'fitness') loadFitness();
-                if (page === 'diary') loadDiary();
                 if (page === 'money') loadMoney();
                 if (page === 'storage') renderStorage();
                 if (page === 'habits') renderHabits();
@@ -6049,7 +6014,7 @@
             try {
                 const b = document.createElement('div');
                 b.id = 'verBadge';
-                b.textContent = 'v41';
+                b.textContent = 'v42';
                 b.style.cssText = 'position:fixed;bottom:4px;right:6px;font-size:9px;color:#999;opacity:.7;z-index:9999;pointer-events:none;';
                 document.body.appendChild(b);
             } catch (e) { /* ignore */ }
